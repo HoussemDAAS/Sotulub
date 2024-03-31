@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sotulub/src/features/authentication/screens/welcome/widget_themes/elevated_button_theme.dart';
+import 'package:sotulub/src/features/authentication/screens/welcome/widget_themes/outlined_button_theme.dart';
+import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 
 
@@ -19,6 +22,12 @@ class TAppTheme {
           900: Color(0xFF1B463D),
           950: Color(0xFF0A2923),
         }),
+        textTheme: TTextTheme.lightTextTheme,
+        outlinedButtonTheme: TOutlineButtonTheme.lightTOutlineButtonTheme,
+        elevatedButtonTheme: TElevatedButtonTheme.lightTElevatedButtonTheme
      );
-  static ThemeData darkTheme = ThemeData(brightness: Brightness.dark);   
+  static ThemeData darkTheme = ThemeData(brightness: Brightness.dark,
+  textTheme: TTextTheme.darkTextTheme,
+   outlinedButtonTheme: TOutlineButtonTheme.darkTOutlineButtonTheme,
+   elevatedButtonTheme: TElevatedButtonTheme.darkTElevatedButtonTheme);
 }
