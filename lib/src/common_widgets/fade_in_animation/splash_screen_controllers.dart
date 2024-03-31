@@ -7,15 +7,20 @@ import 'package:sotulub/src/features/authentication/screens/welcome/welcome_scre
 class SplashScreenController extends GetxController{
   static SplashScreenController get find => Get.find();
   RxBool animate = false.obs;
-  @override
-  // void initState() {
-  //   startAnimation();
-  // }
+
    Future startAnimation() async {
     await Future.delayed(Duration(milliseconds: 500));
    animate.value = true;
-    await Future.delayed(Duration(milliseconds: 7000));
+    await Future.delayed(Duration(milliseconds: 3000));
+     animate.value = false;
+      await Future.delayed(Duration(milliseconds: 2000));
   Get.to(WelcomeScreen());
+
+   
+  }
+  Future AnimationIn() async {
+    await Future.delayed(Duration(milliseconds: 500));
+   animate.value = true;
 
    
   }
