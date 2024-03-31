@@ -36,17 +36,35 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
+  flutter_native_splash: ^2.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^3.0.0
+
+
+
+flutter_native_splash:
+   color: "#D3F4E8"
+   image: assets/images/sotulub.png
+   color_dark: "#121212"
+   image_dark: assets/images/sotulub.png
+
+   android_12:
+    image: assets/images/sotulub.png
+    icon_background_color: "#D3F4E8"
+    image_dark: assets/images/sotulub.png
+    icon_background_color_dark: "#121212"
+
+   web: false
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -66,5 +84,8 @@ flutter:
   #         weight: 700
 
   uses-material-design: true
-assets:
-  -assets/images/
+  assets:
+    - assets/images/ 
+    - assets/images/books.png
+    - assets/images/oil.png
+    - assets/images/oil2.png
