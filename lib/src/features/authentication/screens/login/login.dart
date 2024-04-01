@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/image_string.dart';
+
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
+import 'package:sotulub/src/features/authentication/screens/login/Login_header_widget.dart';
+
+import 'package:sotulub/src/features/authentication/screens/login/login_form.dart';
 import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 class Login extends StatelessWidget {
@@ -21,93 +25,26 @@ class Login extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /* -- section 1--*/
-                Image(
-                  image: AssetImage(tWelcomeScreen),
-                  height: height * 0.15, // Adjusted the image height
-                ),
-                Text(tWelcomeTitle, style: TTextTheme.lightTextTheme.titleLarge),
-                Text(tWelcomeSubTitle, style: TTextTheme.lightTextTheme.titleMedium),
-                /* -- section 2--*/
-                Form(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: tFormHeight - 10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                         const TextField(
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.person_outline_outlined),
-                            labelText: tEmail,
-                            hintText: "Enter votre email",
-                            // enabledBorder: OutlineInputBorder(
-                            //   borderSide: BorderSide(color: tPrimaryColor, width: 2.0),
-                            // ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: tPrimaryColor, width: 2.0),
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(),
-                            ),
-                            labelStyle: TextStyle(color: tPrimaryColor),
-                          ),
-                        ),
-                       const  SizedBox(height: tFormHeight),
-                        TextField(
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.fingerprint_outlined),
-                            labelText: tPassword,
-                            hintText: "Enter votre mot de passe",
-                            // enabledBorder: OutlineInputBorder(
-                            //   borderSide: BorderSide(color: tPrimaryColor, width: 2.0),
-                            // ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: tPrimaryColor, width: 2.0),
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(),
-                            ),
-                               labelStyle: TextStyle(color: tPrimaryColor),
-                            suffixIcon: IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.remove_red_eye_sharp),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: tFormHeight - 10.0),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {}, // Removed const keyword here
-                            child: Text(tForgotPassword , style: TTextTheme.lightTextTheme.displaySmall),
-                          ),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text(tLogin.toUpperCase()),
-                          ),
-                        ),
-                        SizedBox(height: tFormHeight), // Added some space here
-                        TextButton(
-                          onPressed: () {},
-                          child: Text.rich(
-                            TextSpan(
-                              text: tDontHaveAccount + " ",
-                              style: TTextTheme.lightTextTheme.displaySmall,
-                              children: [
-                                TextSpan(
-                                  text: tRegister,
-                                  style: TextStyle(color: tPrimaryColor),
-                                )
-                              ]
-                            )
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                /* -- section 1 Form HeaderWidget--*/
+               const LoginHeader(
+                 image: tWelcomeScreen,
+                 title: tWelcomeTitle,
+                 subtitle: tWelcomeSubTitle,
+               ),
+                /* -- section 2 Form widget--*/
+               const LoginForm(),
+                 /* -- section 3 Form FooterWidget--*/
+                TextButton(
+                  onPressed: () {},
+                  child: Text.rich(TextSpan(
+                      text: tDontHaveAccount + " ",
+                      style: TTextTheme.lightTextTheme.displaySmall,
+                      children:const [
+                        TextSpan(
+                          text: tRegister,
+                          style: TextStyle(color: tPrimaryColor),
+                        )
+                      ])),
                 ),
               ],
             ),
