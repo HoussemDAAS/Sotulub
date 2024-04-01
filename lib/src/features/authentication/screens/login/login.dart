@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
+import 'package:sotulub/src/features/authentication/screens/forget_password/forget_password_options/forget_password_bottom_sheet.dart';
+import 'package:sotulub/src/features/authentication/screens/forget_password/forget_password_options/forget_password_btn_widget.dart';
 import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 class Login extends StatelessWidget {
@@ -26,8 +29,10 @@ class Login extends StatelessWidget {
                   image: AssetImage(tWelcomeScreen),
                   height: height * 0.15, // Adjusted the image height
                 ),
-                Text(tWelcomeTitle, style: TTextTheme.lightTextTheme.titleLarge),
-                Text(tWelcomeSubTitle, style: TTextTheme.lightTextTheme.titleMedium),
+                Text(tWelcomeTitle,
+                    style: TTextTheme.lightTextTheme.titleLarge),
+                Text(tWelcomeSubTitle,
+                    style: TTextTheme.lightTextTheme.titleMedium),
                 /* -- section 2--*/
                 Form(
                   child: Container(
@@ -35,7 +40,7 @@ class Login extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                         const TextField(
+                        const TextField(
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.person_outline_outlined),
                             labelText: tEmail,
@@ -44,7 +49,8 @@ class Login extends StatelessWidget {
                             //   borderSide: BorderSide(color: tPrimaryColor, width: 2.0),
                             // ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: tPrimaryColor, width: 2.0),
+                              borderSide:
+                                  BorderSide(color: tPrimaryColor, width: 2.0),
                             ),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(),
@@ -52,7 +58,7 @@ class Login extends StatelessWidget {
                             labelStyle: TextStyle(color: tPrimaryColor),
                           ),
                         ),
-                       const  SizedBox(height: tFormHeight),
+                        const SizedBox(height: tFormHeight),
                         TextField(
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.fingerprint_outlined),
@@ -62,12 +68,13 @@ class Login extends StatelessWidget {
                             //   borderSide: BorderSide(color: tPrimaryColor, width: 2.0),
                             // ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: tPrimaryColor, width: 2.0),
+                              borderSide:
+                                  BorderSide(color: tPrimaryColor, width: 2.0),
                             ),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(),
                             ),
-                               labelStyle: TextStyle(color: tPrimaryColor),
+                            labelStyle: TextStyle(color: tPrimaryColor),
                             suffixIcon: IconButton(
                               onPressed: () {},
                               icon: Icon(Icons.remove_red_eye_sharp),
@@ -78,8 +85,20 @@ class Login extends StatelessWidget {
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {}, // Removed const keyword here
-                            child: Text(tForgotPassword , style: TTextTheme.lightTextTheme.displaySmall),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20.0),
+                                    topRight: Radius.circular(20.0),
+                                  ),
+                                ),
+                                builder: (context) => ForgetPasswordBottomSheet(),
+                              );
+                            }, // Removed const keyword here
+                            child: Text(tForgotPassword,
+                                style: TTextTheme.lightTextTheme.displaySmall),
                           ),
                         ),
                         SizedBox(
@@ -92,8 +111,7 @@ class Login extends StatelessWidget {
                         SizedBox(height: tFormHeight), // Added some space here
                         TextButton(
                           onPressed: () {},
-                          child: Text.rich(
-                            TextSpan(
+                          child: Text.rich(TextSpan(
                               text: tDontHaveAccount + " ",
                               style: TTextTheme.lightTextTheme.displaySmall,
                               children: [
@@ -101,9 +119,7 @@ class Login extends StatelessWidget {
                                   text: tRegister,
                                   style: TextStyle(color: tPrimaryColor),
                                 )
-                              ]
-                            )
-                          ),
+                              ])),
                         ),
                       ],
                     ),
@@ -117,3 +133,4 @@ class Login extends StatelessWidget {
     );
   }
 }
+
