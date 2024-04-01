@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sotulub/src/constants/colors.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
+import 'package:sotulub/src/features/authentication/screens/forget_password/forget_password_mail/forget_password_mail.dart';
 import 'package:sotulub/src/features/authentication/screens/forget_password/forget_password_options/forget_password_btn_widget.dart';
+import 'package:sotulub/src/features/authentication/screens/forget_password/forget_password_phone/Forget_password_phone.dart';
 import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 class ForgetPasswordBottomSheet extends StatelessWidget {
@@ -10,8 +13,8 @@ class ForgetPasswordBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(tDefaultSize),
+    return  Container(
+       padding: EdgeInsets.all(tDefaultSize),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -23,7 +26,7 @@ class ForgetPasswordBottomSheet extends StatelessWidget {
             tForgetPasswordSubTitle,
             style: TTextTheme.lightTextTheme.displayMedium,
           ),
-          SizedBox(
+        const   SizedBox(
             height: 30.0,
           ),
           ResetPasswordOption(
@@ -31,10 +34,11 @@ class ForgetPasswordBottomSheet extends StatelessWidget {
             title: tEmail,
             subTitle: tRestViaEmail,
             onTap: () {
-              // Handle onTap action here
+              Navigator.pop(context);
+              Get.to(()=> const ForgetPasswordMailScreen());
             },
           ),
-          SizedBox(
+        const   SizedBox(
             height: 30.0,
           ),
           ResetPasswordOption(
@@ -42,7 +46,8 @@ class ForgetPasswordBottomSheet extends StatelessWidget {
             title: tPhone,
             subTitle: tResetViaPhone,
             onTap: () {
-              // Handle onTap action here
+              Navigator.pop(context);
+              Get.to(()=> const ForgetPasswordPhoneScreen());
             },
           ),
         ],
