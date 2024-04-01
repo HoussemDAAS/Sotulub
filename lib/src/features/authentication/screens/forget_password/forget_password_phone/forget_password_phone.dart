@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
+import 'package:sotulub/src/features/authentication/screens/forget_password/forget_password_otp/otp_screen.dart';
 import 'package:sotulub/src/features/authentication/screens/login/Login_header_widget.dart';
 
 class ForgetPasswordPhoneScreen extends StatelessWidget {
@@ -51,7 +53,9 @@ class ForgetPasswordPhoneScreen extends StatelessWidget {
                SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(()=>const OTPScreen());
+                },
                 child: Text("Envoyer".toUpperCase()),
               ),
             ),
