@@ -41,7 +41,7 @@ dependencies:
   flutter_otp_text_field: ^1.1.2+1
   flutter_charts: ^0.5.2
   charts_flutter: ^0.12.0
-
+  carousel_slider: ^4.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -95,3 +95,10 @@ flutter:
     - assets/images/oil2.png
     - assets/images/oilMen.png
     - assets/images/forget.png
+    - assets/images/slider1.png
+    - assets/images/slider2.png
+    - assets/images/slider3.png
+    - assets/images/slider4.png
+    - assets/images/produit1.png
+    - assets/images/produit2.png
+    - assets/images/produit3.png
