@@ -101,8 +101,9 @@ class _DashboardState extends State<Dashboard> {
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: TpromoSlider(),
                 ),
+                const SizedBox(height: 25),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25.0),
+                  padding: EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
                     'Nos produits',
                     style: TextStyle(
@@ -113,18 +114,17 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
                 const SizedBox(height: 25),
-             Container(
-
-  height: MediaQuery.of(context).size.height * 0.5, // Adjust the height as needed
-  child: ListView.builder(
-    itemCount: produits.length,
-    scrollDirection: Axis.horizontal,
-    
-   
-    itemBuilder: (context, index) => ProduitTitle(produit: produits[index]),
-  ),
-),
-
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.5, // Adjust the height as needed
+                  child: ListView.builder(
+                    itemCount: produits.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add horizontal margin
+                      child: ProduitTitle(produit: produits[index]),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
