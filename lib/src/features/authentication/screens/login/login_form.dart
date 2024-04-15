@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/forget_password/forget_password_options/forget_password_bottom_sheet.dart';
+import 'package:sotulub/src/features/core/screens/dashboard/widgets/dashboard.dart';
 import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 class LoginForm extends StatelessWidget {
@@ -72,7 +75,9 @@ class LoginForm extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(()=>const Dashboard());
+                },
                 child: Text(tLogin.toUpperCase()),
               ),
             ),
