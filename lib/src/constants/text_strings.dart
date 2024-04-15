@@ -15,7 +15,7 @@ const String TforgetSubTitle="Merci d'enter votre e-mail!";
 const String tRestViaEmail = "Réinitialiser par e-mail";
 const String tPhone="N° Telephone";
 const String tResetViaPhone="Réinitialiser par telephone";
-
+ 
 const String tOtpTitle="CO\nDE";
 const String tOtpSubTitle="Vérification";
 const String tOtpMessage="Entrez le code de 6 chiffres envoyé par Sotulub";
