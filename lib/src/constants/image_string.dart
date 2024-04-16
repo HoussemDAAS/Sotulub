@@ -9,3 +9,5 @@ const String tSlider4="assets/images/slider4.png";
 const String tProduit1="assets/images/produit1.png";
 const String tProduit2="assets/images/produit2.png";
 const String tProduit3="assets/images/produit3.png";
+const String tBarrel="assets/images/barrel.png";
+const String tTrack="assets/images/track.png";
