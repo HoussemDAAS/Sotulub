@@ -9,7 +9,7 @@ import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/features/core/controllers/home_controller.dart';
-import 'package:sotulub/src/features/core/screens/dashboard/widgets/dashboard.dart';
+import 'package:sotulub/src/features/core/screens/dashboard/widgets/detenteur_dashboard.dart';
 
 
 class TpromoSlider extends StatelessWidget {
