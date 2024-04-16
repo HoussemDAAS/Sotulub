@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:sotulub/src/common_widgets/bottom_naviagtion_bar.dart';
+import 'package:sotulub/src/common_widgets/button.dart';
+import 'package:sotulub/src/common_widgets/card_widget.dart';
 import 'package:sotulub/src/features/core/screens/produit/produitTitle.dart';
 import 'package:sotulub/src/common_widgets/slider/promoSlider.dart';
 import 'package:sotulub/src/constants/colors.dart';
@@ -107,6 +111,10 @@ class _DashboardState extends State<Dashboard> {
             )
           ],
         ),
+       bottomNavigationBar: BottomNavigation(
+        convention: false,
+       ),
+
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -117,7 +125,14 @@ class _DashboardState extends State<Dashboard> {
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
                     child: TpromoSlider(),
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 20),
+                  CardWidget(title: 'Demande Cuve', buttonText: 'Demander', imagePath: tBarrel, onTap: () {}
+                    
+                  ),
+                  const SizedBox(height: 20),
+                   CardWidget(title: 'Demande Collect', buttonText: 'Demander', imagePath: tTrack, onTap: () {},reverse: true
+                    
+                  ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.0),
                     child: Text(
@@ -131,7 +146,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   const SizedBox(height: 25),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.5, // Adjust the height as needed
+                    height: MediaQuery.of(context).size.height * 0.43, // Adjust the height as needed
                     child: ListView.builder(
                       itemCount: produits.length,
                       scrollDirection: Axis.horizontal,
@@ -178,3 +193,6 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 }
+
+
+

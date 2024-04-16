@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
@@ -76,7 +75,7 @@ class LoginForm extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Get.to(()=>const Dashboard());
+                  Get.to(() => const Dashboard()); // Updated navigation method
                 },
                 child: Text(tLogin.toUpperCase()),
               ),
