@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:sotulub/src/common_widgets/bottom_naviagtion_bar.dart';
-import 'package:sotulub/src/common_widgets/button.dart';
+
 import 'package:sotulub/src/common_widgets/card_widget.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/line_chart.dart';
 import 'package:sotulub/src/features/core/screens/produit/produitTitle.dart';
 import 'package:sotulub/src/common_widgets/slider/promoSlider.dart';
 import 'package:sotulub/src/constants/colors.dart';
@@ -33,7 +34,7 @@ class _DashboardState extends State<Dashboard> {
     _showToast = true;
 
     // Schedule the appearance of the toast after 20 seconds if it's closed
-    _showToastTimer = Timer(Duration(seconds: 20), () {
+    _showToastTimer = Timer( const Duration(seconds: 30), () {
       if (!_showToast) {
         setState(() {
           _showToast = true;
@@ -53,7 +54,7 @@ class _DashboardState extends State<Dashboard> {
     }
 
     // Schedule the appearance of the toast after 20 seconds
-    _showToastTimer = Timer(Duration(seconds: 20), () {
+    _showToastTimer = Timer(Duration(seconds: 30), () {
       setState(() {
         _showToast = true;
       });
@@ -125,6 +126,8 @@ class _DashboardState extends State<Dashboard> {
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
                     child: TpromoSlider(),
                   ),
+                  const SizedBox(height: 20),
+                 const  LineChartSample2(isVisible: false,),
                   const SizedBox(height: 20),
                   CardWidget(title: 'Demande Cuve', buttonText: 'Demander', imagePath: tBarrel, onTap: () {}
                     
