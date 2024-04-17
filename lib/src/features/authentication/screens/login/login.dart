@@ -13,9 +13,8 @@ class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    var height = size.height; // Get the screen height from size variable
+  Widget build(BuildContext context) {;
+// Get the screen height from size variable
 
     return SafeArea(
       child: Scaffold(

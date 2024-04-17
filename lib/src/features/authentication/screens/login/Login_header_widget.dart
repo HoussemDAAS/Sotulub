@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sotulub/src/constants/text_strings.dart';
+
 import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 class LoginHeader extends StatelessWidget {
