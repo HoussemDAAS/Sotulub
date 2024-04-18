@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sotulub/src/common_widgets/fade_in_animation/animation_design_model.dart';
-import 'package:sotulub/src/constants/image_string.dart';
-import 'package:sotulub/src/constants/sizes.dart';
+
 import 'package:sotulub/src/common_widgets/fade_in_animation/splash_screen_controllers.dart';
 
 class TfadeInAnimation extends StatelessWidget {
@@ -12,7 +11,7 @@ class TfadeInAnimation extends StatelessWidget {
   required this.animatePostion,
   required this.durationInMs,
   this.child
-  }) : super(key: key);
+  });
 
   final int durationInMs;
   final splashController = Get.put(SplashScreenController());
