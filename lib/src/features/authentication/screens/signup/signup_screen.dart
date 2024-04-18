@@ -1,25 +1,25 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
 import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
+import 'package:get/get.dart';
+import 'package:sotulub/src/features/authentication/controllers/sign_up_controller.dart';
 import 'package:sotulub/src/features/authentication/screens/login/login.dart';
 import 'package:sotulub/src/features/authentication/screens/login/login_header_widget.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
 import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 class SignUp extends StatelessWidget {
-  const SignUp({super.key});
+  const SignUp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final SignUpController controller = Get.put(SignUpController());
+    final _formKey = GlobalKey<FormState>();
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -34,6 +34,7 @@ class SignUp extends StatelessWidget {
                   subtitle: tSignUpSubTitle,
                 ),
                 Form(
+                  key: _formKey,
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: tFormHeight - 10.0),
                     child: Column(
@@ -43,7 +44,7 @@ class SignUp extends StatelessWidget {
                           labelText: 'Raison Social',
                           hintText: 'Raison Sociale (identité demandeur)',
                           prefixIcon: Icons.home_work_outlined,
-                          // onChanged: () {},
+                          controller: controller.raisonSocial,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'This field is required';
@@ -59,7 +60,7 @@ class SignUp extends StatelessWidget {
                           labelText: 'Responsable',
                           hintText: '',
                           prefixIcon: Icons.person_2_outlined,
-                          // onChanged: () {},
+                          controller: controller.responsable,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'This field is required';
@@ -75,6 +76,7 @@ class SignUp extends StatelessWidget {
                           labelText: 'Téléphone',
                           hintText: '',
                           prefixIcon: Icons.local_phone_outlined,
+                          controller: controller.telephone,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'This field is required';
@@ -93,7 +95,7 @@ class SignUp extends StatelessWidget {
                           labelText: 'E-mail',
                           hintText: '',
                           prefixIcon: Icons.mail_outline_outlined,
-                          // onChanged: () {},
+                          controller: controller.email,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Email is required';
@@ -120,9 +122,9 @@ class SignUp extends StatelessWidget {
                             DropdownMenuItem(
                                 value: 'Option 3', child: Text('Option 3')),
                           ],
-                          value: null, // Initial value
+                          value: controller.gouvernorat.value, // Get value from controller
                           onChanged: (newValue) {
-                            // Handle dropdown value change
+                            controller.gouvernorat.value = newValue ?? "";
                           },
                         ),
                         const SizedBox(height: tFormHeight - 10.0),
@@ -137,13 +139,13 @@ class SignUp extends StatelessWidget {
                             DropdownMenuItem(
                                 value: 'Option 3', child: Text('Le bardo')),
                           ],
-                          value: null, // Initial value
+                          value: controller.delegation.value, // Get value from controller
                           onChanged: (newValue) {
-                            // Handle dropdown value change
+                            controller.delegation.value = newValue ?? "";
                           },
                         ),
                         const SizedBox(height: tFormHeight - 10.0),
-                         CustomDropdown(
+                        CustomDropdown(
                           labelText: 'Secteur d’activité',
                           prefixIcon: Icons.work_outline_outlined,
                           items: const [
@@ -154,13 +156,13 @@ class SignUp extends StatelessWidget {
                             DropdownMenuItem(
                                 value: 'Option 3', child: Text('Ports')),
                           ],
-                          value: null, // Initial value
+                          value: controller.secteurActivite.value, // Get value from controller
                           onChanged: (newValue) {
-                            // Handle dropdown value change
+                            controller.secteurActivite.value = newValue ?? "";
                           },
                         ),
                         const SizedBox(height: tFormHeight - 10.0),
-                         CustomDropdown(
+                        CustomDropdown(
                           labelText: 'Sous-Secteur d’activité',
                           prefixIcon: Icons.play_for_work_outlined,
                           items: const [
@@ -171,37 +173,52 @@ class SignUp extends StatelessWidget {
                             DropdownMenuItem(
                                 value: 'Option 3', child: Text('Confection')),
                           ],
-                          value: null, // Initial value
+                          value: controller.sousSecteurActivite.value, // Get value from controller
                           onChanged: (newValue) {
-                            // Handle dropdown value change
+                            controller.sousSecteurActivite.value = newValue ?? "";
                           },
                         ),
                         const SizedBox(height: tFormHeight - 10.0),
-                         SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.to(() => const Dashboard()); // Updated navigation method
-                },
-                child: Text(tLogin.toUpperCase()),
-              ),
-            ),
-            // const SizedBox(height: tFormHeight-10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) { // Validate the form
+                                SignUpController.instance.tRegisterDetenteur(
+                                  controller.email.text.trim(),
+                                  controller.password.text.trim(),
+                                  controller.raisonSocial.text.trim(),
+                                  controller.responsable.text.trim(),
+                                  controller.telephone.text.trim(),
+                                  controller.gouvernorat.value,
+                                  controller.delegation.value,
+                                  controller.secteurActivite.value,
+                                  controller.sousSecteurActivite.value
+                                );
+                                Get.to(() => const Dashboard());
+                              }
+                            },
+                            child: Text(tLogin.toUpperCase()),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-                 TextButton(
-                  onPressed: () =>Get.to(()=> const Login()),
-                  child: Text.rich(TextSpan(
-                      text: "Tu a deja un compte ?  " ,
+                TextButton(
+                  onPressed: () => Get.to(() => const Login()),
+                  child: Text.rich(
+                    TextSpan(
+                      text: "Tu a deja un compte ?  ",
                       style: TTextTheme.lightTextTheme.displaySmall,
-                      children:const [
+                      children: const [
                         TextSpan(
                           text: tRegister,
                           style: TextStyle(color: tPrimaryColor),
                         )
-                      ])),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
