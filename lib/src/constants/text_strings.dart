@@ -1,4 +1,6 @@
 const String tWelcomeTitle = "Sotulub";
+const String tSignUp = "S'inscrire";
+const String tSignUpSubTitle = "Vous êtes détenteur et vous ne disposez pas encore de compte.";
 const String tWelcomeSubTitle = "Sotulub est très proche de chez vous";
 const String tWelcomeMessage = "Connectez-vous avec votre compte ou inscrivez-vous";
 const String tLogin = "Connexion";
