@@ -10,6 +10,7 @@ import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/login/login.dart';
+import 'package:sotulub/src/features/authentication/screens/signup/signup_screen.dart';
 import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -79,7 +80,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () =>Get.to(()=> const SignUp()),
                             child: Text(tRegister.toUpperCase()),
                           ),
                         )
