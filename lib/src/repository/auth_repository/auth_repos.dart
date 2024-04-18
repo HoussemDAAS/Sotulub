@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:sotulub/src/execptions/signup_email_password_exception.dart';
+import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
 
@@ -16,15 +15,13 @@ class AuthRepository extends GetxController {
   void onReady() {
     firebaseUser = Rx<User?>(_auth.currentUser);
     firebaseUser.bindStream(_auth.userChanges());
-    ever(firebaseUser, _setInitialScreen);
+    ever(firebaseUser, _setIntialScreen);
   }
 
-  _setInitialScreen(User? user) {
-    if (user == null) {
-      Get.offAll(() => const WelcomeScreen());
-    } else {
-      Get.offAll(() => const Dashboard());
-    }
+  _setIntialScreen(User? user) {
+    user == null
+        ? Get.offAll(() => SplachScreen())
+        : Get.offAll(() => const Dashboard());
   }
 
   Future<void> createUserWithEmailAndPassword(
@@ -32,36 +29,30 @@ class AuthRepository extends GetxController {
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      if (_auth.currentUser != null) {
-        Get.offAll(() => const Dashboard());
-      }
+          firebaseUser.value != null ? Get.offAll(() => const Dashboard()) : Get.to(() =>  SplachScreen());
     } on FirebaseAuthException catch (e) {
-      final ex = SignUpEmailPasswordException.code(e.code);
+      final ex= SignUpEmailPasswordException.code(e.code);
       print(ex.message);
       throw ex;
     } catch (_) {
-      final ex = SignUpEmailPasswordException();
-      print(ex.message);
-      throw ex;
+        final ex= SignUpEmailPasswordException();
+        print(ex.message);
+    throw ex;
     }
   }
-
-  Future<void> loginUserWithEmailAndPassword(
+   Future<void> loginUserWithEmailAndPassword(
       String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      if (_auth.currentUser != null) {
-        Get.offAll(() => const Dashboard());
-      }
     } on FirebaseAuthException catch (e) {
-      final ex = SignUpEmailPasswordException.code(e.code);
+      final ex= SignUpEmailPasswordException.code(e.code);
       print(ex.message);
       throw ex;
     } catch (_) {
-      final ex = SignUpEmailPasswordException();
-      print(ex.message);
-      throw ex;
+        final ex= SignUpEmailPasswordException();
+        print(ex.message);
+    throw ex;
     }
   }
 

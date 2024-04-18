@@ -8,7 +8,7 @@ class CustomDropdown extends StatelessWidget {
   final List<DropdownMenuItem<String>> items;
   final String? value;
   final void Function(String?)? onChanged;
-  final TextEditingController? controller; // Add controller parameter
+  final TextEditingController? controller;
 
   const CustomDropdown({
     required this.labelText,
@@ -17,22 +17,15 @@ class CustomDropdown extends StatelessWidget {
     required this.items,
     required this.value,
     required this.onChanged,
-    this.controller, // Mark controller as optional
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-// Use the provided controller
       value: value,
       onChanged: onChanged,
       items: items,
-      validator: (value) {
-        // if ( value!.isEmpty) {
-        //   return 'This field is required';
-        // }
-        // return null; // Return null if validation succeeds
-      },
       decoration: InputDecoration(
         prefixIcon: Icon(prefixIcon),
         labelText: labelText,
