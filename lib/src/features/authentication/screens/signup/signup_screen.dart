@@ -10,6 +10,7 @@ import 'package:sotulub/src/features/authentication/controllers/sign_up_controll
 import 'package:sotulub/src/features/authentication/screens/login/login.dart';
 import 'package:sotulub/src/features/authentication/screens/login/login_header_widget.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
+import 'package:sotulub/src/repository/auth_repository/dropdowns_repo.dart';
 import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 class SignUp extends StatelessWidget {
@@ -19,6 +20,7 @@ class SignUp extends StatelessWidget {
   Widget build(BuildContext context) {
     final SignUpController controller = Get.put(SignUpController());
     final _formKey = GlobalKey<FormState>();
+    final DropdownFetch dropdownController = Get.put(DropdownFetch());
 
     return SafeArea(
       child: Scaffold(
@@ -128,77 +130,44 @@ class SignUp extends StatelessWidget {
                           },
                         ),
                         const SizedBox(height: tFormHeight - 10.0),
-                        CustomDropdown(
-                          labelText: 'Gouvernorat',
-                          prefixIcon: Icons.map_rounded,
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'Tunis 1',
-                              child: Text('Tunis 1'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Bizerte',
-                              child: Text('Bizerte'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Option 3',
-                              child: Text('Option 3'),
-                            ),
-                          ],
-                          value:
-                              null, // Set the initial value to null or a valid value from DropdownMenuItem
-                          onChanged: (newValue) {
-                            controller.gouvernorat.value = newValue ?? "";
-                          },
-                        ),
+                          Obx(() {
+                          return CustomDropdown(
+                            labelText: 'Gouvernorat',
+                            prefixIcon: Icons.map_rounded,
+                            items: dropdownController.gouvernoratItems.map((gouvernorat) {
+                              return DropdownMenuItem(
+                                value: gouvernorat,
+                                child: Text(gouvernorat),
+                              );
+                            }).toList(),
+                            value: null,
+                            onChanged: (newValue) {
+                              controller.gouvernorat.value = newValue ?? "";
+                            },
+                          );
+                        }),
                         const SizedBox(height: tFormHeight - 10.0),
-                        CustomDropdown(
-                          labelText: 'Délégation',
-                          prefixIcon: Icons.map_outlined,
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'Kabaria',
-                              child: Text('Kabaria'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'El Manzah',
-                              child: Text('El Manzah'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Le bardo',
-                              child: Text('Le bardo'),
-                            ),
-                          ],
-                          value:
-                              null, // Set the initial value to null or a valid value from DropdownMenuItem
-                          onChanged: (newValue) {
-                            controller.delegation.value = newValue ?? "";
-                          },
-                        ),
-                        const SizedBox(height: tFormHeight - 10.0),
-                        CustomDropdown(
-                          labelText: 'Secteur d’activité',
-                          prefixIcon: Icons.work_outline_outlined,
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'Transport',
-                              child: Text('Transport'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Mines',
-                              child: Text('Mines'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Ports',
-                              child: Text('Ports'),
-                            ),
-                          ],
-                          value:
-                              null, // Set the initial value to null or a valid value from DropdownMenuItem
-                          onChanged: (newValue) {
-                            controller.secteurActivite.value = newValue ?? "";
-                          },
-                        ),
+                       Obx(() {
+  return CustomDropdown(
+    labelText: 'Délégation',
+    prefixIcon: Icons.map_outlined,
+    items: dropdownController.filteredDelegationItems.map((delegation) {
+      return DropdownMenuItem(
+        value: delegation,
+        child: Text(delegation),
+      );
+    }).toList(),
+    value: controller.delegation.value,
+    onChanged: (newValue) {
+      // Update the selected delegation in the controller
+      controller.delegation.value = newValue ?? "";
+      // Call the method to filter delegation items based on the selected Gouvernorat
+      if (newValue != null) {
+        dropdownController.filterDelegationItems(newValue);
+      }
+    },
+  );
+}),
                         const SizedBox(height: tFormHeight - 10.0),
                         CustomDropdown(
                           labelText: 'Sous-Secteur d’activité',
