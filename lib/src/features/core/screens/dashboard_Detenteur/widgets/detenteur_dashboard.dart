@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:sotulub/src/common_widgets/bottom_naviagtion_bar.dart';
 
 import 'package:sotulub/src/common_widgets/card_widget.dart';
+import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/line_chart.dart';
 import 'package:sotulub/src/features/core/screens/produit/produitTitle.dart';
 import 'package:sotulub/src/common_widgets/slider/promoSlider.dart';
@@ -13,6 +16,7 @@ import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/core/models/produit.dart';
 import 'package:sotulub/src/features/core/screens/produit/produit_details.dart';
+import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -104,13 +108,14 @@ class _DashboardState extends State<Dashboard> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           actions: [
-            Container(
-              margin: const EdgeInsets.only(right: 20, top: 7),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            )
-          ],
+          // Logout Icon Button
+          IconButton(
+            icon: Icon(Icons.logout, color: tPrimaryColor),
+            onPressed: () {
+              _handleLogout();
+            },
+          ),
+        ],
         ),
        bottomNavigationBar: BottomNavigation(
         convention: false,
@@ -195,6 +200,15 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
+  void _handleLogout() {
+  AuthRepository.instance.logout().then((_) {
+   
+    Get.offAll(() => SplachScreen());
+  }).catchError((error) {
+    
+    print('Logout error: $error');
+  });
+}
 }
 
 

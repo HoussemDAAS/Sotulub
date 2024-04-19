@@ -19,6 +19,6 @@ class SignUpController extends GetxController {
 
 
 void tRegisterDetenteur(String email, String password, String raisonSocial, String responsable, String telephone, String gouvernorat, String delegation, String secteurActivite, String sousSecteurActivite) {
-   AuthRepository.instance.createUserWithEmailAndPassword(email, password);
+   AuthRepository.instance.createUserWithEmailAndPassword(email, password, raisonSocial, responsable, telephone, gouvernorat, delegation, secteurActivite, sousSecteurActivite, "detenteur");
 }
 }
