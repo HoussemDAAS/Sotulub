@@ -11,6 +11,8 @@ import 'package:sotulub/src/features/authentication/screens/welcome/welcome_scre
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 import 'package:sotulub/src/utils/theme/theme.dart';
 
+// testing commit
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform).then((value) => Get.put(AuthRepository()));
