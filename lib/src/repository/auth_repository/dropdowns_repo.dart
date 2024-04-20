@@ -4,8 +4,7 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class DropdownFetch extends GetxController {
   final RxList<String> gouvernoratItems = <String>[].obs;
-  final RxList<String> filteredDelegationItems = <String>[].obs;
-  String selectedGouvernoratId = '';
+  final RxList<String> delegationItems = <String>[].obs;
 
   @override
   void onInit() {
@@ -30,16 +29,21 @@ class DropdownFetch extends GetxController {
     }
   }
 
- void filterDelegationItems(String gouvernoratId) async {
-  try {
-    // Fetch data from Firestore collection 'Delegation' with the given gouvernoratId
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Delegation').where('Code gouvernorat', isEqualTo: gouvernoratId).get();
+  Future<void> fetchDelegationItems(String gouvernoratId) async {
+    try {
+      // Fetch data from Firestore collection 'Delegation' with the given gouvernoratId
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Delegation')
+          .where('Code gouvernorat', isEqualTo: gouvernoratId)
+          .get();
 
-    // Extract 'Désignation' field from each document and add it to the filteredDelegationItems list
-    filteredDelegationItems.assignAll(querySnapshot.docs.map<String>((doc) => doc['Désignation'] as String).toList());
-  } catch (e) {
-    // Handle error if any
-    print('Error filtering Delegation items: $e');
+      // Extract 'Désignation' field from each document and add it to the delegationItems list
+      delegationItems.assignAll(querySnapshot.docs
+          .map<String>((doc) => doc['Désignation'] as String)
+          .toList());
+    } catch (e) {
+      // Handle error if any
+      print('Error fetching Delegation items: $e');
+    }
   }
-}
 }
