@@ -28,7 +28,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  bool _showToast = false;
+  bool _showToast = true;
   Timer? _showToastTimer;
 
   @override
@@ -118,7 +118,7 @@ class _DashboardState extends State<Dashboard> {
         ],
         ),
        bottomNavigationBar: BottomNavigation(
-        convention: false,
+        convention: true,
        ),
 
         body: Stack(
