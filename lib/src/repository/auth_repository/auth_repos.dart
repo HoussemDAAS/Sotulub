@@ -77,6 +77,7 @@ class AuthRepository extends GetxController {
     try {
       await _auth.signInWithEmailAndPassword(
           email: email, password: password);
+    firebaseUser.value != null ? Get.offAll(() => const Dashboard()) : Get.to(() => SplachScreen());
     } on FirebaseAuthException catch (e) {
       final ex= SignUpEmailPasswordException.code(e.code);
       print(ex.message);
