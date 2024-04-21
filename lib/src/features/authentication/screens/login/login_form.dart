@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
+import 'package:sotulub/src/features/authentication/controllers/login_controller.dart';
 import 'package:sotulub/src/features/authentication/screens/forget_password/forget_password_options/forget_password_bottom_sheet.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
+
 import 'package:sotulub/src/utils/theme/text_theme.dart';
 
 class LoginForm extends StatelessWidget {
@@ -12,13 +13,24 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+       final LoginController controller = Get.put(LoginController());
     return Form(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: tFormHeight - 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const TextField(
+            TextFormField(
+               validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Email is required';
+                            }
+                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                .hasMatch(value)) {
+                              return 'Enter a valid email address';
+                            }
+                            return null;
+                          },
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.person_outline_outlined),
                 labelText: tEmail,
@@ -32,8 +44,16 @@ class LoginForm extends StatelessWidget {
                 labelStyle: TextStyle(color: tPrimaryColor),
               ),
             ),
-            const SizedBox(height: tFormHeight),
-            TextField(
+            SizedBox(height: tFormHeight),
+            TextFormField(
+               validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Password is required';
+                            }
+                            // Add additional validation rules if needed
+                            return null;
+                          },
+                        
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.fingerprint_outlined),
                 labelText: tPassword,
@@ -51,7 +71,7 @@ class LoginForm extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: tFormHeight - 10.0),
+            SizedBox(height: tFormHeight - 10.0),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -75,7 +95,7 @@ class LoginForm extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Get.to(() => const Dashboard()); // Updated navigation method
+                 LoginController.instance.login();
                 },
                 child: Text(tLogin.toUpperCase()),
               ),
@@ -87,3 +107,5 @@ class LoginForm extends StatelessWidget {
     );
   }
 }
+
+
