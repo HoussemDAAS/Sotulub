@@ -9,6 +9,8 @@ import 'package:sotulub/src/common_widgets/bottom_naviagtion_bar.dart';
 import 'package:sotulub/src/common_widgets/card_widget.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/line_chart.dart';
+import 'package:sotulub/src/features/core/screens/demande_collecte/demande_collecte.dart';
+import 'package:sotulub/src/features/core/screens/demande_cuve/demande_cuve.dart';
 import 'package:sotulub/src/features/core/screens/produit/produitTitle.dart';
 import 'package:sotulub/src/common_widgets/slider/promoSlider.dart';
 import 'package:sotulub/src/constants/colors.dart';
@@ -134,11 +136,15 @@ class _DashboardState extends State<Dashboard> {
                   const SizedBox(height: 20),
                  const  LineChartSample2(isVisible: false,),
                   const SizedBox(height: 20),
-                  CardWidget(title: 'Demande Cuve', buttonText: 'Demander', imagePath: tBarrel, onTap: () {}
+                  CardWidget(title: 'Demande Cuve', buttonText: 'Demander', imagePath: tBarrel, onTap: () {
+                      Get.to(()=>const DemandeCuve());
+                  }
                     
                   ),
                   const SizedBox(height: 20),
-                   CardWidget(title: 'Demande Collect', buttonText: 'Demander', imagePath: tTrack, onTap: () {},reverse: true
+                   CardWidget(title: 'Demande Collect', buttonText: 'Demander', imagePath: tTrack, onTap: () {
+                       Get.to(() => const DemandeCollecte());
+                   },reverse: true
                     
                   ),
                   const Padding(
