@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
@@ -19,7 +19,7 @@ class _LoginFormState extends State<LoginForm> {
 final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final LoginController controller = Get.put(LoginController());
+
     return Form(
       key: _formKey,
       child: Container(

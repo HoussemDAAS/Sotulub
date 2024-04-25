@@ -24,15 +24,16 @@ class AuthRepository extends GetxController {
         : Get.offAll(() => const Dashboard());
   }
 
-  Future<void> createUserWithEmailAndPassword(
-    String email, String password, String raisonSocial, String responsable, 
-    String telephone, String gouvernorat, String delegation, 
-    String secteurActivite, String sousSecteurActivite, String role) async {
+Future<void> createUserWithEmailAndPassword(
+  String email, String password, String raisonSocial, String responsable, 
+  String telephone, String gouvernorat, String delegation, 
+  String secteurActivite, String sousSecteurActivite, String role,
+  double latitude, double longitude) async {
   try {
     await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
     User? user = _auth.currentUser;
- 
+  
     if (user != null) {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'email': email,
@@ -45,6 +46,8 @@ class AuthRepository extends GetxController {
         'sousSecteurActivite': sousSecteurActivite,
         'role': role,
         'convention': false,
+        'latitude': latitude, // Add latitude
+        'longitude': longitude, // Add longitude
       });
     }
 
@@ -59,6 +62,7 @@ class AuthRepository extends GetxController {
     throw ex;
   }
 }
+
 
 
 

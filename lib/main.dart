@@ -7,7 +7,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:sotulub/firebase_options.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
-import 'package:sotulub/src/features/authentication/screens/welcome/welcome_screen.dart';
+
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 import 'package:sotulub/src/utils/theme/theme.dart';
 
