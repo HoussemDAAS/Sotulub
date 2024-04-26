@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,6 +9,7 @@ import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/features/authentication/screens/login/Login_header_widget.dart';
 import 'package:sotulub/src/features/core/controllers/demande_collecte_contorller.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
 import 'package:sotulub/src/repository/auth_repository/DemandeColect_repos.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
@@ -99,6 +101,7 @@ class DemandeCollecte extends StatelessWidget {
                                       quentity,
                                     );
                                   }
+                                    Get.to(() => const Dashboard());
                                 },
                                 child: Text(
                                   'envoyer votre demande'.toUpperCase(),
