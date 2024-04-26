@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
@@ -17,6 +18,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   bool _isObscured = true;
 final _formKey = GlobalKey<FormState>();
+final controller = Get.put(LoginController());
   @override
   Widget build(BuildContext context) {
 
@@ -107,7 +109,7 @@ final _formKey = GlobalKey<FormState>();
                   // Perform login action
                   if (_formKey.currentState!.validate()) {
                     // If form is valid, proceed with login
-                    LoginController.instance.login();
+                    controller.login();
                   }
                 },
                 child: Text(tLogin.toUpperCase()),

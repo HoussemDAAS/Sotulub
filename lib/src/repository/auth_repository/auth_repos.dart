@@ -75,7 +75,6 @@ Future<void> createUserWithEmailAndPassword(
 
 
 
-
    Future<void> loginUserWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -92,6 +91,34 @@ Future<void> createUserWithEmailAndPassword(
     throw ex;
     }
   }
+
+  Future<String> getResponsableByEmail(String email) async {
+    try {
+      // Fetch the user document based on email
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+
+      // Extract the 'responsable' attribute from the document
+      String responsable = querySnapshot.docs.first.get('responsable');
+      return responsable;
+    } catch (e) {
+      print('Error fetching responsable: $e');
+      throw e;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
 
   Future<void> logout() async => await _auth.signOut();
 }
