@@ -75,22 +75,38 @@ Future<void> createUserWithEmailAndPassword(
 
 
 
-   Future<void> loginUserWithEmailAndPassword(
-      String email, String password) async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-    firebaseUser.value != null ? Get.offAll(() => const Dashboard()) : Get.to(() => SplachScreen());
-    } on FirebaseAuthException catch (e) {
-      final ex= SignUpEmailPasswordException.code(e.code);
-      print(ex.message);
-      throw ex;
-    } catch (_) {
-        final ex= SignUpEmailPasswordException();
-        print(ex.message);
-    throw ex;
+Future<void> loginUserWithEmailAndPassword(String email, String password) async {
+  try {
+    await _auth.signInWithEmailAndPassword(email: email, password: password);
+    if (_auth.currentUser != null) {
+      Get.offAll(() => const Dashboard());
+    } else {
+      // Handle unexpected case where current user is null after successful sign-in
+      print("Error: Current user is null after sign-in.");
+    }
+  } catch (e) {
+    // Handle specific exceptions thrown by Firebase Authentication
+    if (e is FirebaseAuthException) {
+      // Display appropriate error message to the user based on the exception code
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+        // Display error message to the user (e.g., using Get.snackbar)
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+        // Display error message to the user (e.g., using Get.snackbar)
+      } else {
+        // Handle other FirebaseAuthException codes or general exceptions
+        print('Error: ${e.code}');
+        // Display generic error message to the user (e.g., using Get.snackbar)
+      }
+    } else {
+      // Handle other types of exceptions
+      print('Error: $e');
+      // Display generic error message to the user (e.g., using Get.snackbar)
     }
   }
+}
+  
 
   Future<String> getResponsableByEmail(String email) async {
     try {

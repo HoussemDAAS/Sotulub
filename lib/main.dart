@@ -9,6 +9,7 @@ import 'package:sotulub/firebase_options.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/controllers/demande_collecte_contorller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
+import 'package:sotulub/src/features/core/screens/profile/profile_screen.dart';
 import 'package:sotulub/src/repository/DemandeColect_repos.dart';
 import 'package:sotulub/src/repository/DemandeCuve_repos.dart';
 
@@ -37,7 +38,8 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       defaultTransition: Transition.leftToRightWithFade,
       transitionDuration: const Duration(milliseconds: 500),
-      home:SplachScreen(),
+      home:const ProfileScreen(),
+      
     );
   }
 }

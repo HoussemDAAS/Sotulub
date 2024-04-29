@@ -30,6 +30,7 @@ final controller = Get.put(LoginController());
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
+              controller: controller.email,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Email is required';
@@ -54,6 +55,7 @@ final controller = Get.put(LoginController());
             ),
          const   SizedBox(height: tFormHeight),
             TextFormField(
+              controller: controller.password,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Password is required';
@@ -109,7 +111,7 @@ final controller = Get.put(LoginController());
                   // Perform login action
                   if (_formKey.currentState!.validate()) {
                     // If form is valid, proceed with login
-                    controller.login();
+                    controller.login( );
                   }
                 },
                 child: Text(tLogin.toUpperCase()),
