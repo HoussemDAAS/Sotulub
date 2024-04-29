@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sotulub/src/repository/auth_repository/DemandeColect_repos.dart';
+import 'package:sotulub/src/repository/DemandeColect_repos.dart';
 
 class DemandeCollecteController extends GetxController {
   static DemandeCollecteController get instance => Get.find();
