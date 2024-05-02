@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sotulub/src/constants/colors.dart';
+import 'package:sotulub/src/features/core/screens/profile/profile_screen.dart';
 
 class BottomNavigation extends StatelessWidget {
   final bool convention;
@@ -24,7 +26,22 @@ class BottomNavigation extends StatelessWidget {
                 activeColor: tSecondaryColor,
                 tabBackgroundColor: Colors.yellow.shade100,
                 duration: const Duration(milliseconds: 600),
-                onTabChange: (index) {},
+                onTabChange: (index) {
+                  // Handle tab changes
+                 switch (index) {
+                    case 0:
+                    
+                      break;
+                    case 1:
+                      // Navigate to demande_collect screen
+                      break;
+                    case 2:
+                     Get.to(ProfileScreen()); // Navigate to profile screen
+                      break;
+                    default:
+                  }
+                
+                },
                 iconSize: 27,
                 color: tAccentColor,
                 padding: const EdgeInsets.all(12),

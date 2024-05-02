@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
@@ -17,6 +18,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   bool _isObscured = true;
 final _formKey = GlobalKey<FormState>();
+final controller = Get.put(LoginController());
   @override
   Widget build(BuildContext context) {
 
@@ -28,6 +30,7 @@ final _formKey = GlobalKey<FormState>();
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
+              controller: controller.email,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Email is required';
@@ -52,6 +55,7 @@ final _formKey = GlobalKey<FormState>();
             ),
          const   SizedBox(height: tFormHeight),
             TextFormField(
+              controller: controller.password,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Password is required';
@@ -107,7 +111,7 @@ final _formKey = GlobalKey<FormState>();
                   // Perform login action
                   if (_formKey.currentState!.validate()) {
                     // If form is valid, proceed with login
-                    LoginController.instance.login();
+                    controller.login( );
                   }
                 },
                 child: Text(tLogin.toUpperCase()),
