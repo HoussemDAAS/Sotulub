@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1012664856549",
+    "project_id": "sotulub-55311",
+    "storage_bucket": "sotulub-55311.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012664856549:android:9d0ba2b9d24e55fdb6890c",
+        "android_client_info": {
+          "package_name": "com.example.sotulub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmYaZD-QT-KBaVN6xchYZtcZXgV9Ngcvo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
