@@ -6,14 +6,20 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:sotulub/firebase_options.dart';
+import 'package:sotulub/src/features/authentication/screens/signup/signup_screen.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/authentication/screens/welcome/welcome_screen.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/add_gov_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/users_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat_page.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 import 'package:sotulub/src/utils/theme/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform).then((value) => Get.put(AuthRepository()));
+  await Firebase.initializeApp();
+  // options: DefaultFirebaseOptions.currentPlatform).then((value) => Get.put(AuthRepository()));
   runApp(const App());
 }
 
@@ -29,7 +35,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       defaultTransition: Transition.leftToRightWithFade,
       transitionDuration: const Duration(milliseconds: 500),
-      home:SplachScreen(),
+      home: AddGovPage(),
     );
   }
 }

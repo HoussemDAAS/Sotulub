@@ -60,9 +60,11 @@ class SignUp extends StatelessWidget {
                         ),
                         const SizedBox(height: tFormHeight - 10.0),
                         CustomTextField(
+                          
                           labelText: 'Password',
                           hintText: 'Enter your password',
                           prefixIcon: Icons.lock_outline,
+                          
                           controller: controller.password,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
