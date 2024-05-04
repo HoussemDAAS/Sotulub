@@ -8,6 +8,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller; // Add controller parameter
   final bool isPassword;
   final String? Function(String?)? validator;
+  
 
   const CustomTextField({
     required this.labelText,

@@ -26,6 +26,18 @@ const String tGouvernorat = "Gouvernorat";
 
 
 
+
 const String tOtpTitle = "CO\nDE";
 const String tOtpSubTitle = "Vérification";
 const String tOtpMessage = "Entrez le code de 6 chiffres envoyé par Sotulub";
+
+// -- Profile Screen
+
+const String tProfile="Profile";
+const String tEditProfil="Manager votre profile";
+const String tLogout="Se deconnecter";
+const String tProfileHeading="SOTULUB";
+
+
+
+

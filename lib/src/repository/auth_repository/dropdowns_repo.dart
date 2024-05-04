@@ -4,19 +4,46 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class DropdownFetch extends GetxController {
   final RxList<String> gouvernoratItems = <String>[].obs;
+
   final RxList<String> zoneItems = <String>[].obs;
 
   final RxList<String> filteredDelegationItems = <String>[].obs;
   String selectedGouvernoratId = '';
+
+   final RxList<String> secteurItems = <String>[].obs;
+     final RxList<String> soussecteurItems = <String>[].obs;
+  final RxList<String> delegationItems = <String>[].obs;
+
 
   @override
   void onInit() {
     super.onInit();
     // Call the function to fetch data from Firestore when the controller is initialized
     fetchGouvernoratItems();
+  admin_dashboard
     fetchZoneItems();
-  }
+    fetchSecteurItems();
+    fetchSousSecteurItems();
+    fetchDelegationItems();
+    
 
+  }
+ Future<void> fetchZoneItems() async {
+    try {
+      // Fetch data from Firestore collection 'Gouvernorat'
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('zone').get();
+
+      // Extract 'Désignation' field from each document and add it to the gouvernoratItems list
+      zoneItems.assignAll(querySnapshot.docs
+          .map<String>((doc) => doc['designation'] as String)
+          .toList());
+    } catch (e) {
+      // Handle error if any
+      print('Error fetching zone items: $e');
+    }
+  }
+  
   Future<void> fetchGouvernoratItems() async {
     try {
       // Fetch data from Firestore collection 'Gouvernorat'
@@ -32,22 +59,51 @@ class DropdownFetch extends GetxController {
       print('Error fetching Gouvernorat items: $e');
     }
   }
-
-  Future<void> fetchZoneItems() async {
+  
+  
+   Future<void> fetchSecteurItems() async {
     try {
       // Fetch data from Firestore collection 'Gouvernorat'
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('zone').get();
+   print("Fetching secteur items...");
+QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Secteur').get();
+print("Fetched ${querySnapshot.docs.length} secteur items");
 
       // Extract 'Désignation' field from each document and add it to the gouvernoratItems list
-      zoneItems.assignAll(querySnapshot.docs
-          .map<String>((doc) => doc['designation'] as String)
+      secteurItems.assignAll(querySnapshot.docs
+          .map<String>((doc) => doc['Nom'] as String)
           .toList());
     } catch (e) {
       // Handle error if any
-      print('Error fetching zone items: $e');
+      print('Error fetching Gouvernorat items: $e');
     }
   }
+  Future<void> fetchSousSecteurItems() async {
+    try {
+      // Fetch data from Firestore collection 'Gouvernorat'
+
+QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Sous-Secteur').get();
+
+
+      // Extract 'Désignation' field from each document and add it to the gouvernoratItems list
+      soussecteurItems.assignAll(querySnapshot.docs
+          .map<String>((doc) => doc['Désignations'] as String)
+          .toList());
+    } catch (e) {
+      // Handle error if any
+      print('Error fetching Gouvernorat items: $e');
+    }
+  }
+  
+  
+  
+  Future<void> fetchDelegationItems() async {
+ try {
+      // Fetch data from Firestore collection 'Gouvernorat'
+
+QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Delegation').get();
+
+
+ 
 
   void filterDelegationItems(String gouvernoratId) async {
     try {
@@ -59,11 +115,17 @@ class DropdownFetch extends GetxController {
 
       // Extract 'Désignation' field from each document and add it to the filteredDelegationItems list
       filteredDelegationItems.assignAll(querySnapshot.docs
+
+
+      // Extract 'Désignation' field from each document and add it to the gouvernoratItems list
+      delegationItems.assignAll(querySnapshot.docs
           .map<String>((doc) => doc['Désignation'] as String)
           .toList());
     } catch (e) {
       // Handle error if any
+
       print('Error filtering Delegation items: $e');
+
     }
   }
 }

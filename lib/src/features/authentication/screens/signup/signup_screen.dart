@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
 import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
-import 'package:get/get.dart';
 import 'package:sotulub/src/features/authentication/controllers/sign_up_controller.dart';
 import 'package:sotulub/src/features/authentication/screens/login/login.dart';
 import 'package:sotulub/src/features/authentication/screens/login/login_header_widget.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
 import 'package:sotulub/src/repository/auth_repository/dropdowns_repo.dart';
 import 'package:sotulub/src/utils/theme/text_theme.dart';
+import 'package:geolocator/geolocator.dart';
 
 class SignUp extends StatelessWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -21,6 +22,18 @@ class SignUp extends StatelessWidget {
     final SignUpController controller = Get.put(SignUpController());
     final _formKey = GlobalKey<FormState>();
     final DropdownFetch dropdownController = Get.put(DropdownFetch());
+void geoLocation() async {
+  await Geolocator.checkPermission();
+  await Geolocator.requestPermission();
+  Position position = await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.low,
+  );
+  print(position);
+  controller.latitude.value = position.latitude; // Update latitude
+  controller.longitude.value = position.longitude; // Update longitude
+}
+    // Call geoLocation() function when the page is opened
+    geoLocation();
 
     return SafeArea(
       child: Scaffold(
@@ -132,68 +145,84 @@ class SignUp extends StatelessWidget {
                           },
                         ),
                         const SizedBox(height: tFormHeight - 10.0),
-                          Obx(() {
+                        Obx(() {
                           return CustomDropdown(
-                            labelText: 'Gouvernorat',
-                            prefixIcon: Icons.map_rounded,
-                            items: dropdownController.gouvernoratItems.map((gouvernorat) {
+                              labelText: 'Gouvernorat',
+                              prefixIcon: Icons.map_rounded,
+                              items: dropdownController.gouvernoratItems
+                                  .map((gouvernorat) {
+                                return DropdownMenuItem(
+                                  value: gouvernorat,
+                                  child: Text(gouvernorat),
+                                );
+                              }).toList(),
+                              value: null,
+                              onChanged: (newValue) {
+                                controller.gouvernorat.value = newValue ?? "";
+                              });
+                        }),
+                        const SizedBox(height: tFormHeight - 10.0),
+                        Obx(() {
+                          return CustomDropdown(
+                            labelText: 'Délégation',
+                            prefixIcon: Icons.map_outlined,
+                            items: dropdownController.delegationItems
+                                .map((delegation) {
                               return DropdownMenuItem(
-                                value: gouvernorat,
-                                child: Text(gouvernorat),
+                                value: delegation,
+                                child: Text(delegation),
                               );
                             }).toList(),
                             value: null,
                             onChanged: (newValue) {
-                              controller.gouvernorat.value = newValue ?? "";
+                              // Update the selected delegation in the controller
+                              controller.delegation.value = newValue ?? "";
                             },
                           );
                         }),
                         const SizedBox(height: tFormHeight - 10.0),
-                       Obx(() {
-  return CustomDropdown(
-    labelText: 'Délégation',
-    prefixIcon: Icons.map_outlined,
-    items: dropdownController.filteredDelegationItems.map((delegation) {
-      return DropdownMenuItem(
-        value: delegation,
-        child: Text(delegation),
-      );
-    }).toList(),
-    value: controller.delegation.value,
-    onChanged: (newValue) {
-      // Update the selected delegation in the controller
-      controller.delegation.value = newValue ?? "";
-      // Call the method to filter delegation items based on the selected Gouvernorat
-      if (newValue != null) {
-        dropdownController.filterDelegationItems(newValue);
-      }
-    },
-  );
-}),
+                        Obx(() {
+                          return CustomDropdown(
+                            labelText: 'Secteur d’activité',
+                            prefixIcon: Icons.play_for_work_outlined,
+                            items:
+                                dropdownController.secteurItems.map((secteur) {
+                              final truncatedText = secteur.length <= 25
+                                  ? secteur
+                                  : '${secteur.substring(0, 25)}...'; // Adjust the length as needed
+                              return DropdownMenuItem(
+                                value: secteur,
+                                child: Text(truncatedText),
+                              );
+                            }).toList(),
+                            value: null,
+                            onChanged: (newValue) {
+                              controller.secteurActivite.value = newValue ?? "";
+                            },
+                          );
+                        }),
                         const SizedBox(height: tFormHeight - 10.0),
-                        CustomDropdown(
-                          labelText: 'Sous-Secteur d’activité',
-                          prefixIcon: Icons.play_for_work_outlined,
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'Station',
-                              child: Text('Station'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Sonede',
-                              child: Text('Sonede'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Confection',
-                              child: Text('Confection'),
-                            ),
-                          ],
-                          value: null, // Set the initial value to null
-                          onChanged: (newValue) {
-                            controller.sousSecteurActivite.value =
-                                newValue ?? "";
-                          },
-                        ),
+                        Obx(() {
+                          return CustomDropdown(
+                            labelText: 'Sous-Secteur d’activité',
+                            prefixIcon: Icons.play_for_work_outlined,
+                            items: dropdownController.soussecteurItems
+                                .map((sousSecteur) {
+                              final truncatedText = sousSecteur.length <= 25
+                                  ? sousSecteur
+                                  : '${sousSecteur.substring(0, 25)}...'; // Adjust the length as needed
+                              return DropdownMenuItem(
+                                value: sousSecteur,
+                                child: Text(truncatedText),
+                              );
+                            }).toList(),
+                            value: null, // Set the initial value to null
+                            onChanged: (newValue) {
+                              controller.sousSecteurActivite.value =
+                                  newValue ?? "";
+                            },
+                          );
+                        }),
                         const SizedBox(height: tFormHeight - 10.0),
                         SizedBox(
                           width: double.infinity,
