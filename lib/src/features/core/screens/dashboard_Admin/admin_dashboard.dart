@@ -57,8 +57,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           tUsers.toUpperCase(),
                           style: TextStyle(
                               color: tSecondaryColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
+                              fontSize: 15,
+                              ),
                         ),
                       ]),
                 ),
@@ -83,8 +83,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           tGouvernorat.toUpperCase(),
                           style: TextStyle(
                               color: tSecondaryColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
+                              fontSize: 15,
+                              ),
                         ),
                       ]),
                 ),

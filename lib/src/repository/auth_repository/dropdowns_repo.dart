@@ -4,128 +4,92 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class DropdownFetch extends GetxController {
   final RxList<String> gouvernoratItems = <String>[].obs;
-
   final RxList<String> zoneItems = <String>[].obs;
-
   final RxList<String> filteredDelegationItems = <String>[].obs;
-  String selectedGouvernoratId = '';
-
-   final RxList<String> secteurItems = <String>[].obs;
-     final RxList<String> soussecteurItems = <String>[].obs;
+  final RxList<String> secteurItems = <String>[].obs;
+  final RxList<String> soussecteurItems = <String>[].obs;
   final RxList<String> delegationItems = <String>[].obs;
-
+  String selectedGouvernoratId = '';
 
   @override
   void onInit() {
     super.onInit();
-    // Call the function to fetch data from Firestore when the controller is initialized
     fetchGouvernoratItems();
-  admin_dashboard
     fetchZoneItems();
     fetchSecteurItems();
     fetchSousSecteurItems();
     fetchDelegationItems();
-    
-
   }
- Future<void> fetchZoneItems() async {
-    try {
-      // Fetch data from Firestore collection 'Gouvernorat'
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('zone').get();
 
-      // Extract 'Désignation' field from each document and add it to the gouvernoratItems list
-      zoneItems.assignAll(querySnapshot.docs
-          .map<String>((doc) => doc['designation'] as String)
-          .toList());
-    } catch (e) {
-      // Handle error if any
-      print('Error fetching zone items: $e');
-    }
-  }
-  
   Future<void> fetchGouvernoratItems() async {
     try {
-      // Fetch data from Firestore collection 'Gouvernorat'
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('Gouvernorat').get();
-
-      // Extract 'Désignation' field from each document and add it to the gouvernoratItems list
       gouvernoratItems.assignAll(querySnapshot.docs
           .map<String>((doc) => doc['Désignation'] as String)
           .toList());
     } catch (e) {
-      // Handle error if any
       print('Error fetching Gouvernorat items: $e');
     }
   }
-  
-  
-   Future<void> fetchSecteurItems() async {
-    try {
-      // Fetch data from Firestore collection 'Gouvernorat'
-   print("Fetching secteur items...");
-QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Secteur').get();
-print("Fetched ${querySnapshot.docs.length} secteur items");
 
-      // Extract 'Désignation' field from each document and add it to the gouvernoratItems list
+  Future<void> fetchZoneItems() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('zone').get();
+      zoneItems.assignAll(querySnapshot.docs
+          .map<String>((doc) => doc['designation'] as String)
+          .toList());
+    } catch (e) {
+      print('Error fetching zone items: $e');
+    }
+  }
+
+  Future<void> fetchSecteurItems() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('Secteur').get();
       secteurItems.assignAll(querySnapshot.docs
           .map<String>((doc) => doc['Nom'] as String)
           .toList());
     } catch (e) {
-      // Handle error if any
-      print('Error fetching Gouvernorat items: $e');
+      print('Error fetching secteur items: $e');
     }
   }
+
   Future<void> fetchSousSecteurItems() async {
     try {
-      // Fetch data from Firestore collection 'Gouvernorat'
-
-QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Sous-Secteur').get();
-
-
-      // Extract 'Désignation' field from each document and add it to the gouvernoratItems list
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Sous-Secteur').get();
       soussecteurItems.assignAll(querySnapshot.docs
           .map<String>((doc) => doc['Désignations'] as String)
           .toList());
     } catch (e) {
-      // Handle error if any
-      print('Error fetching Gouvernorat items: $e');
+      print('Error fetching sous-secteur items: $e');
     }
   }
-  
-  
-  
+
   Future<void> fetchDelegationItems() async {
- try {
-      // Fetch data from Firestore collection 'Gouvernorat'
-
-QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Delegation').get();
-
-
- 
-
-  void filterDelegationItems(String gouvernoratId) async {
     try {
-      // Fetch data from Firestore collection 'Delegation' with the given gouvernoratId
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('Delegation')
-          .where('Code gouvernorat', isEqualTo: gouvernoratId)
-          .get();
-
-      // Extract 'Désignation' field from each document and add it to the filteredDelegationItems list
-      filteredDelegationItems.assignAll(querySnapshot.docs
-
-
-      // Extract 'Désignation' field from each document and add it to the gouvernoratItems list
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Delegation').get();
       delegationItems.assignAll(querySnapshot.docs
           .map<String>((doc) => doc['Désignation'] as String)
           .toList());
     } catch (e) {
-      // Handle error if any
+      print('Error fetching delegation items: $e');
+    }
+  }
 
-      print('Error filtering Delegation items: $e');
-
+  void filterDelegationItems(String gouvernoratId) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Delegation')
+          .where('Code gouvernorat', isEqualTo: gouvernoratId)
+          .get();
+      filteredDelegationItems.assignAll(querySnapshot.docs
+          .map<String>((doc) => doc['Désignation'] as String)
+          .toList());
+    } catch (e) {
+      print('Error filtering delegation items: $e');
     }
   }
 }
