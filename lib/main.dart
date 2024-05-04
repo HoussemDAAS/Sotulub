@@ -6,23 +6,28 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:sotulub/firebase_options.dart';
+import 'package:sotulub/src/features/authentication/screens/signup/signup_screen.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
+
 import 'package:sotulub/src/features/core/controllers/demande_collecte_contorller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
 import 'package:sotulub/src/features/core/screens/profile/profile_screen.dart';
 import 'package:sotulub/src/repository/DemandeColect_repos.dart';
 import 'package:sotulub/src/repository/DemandeCuve_repos.dart';
 
+
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 import 'package:sotulub/src/utils/theme/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform).then((value) {
     Get.put(AuthRepository());
     Get.put(DemandeColectRepository()); 
     Get.put(DemandeCuveRepo());// Initialize the controller here
   });
+
   runApp(const App());
 }
 
@@ -38,8 +43,10 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       defaultTransition: Transition.leftToRightWithFade,
       transitionDuration: const Duration(milliseconds: 500),
+
       home:const ProfileScreen(),
       
+
     );
   }
 }
