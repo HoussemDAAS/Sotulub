@@ -23,7 +23,7 @@ class AuthRepository extends GetxController {
   _setInitialScreen(User? user) {
     user == null
         ? Get.offAll(() => SplachScreen())
-        : Get.offAll(() => ());
+        : Get.offAll(() => AdminDashboard());
   }
 
   Future<void> createUserWithEmailAndPassword(
@@ -66,7 +66,7 @@ class AuthRepository extends GetxController {
       }
 
       firebaseUser.value != null
-          ? Get.offAll(() =>AdminDashboard())
+          ? Get.offAll(() => AdminDashboard())
           : Get.to(() => SplachScreen());
     } on FirebaseAuthException catch (e) {
       final ex = SignUpEmailPasswordException.code(e.code);
@@ -118,4 +118,10 @@ class AuthRepository extends GetxController {
   }
 
   Future<void> logout() async => await _auth.signOut();
+
+  // Define the _throw function for error handling
+  void _throw(Object error, StackTrace stackTrace) {
+    // Handle the error or throw it
+    throw error;
+  }
 }
