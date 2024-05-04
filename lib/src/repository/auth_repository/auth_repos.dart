@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sotulub/src/execptions/signup_email_password_exception.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
@@ -23,6 +24,50 @@ class AuthRepository extends GetxController {
         ? Get.offAll(() => SplachScreen())
         : Get.offAll(() => const Dashboard());
   }
+
+  Future<void> createUserWithEmailAndPassword(
+      String email,
+      String password,
+      String raisonSocial,
+      String responsable,
+      String telephone,
+      String gouvernorat,
+      String delegation,
+      String secteurActivite,
+      String sousSecteurActivite,
+      String role) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'email': email,
+          'raisonSocial': raisonSocial,
+          'responsable': responsable,
+          'telephone': telephone,
+          'gouvernorat': gouvernorat,
+          'delegation': delegation,
+          'secteurActivite': secteurActivite,
+          'sousSecteurActivite': sousSecteurActivite,
+          'role': role,
+          'convention': false,
+        });
+      }
+
+      firebaseUser.value != null
+          ? Get.offAll(() => const Dashboard())
+          : Get.to(() => SplachScreen());
+    } on FirebaseAuthException catch (e) {
+      final ex = SignUpEmailPasswordException.code(e.code);
+      print("Data base " + ex.message);
+      throw ex;
+    } catch (_) {
+      final ex = SignUpEmailPasswordException();
+      print(ex.message);
+      throw ex;
 
 Future<void> createUserWithEmailAndPassword(
   String email, String password, String raisonSocial, String responsable, 
@@ -51,22 +96,21 @@ Future<void> createUserWithEmailAndPassword(
       });
     }
 
-    firebaseUser.value != null ? Get.offAll(() => const Dashboard()) : Get.to(() => SplachScreen());
-  } on FirebaseAuthException catch (e) {
-    final ex = SignUpEmailPasswordException.code(e.code);
-    print("Data base "+ex.message);
-    throw ex;
-  } catch (_) {
-    final ex = SignUpEmailPasswordException();
-    print(ex.message);
-    throw ex;
+    
   }
-}
 
-
-
-
-
+  Future<void> loginUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      final ex = SignUpEmailPasswordException.code(e.code);
+      print(ex.message);
+      throw ex;
+    } catch (_) {
+      final ex = SignUpEmailPasswordException();
+      print(ex.message);
+      throw ex;
 
 
 
