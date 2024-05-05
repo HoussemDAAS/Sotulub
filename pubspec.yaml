@@ -117,3 +117,5 @@ flutter:
     - assets/images/users.png
     - assets/images/location.png
     - assets/images/profile_image.jpg
+    - assets/images/user.png
+    - assets/images/map.png

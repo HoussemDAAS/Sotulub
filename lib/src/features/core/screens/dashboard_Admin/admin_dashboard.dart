@@ -1,13 +1,17 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sotulub/src/common_widgets/customGesture.dart';
 import 'package:sotulub/src/constants/colors.dart';
+import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
+import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/users_page.dart';
+import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -22,7 +26,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Admin dashboard".toUpperCase(),
+          // leading: const Icon(Icons.menu, color: tPrimaryColor),
+          title: Text("admin dashboard".toUpperCase(),
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -30,6 +35,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
+          actions: [
+            // Logout Icon Button
+            IconButton(
+              icon: const Icon(Icons.logout, color: tPrimaryColor),
+              onPressed: () {
+                _handleLogout();
+              },
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(tDefaultSize),
@@ -37,62 +51,32 @@ class _AdminDashboardState extends State<AdminDashboard> {
             crossAxisSpacing: 15,
             crossAxisCount: 2,
             children: [
-              GestureDetector(
+              ReusableGestureDetector(
+                imagePath: tUSerImage,
+                labelText: 'Utilisateurs',
                 onTap: () {
-                  Get.to(UsersPage());
+                  Get.to(const UsersPage());
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(),
-                      color: tCardBgColor,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/images/users.png",
-                          height: 100,
-                        ),
-                        Text(
-                          tUsers.toUpperCase(),
-                          style: TextStyle(
-                              color: tSecondaryColor,
-                              fontSize: 15,
-                              ),
-                        ),
-                      ]),
-                ),
               ),
-              GestureDetector(
+              ReusableGestureDetector(
+                imagePath: tMap ,
+                labelText: tGouvernorat,
                 onTap: () {
-                  Get.to(GovPage());
+                  Get.to(const GovPage());
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(),
-                      color: tCardBgColor,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/images/location.png",
-                          height: 100,
-                        ),
-                        Text(
-                          tGouvernorat.toUpperCase(),
-                          style: TextStyle(
-                              color: tSecondaryColor,
-                              fontSize: 15,
-                              ),
-                        ),
-                      ]),
-                ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _handleLogout() {
+    AuthRepository.instance.logout().then((_) {
+      Get.offAll(() => SplachScreen());
+    }).catchError((error) {
+      print('Logout error: $error');
+    });
   }
 }
