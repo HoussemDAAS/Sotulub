@@ -10,6 +10,7 @@ import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/gouvernorat_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/sous_secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/users_page.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
@@ -65,6 +66,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 labelText: tGouvernorat,
                 onTap: () {
                   Get.to(const GovPage());
+                },
+              ),
+                ReusableGestureDetector(
+                imagePath: 'assets/images/secteur.png' ,
+                labelText: 'Secteur',
+                onTap: () {
+                  Get.to(const Secteur());
                 },
               ),
               ReusableGestureDetector(

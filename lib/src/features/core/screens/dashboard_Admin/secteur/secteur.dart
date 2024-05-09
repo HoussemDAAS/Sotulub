@@ -4,18 +4,18 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/add_gov_page.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/update_gouvernorat.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/add_secteur.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/update_Secteur.dart';
 import 'package:sotulub/src/repository/admin_repos.dart';
 
-class GovPage extends StatefulWidget {
-  const GovPage({Key? key}) : super(key: key);
+class Secteur extends StatefulWidget {
+  const Secteur({Key? key}) : super(key: key);
 
   @override
-  State<GovPage> createState() => _GovPageState();
+  State<Secteur> createState() => _SecteurState();
 }
 
-class _GovPageState extends State<GovPage> {
+class _SecteurState extends State<Secteur> {
   final AdminRepository adminRepository = Get.put(AdminRepository());
   List<QueryDocumentSnapshot> data = [];
   bool isLoading = false;
@@ -39,7 +39,7 @@ class _GovPageState extends State<GovPage> {
       isLoading = true;
     });
     QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection("Gouvernorat").get();
+        await FirebaseFirestore.instance.collection("Secteur").get();
     if (mounted) {
       setState(() {
         data.clear();
@@ -53,13 +53,12 @@ class _GovPageState extends State<GovPage> {
     await getData();
   }
 
-  void _navigateToUpdatePage(String selectedGouvernorat, String currentZone) {
+  void _navigateToUpdatePage(String selectedSecteur) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => UpdateGovPage(
-          selectedGouvernorat: selectedGouvernorat,
-          currentZone: currentZone,
+        builder: (context) => UpdateSecteur(
+          selectedSecteur: selectedSecteur,
         ),
       ),
     ).then((value) {
@@ -67,13 +66,13 @@ class _GovPageState extends State<GovPage> {
     });
   }
 
-  Future<void> _deleteGouvernorat(String codeGouvernorat, String designation) async {
+  Future<void> _deleteSecteur(String codeSecteur, String Nom) async {
   // Show delete confirmation dialog
   bool confirmDelete = await showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: Text(
-        "Supprimer Gouvernorat",
+        "Supprimer sous secteur",
         style: TextStyle(
           color: Colors.red, // Customize title color
         ),
@@ -83,7 +82,7 @@ class _GovPageState extends State<GovPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Vous etes sur de vouloir supprimer $designation?",
+            "vous etes sur de vouloir supprimer $Nom?",
             style: TextStyle(
               color: Colors.black, // Customize content color
             ),
@@ -96,7 +95,7 @@ class _GovPageState extends State<GovPage> {
             Navigator.pop(context, false); // No, do not delete
           },
           child: Text(
-            "No",
+            "Non",
             style: TextStyle(
               color: Colors.green, // Customize button color
             ),
@@ -107,7 +106,7 @@ class _GovPageState extends State<GovPage> {
             Navigator.pop(context, true); // Yes, delete
           },
           child: Text(
-            "Yes",
+            "Oui",
             style: TextStyle(
               color: Colors.green, // Customize button color
             ),
@@ -121,21 +120,21 @@ class _GovPageState extends State<GovPage> {
   if (confirmDelete != null && confirmDelete) {
     // Find the document ID of the Gouvernorat document
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection("Gouvernorat")
-        .where("Code Gouvernorat", isEqualTo: codeGouvernorat)
+        .collection("Secteur")
+        .where("Code", isEqualTo: codeSecteur)
         .get();
     String documentId = querySnapshot.docs.first.id;
 
     // Delete the Gouvernorat document using the document ID
     await FirebaseFirestore.instance
-        .collection("Gouvernorat")
+        .collection("Secteur")
         .doc(documentId)
         .delete();
 
     // Check if there are related documents in the Delegation collection
     QuerySnapshot delegationSnapshot = await FirebaseFirestore.instance
-        .collection("Delegation")
-        .where("Code Gouvernorat", isEqualTo: codeGouvernorat)
+        .collection("Sous-Secteur")
+        .where("Code Secteur", isEqualTo: codeSecteur)
         .get();
 
     // Delete related documents in the Delegation collection
@@ -150,16 +149,13 @@ class _GovPageState extends State<GovPage> {
   }
 }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Liste gouvernorat".toUpperCase(),
+            "Liste des Secteur".toUpperCase(),
             style: GoogleFonts.montserrat(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -172,7 +168,7 @@ class _GovPageState extends State<GovPage> {
             IconButton(
               icon: Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-                Get.to(AddGovPage());
+                Get.to(AddSecteur());
               },
             ),
           ],
@@ -180,7 +176,7 @@ class _GovPageState extends State<GovPage> {
         body: RefreshIndicator(
           onRefresh: _handleRefresh,
           child: isLoading
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(
                     color: tPrimaryColor,
                   ),
@@ -195,10 +191,10 @@ class _GovPageState extends State<GovPage> {
                           SlidableAction(
                             onPressed: (context) {
                               String selectedGouvernorat =
-                                  data[i]['Désignation'];
-                              String currentZone = data[i]['code zone'];
+                                  data[i]['Nom'];
+                            
                               _navigateToUpdatePage(
-                                  selectedGouvernorat, currentZone);
+                                  selectedGouvernorat);
                             },
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -212,9 +208,9 @@ class _GovPageState extends State<GovPage> {
                         children: [
                           SlidableAction(
                             onPressed: (context) {
-                              _deleteGouvernorat(
-                                data[i]['Code Gouvernorat'],
-                                data[i]['Désignation'],
+                              _deleteSecteur(
+                                data[i]['Code'],
+                                data[i]['Nom'],
                               );
                             },
                             backgroundColor: Colors.red,
@@ -232,7 +228,7 @@ class _GovPageState extends State<GovPage> {
                         margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                         padding: const EdgeInsets.symmetric(
                           vertical: 25,
-                          horizontal: 20,
+                          horizontal: 30,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -241,21 +237,31 @@ class _GovPageState extends State<GovPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                    "${data[i]['Désignation']}",
-                                     style:const  TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: tSecondaryColor,
-                                  ),),
-                                Text("Code gouvernorat:" +
-                                    "${data[i]['Code Gouvernorat']}",
-                                     style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: tAccentColor,
-                                  ),),
+                               
+                               Text(
+                                    "${data[i]['Nom']}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: tSecondaryColor,
+                                      fontSize: 12,
+                                    ),
+                                  
+                                ),
+                                // Text("Code gouvernorat:" +
+                                //     "${data[i]['Code Gouvernorat']}",
+                                //      style: const TextStyle(
+                                //     fontWeight: FontWeight.w600,
+                                //     color: tAccentColor,
+                                //   ),),
                               ],
                             ),
-                            Text("Code zone:" "${data[i]['code zone']}")
+                            Text(
+                              "${data[i]['Code']}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: tAccentColor,
+                              ),
+                            )
                           ],
                         ),
                       ),

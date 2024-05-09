@@ -96,7 +96,7 @@ class AdminRepository extends GetxController {
       print('Error updating Gouvernorat: $e');
     }
   }
-
+//zone
   Future<void> fetchZoneItems() async {
     try {
       QuerySnapshot querySnapshot =
@@ -140,7 +140,7 @@ class AdminRepository extends GetxController {
       return '';
     }
   }
-
+//secteur
   Future<void> fetchSecteurItems() async {
     try {
       QuerySnapshot querySnapshot =
@@ -167,12 +167,11 @@ class AdminRepository extends GetxController {
       return '';
     }
   }
-
-  Future<bool> checkNomExists(String designation) async {
+Future<bool> checkSecteurExists(String designation) async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('Sous-Secteur')
-          .where('Désignations', isEqualTo: designation)
+          .collection('Secteur')
+          .where('Nom', isEqualTo: designation)
           .get();
       return querySnapshot.docs.isNotEmpty;
     } catch (e) {
@@ -180,6 +179,84 @@ class AdminRepository extends GetxController {
       return false;
     }
   }
+  Future<void> updateSecteur(String oldSecteur, String newSecteur) async {
+  try {
+    // Query the Secteur collection to find the document with the given old secteur
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Secteur')
+        .where('Nom', isEqualTo: oldSecteur)
+        .get();
+
+    // Check if the document exists
+    if (querySnapshot.docs.isNotEmpty) {
+      // Access the first document
+      QueryDocumentSnapshot docSnapshot = querySnapshot.docs.first;
+
+      // Update the 'Nom' field with the new secteur if it's different
+      if (newSecteur != oldSecteur) {
+        await docSnapshot.reference.update({'Nom': newSecteur.trim()});
+      }
+
+      print('Secteur updated successfully');
+    } else {
+      print('Secteur not found');
+    }
+  } catch (e) {
+    print('Error updating Secteur: $e');
+  }
+}
+
+
+
+Future<String> getNextSecteurCode() async {
+  try {
+    // Query the existing documents to find the maximum value of Code
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Secteur')
+        .orderBy('Code', descending: true)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // If there are existing documents, extract the last code
+      String lastCode = querySnapshot.docs.first['Code'];
+
+      // Generate the next code based on the last code
+      String nextCode = generateNextCode(lastCode);
+
+      // Return the next code
+      return nextCode;
+    } else {
+      // If there are no existing documents, return a default code
+      return 'A'; // You can choose any default value here
+    }
+  } catch (e) {
+    print('Error getting next Secteur code: $e');
+    return ''; // Handle the error as needed
+  }
+}
+
+String generateNextCode(String lastCode) {
+  // Assuming the last code is a single character (e.g., 'A', 'B', etc.)
+  // You can modify this logic based on your specific requirements
+  int nextCharCode = lastCode.codeUnitAt(0) + 1;
+  String nextCode = String.fromCharCode(nextCharCode);
+  return nextCode;
+}
+ Future<void> addSecectur({
+    required String designation,
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection('Secteur').add({
+        'Code': await getNextSecteurCode(),
+        'Nom': designation.trim(),
+      });
+    } catch (e) {
+      print('Error adding Sous secteur: $e');
+    }
+  }
+
+  
 
   Future<String> getSecteurDesiagnation(String code) async {
     try {
@@ -198,6 +275,20 @@ class AdminRepository extends GetxController {
     }
   }
 
+
+// sous secteur
+Future<bool> checkNomExists(String designation) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Sous-Secteur')
+          .where('Désignations', isEqualTo: designation)
+          .get();
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking designation existence: $e');
+      return false;
+    }
+  }
   Future<String> getNextCodeSousSecteur(String codeSecteur) async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -257,4 +348,5 @@ class AdminRepository extends GetxController {
       print('Error updating Sous secteur: $e');
     }
   }
+  
 }

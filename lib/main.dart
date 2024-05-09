@@ -2,14 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_instance/get_instance.dart';
-
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:sotulub/firebase_options.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
-
-
-import 'package:sotulub/src/features/core/screens/profile/profile_screen.dart';
 import 'package:sotulub/src/repository/DemandeColect_repos.dart';
 import 'package:sotulub/src/repository/DemandeCuve_repos.dart';
 

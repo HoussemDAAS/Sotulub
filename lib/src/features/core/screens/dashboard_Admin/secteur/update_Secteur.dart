@@ -8,57 +8,51 @@ import 'package:sotulub/src/constants/sizes.dart';
 
 import 'package:sotulub/src/repository/admin_repos.dart';
 
-class UpdateGovPage extends StatefulWidget {
-  final String selectedGouvernorat;
-  final String currentZone;
+class UpdateSecteur extends StatefulWidget {
+  final String selectedSecteur;
 
-  const UpdateGovPage({
+
+  const UpdateSecteur({
     Key? key,
-    required this.selectedGouvernorat,
-    required this.currentZone,
+    required this.selectedSecteur,
+ 
   }) : super(key: key);
 
   @override
-  _UpdateGovPageState createState() => _UpdateGovPageState();
+  _UpdateSecteurState createState() => _UpdateSecteurState();
 }
 
-class _UpdateGovPageState extends State<UpdateGovPage> {
+class _UpdateSecteurState extends State<UpdateSecteur> {
   final AdminRepository adminRepository = Get.put(AdminRepository());
 
   String? selectedZone;
   TextEditingController?
-      gouvernoratController; // Add TextEditingController for the gouvernorat input
+      secteurController; // Add TextEditingController for the gouvernorat input
 
   @override
   void initState() {
     super.initState();
-    fetchZoneDesignation();
-    gouvernoratController = TextEditingController(
+
+    secteurController = TextEditingController(
         text: widget
-            .selectedGouvernorat); // Initialize the TextEditingController with initial value
+            .selectedSecteur); // Initialize the TextEditingController with initial value
   }
 
   @override
   void dispose() {
     // Dispose the TextEditingController
-    gouvernoratController?.dispose();
+    secteurController?.dispose();
     super.dispose();
   }
 
-  Future<void> fetchZoneDesignation() async {
-    String? zoneDesignation =
-        await adminRepository.getZoneDesignation(widget.currentZone);
-    setState(() {
-      selectedZone = zoneDesignation;
-    });
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Update Gouvernorat'.toUpperCase(),
+          'Update Secteur'.toUpperCase(),
           style: GoogleFonts.montserrat(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -75,46 +69,29 @@ class _UpdateGovPageState extends State<UpdateGovPage> {
           children: [
             CustomTextField(
               // CustomTextField for Gouvernorat
-              labelText: 'Gouvernorat',
-              hintText: 'Enter Gouvernorat',
+              labelText: 'Secteur',
+              hintText: 'Enter Secteur',
               prefixIcon: Icons.map_outlined,
               controller:
-                  gouvernoratController, // Pass the TextEditingController
+                  secteurController, // Pass the TextEditingController
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a Gouvernorat';
+                  return 'Please enter a Secteur';
                 }
                 return null;
               },
             ),
-            SizedBox(height: tFormHeight),
-            CustomDropdown(
-              labelText: 'Zone',
-              prefixIcon: Icons.map_outlined,
-              items: adminRepository.zoneItems.map((zone) {
-                return DropdownMenuItem(
-                  value: zone,
-                  child: Text(zone),
-                );
-              }).toList(),
-              value: selectedZone,
-              onChanged: (newValue) {
-                setState(() {
-                  selectedZone = newValue;
-                });
-              },
-            ),
+       
             SizedBox(height: tFormHeight),
             ElevatedButton(
               onPressed: () {
-                if (gouvernoratController!.text.isNotEmpty &&
-                    selectedZone != null) {
-                  adminRepository.updateGouvernorat(
+                if (secteurController!.text.isNotEmpty ) {
+                  adminRepository.updateSecteur(
                       widget
-                          .selectedGouvernorat, // Pass the old Gouvernorat name
-                      gouvernoratController!
+                          .selectedSecteur, // Pass the old Gouvernorat name
+                      secteurController!
                           .text, // Pass the new Gouvernorat name
-                      selectedZone!); // Pass the selected Zone
+                  ); // Pass the selected Zone
                   Navigator.pop(
                       context); // Navigate back to the previous screen
                 } else {
