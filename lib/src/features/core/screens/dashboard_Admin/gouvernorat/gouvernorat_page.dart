@@ -4,9 +4,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/add_gov_page.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/update_gouvernorat.dart';
-import 'package:sotulub/src/repository/auth_repository/admin_repos.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/add_gov_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/update_gouvernorat.dart';
+import 'package:sotulub/src/repository/admin_repos.dart';
 
 class GovPage extends StatefulWidget {
   const GovPage({Key? key}) : super(key: key);
@@ -242,9 +242,17 @@ class _GovPageState extends State<GovPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    "Gouvernorat:" "${data[i]['Désignation']}"),
+                                    "${data[i]['Désignation']}",
+                                     style:const  TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: tSecondaryColor,
+                                  ),),
                                 Text("Code gouvernorat:" +
-                                    "${data[i]['Code Gouvernorat']}"),
+                                    "${data[i]['Code Gouvernorat']}",
+                                     style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: tAccentColor,
+                                  ),),
                               ],
                             ),
                             Text("Code zone:" "${data[i]['code zone']}")

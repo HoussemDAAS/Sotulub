@@ -5,52 +5,51 @@ import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
 import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
 
 import 'package:sotulub/src/constants/sizes.dart';
-import 'package:sotulub/src/features/core/controllers/gouvernorat_controller.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat_page.dart';
-import 'package:sotulub/src/repository/auth_repository/admin_repos.dart';
 
-class UpdateGovPage extends StatefulWidget {
-  final String selectedGouvernorat;
-  final String currentZone;
+import 'package:sotulub/src/repository/admin_repos.dart';
 
-  const UpdateGovPage({
+class UpdateSousSecteur extends StatefulWidget {
+  final String selectedSousSecteur;
+  final String currentSecteur;
+
+  const UpdateSousSecteur({
     Key? key,
-    required this.selectedGouvernorat,
-    required this.currentZone,
+    required this.selectedSousSecteur,
+    required this.currentSecteur,
   }) : super(key: key);
 
   @override
-  _UpdateGovPageState createState() => _UpdateGovPageState();
+  _UpdateSousSecteurState createState() => _UpdateSousSecteurState();
 }
 
-class _UpdateGovPageState extends State<UpdateGovPage> {
+class _UpdateSousSecteurState extends State<UpdateSousSecteur> {
   final AdminRepository adminRepository = Get.put(AdminRepository());
 
-  String? selectedZone;
+  String? selectedSecteur;
   TextEditingController?
-      gouvernoratController; // Add TextEditingController for the gouvernorat input
+      sousSecteurController; // Add TextEditingController for the gouvernorat input
 
   @override
   void initState() {
     super.initState();
-    fetchZoneDesignation();
-    gouvernoratController = TextEditingController(
+    fetchSecteurDesignation();
+    sousSecteurController = TextEditingController(
         text: widget
-            .selectedGouvernorat); // Initialize the TextEditingController with initial value
+            .selectedSousSecteur); // Initialize the TextEditingController with initial value
   }
 
   @override
   void dispose() {
     // Dispose the TextEditingController
-    gouvernoratController?.dispose();
+    sousSecteurController?.dispose();
     super.dispose();
   }
 
-  Future<void> fetchZoneDesignation() async {
-    String? zoneDesignation =
-        await adminRepository.getZoneDesignation(widget.currentZone);
+  Future<void> fetchSecteurDesignation() async {
+    String? SecteurDesiagnation =
+        await adminRepository.getSecteurDesiagnation(widget.currentSecteur);
     setState(() {
-      selectedZone = zoneDesignation;
+      selectedSecteur = SecteurDesiagnation;
     });
   }
 
@@ -76,48 +75,47 @@ class _UpdateGovPageState extends State<UpdateGovPage> {
           children: [
             CustomTextField(
               // CustomTextField for Gouvernorat
-              labelText: 'Gouvernorat',
-              hintText: 'Enter Gouvernorat',
+              labelText: 'Sous secteur',
+              hintText: 'Enter Sous secteur',
               prefixIcon: Icons.map_outlined,
               controller:
-                  gouvernoratController, // Pass the TextEditingController
+                  sousSecteurController, // Pass the TextEditingController
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a Gouvernorat';
+                  return 'Please enter a Sous secteur';
                 }
                 return null;
               },
             ),
             SizedBox(height: tFormHeight),
             CustomDropdown(
-              labelText: 'Zone',
+              labelText: 'Secteur',
               prefixIcon: Icons.map_outlined,
-              items: adminRepository.zoneItems.map((zone) {
+              items: adminRepository.secteurItems.map((secteur) {
                 return DropdownMenuItem(
-                  value: zone,
-                  child: Text(zone),
+                  value: secteur,
+                  child: Text(
+                    secteur,
+                    style: TextStyle(
+                        fontSize: 10), // Adjust the font size as needed
+                  ),
                 );
               }).toList(),
-              value: selectedZone,
+              value: selectedSecteur,
               onChanged: (newValue) {
                 setState(() {
-                  selectedZone = newValue;
+                  selectedSecteur = newValue;
                 });
               },
             ),
             SizedBox(height: tFormHeight),
             ElevatedButton(
               onPressed: () {
-                if (gouvernoratController!.text.isNotEmpty &&
-                    selectedZone != null) {
-                  adminRepository.updateGouvernorat(
-                      widget
-                          .selectedGouvernorat, // Pass the old Gouvernorat name
-                      gouvernoratController!
-                          .text, // Pass the new Gouvernorat name
-                      selectedZone!); // Pass the selected Zone
-                  Navigator.pop(
-                      context); // Navigate back to the previous screen
+                if (sousSecteurController!.text.isNotEmpty &&
+                    selectedSecteur != null) {
+                  adminRepository.updateSousSecteur(widget.selectedSousSecteur,
+                      sousSecteurController!.text, selectedSecteur!);
+                  Navigator.pop(context);
                 } else {
                   Get.snackbar(
                     'Error',
@@ -127,7 +125,7 @@ class _UpdateGovPageState extends State<UpdateGovPage> {
                   );
                 }
               },
-              child: Text('Update'.toUpperCase()),
+              child: Text('Mettre à jour'.toUpperCase()),
             ),
           ],
         ),
