@@ -33,7 +33,7 @@ class DropdownFetch extends GetxController {
     }
   }
 
-  Future<void> fetchZoneItems() async {
+   Future<void> fetchZoneItems() async {
     try {
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('zone').get();

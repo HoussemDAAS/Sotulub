@@ -1,91 +1,170 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
 import 'package:sotulub/src/constants/colors.dart';
-import 'package:sotulub/src/constants/text_strings.dart';
-import 'package:sotulub/src/features/core/controllers/admin_controller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/add_gov_page.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/users_page.dart';
-import 'package:sotulub/src/repository/auth_repository/dropdowns_repo.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/update_gouvernorat.dart';
+import 'package:sotulub/src/repository/auth_repository/admin_repos.dart';
 
 class GovPage extends StatefulWidget {
-  const GovPage({super.key});
+  const GovPage({Key? key}) : super(key: key);
 
   @override
   State<GovPage> createState() => _GovPageState();
 }
 
 class _GovPageState extends State<GovPage> {
+  final AdminRepository adminRepository = Get.put(AdminRepository());
   List<QueryDocumentSnapshot> data = [];
-
-  getData() async {
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection("Gouvernorat").get();
-
-    setState(() {
-      data.addAll(querySnapshot.docs);
-    });
-  }
+  bool isLoading = false;
 
   @override
   void initState() {
-    getData();
     super.initState();
+    getData();
   }
 
-  final DropdownFetch dropdownController = Get.put(DropdownFetch());
-  final AdminController controller = Get.put((AdminController()));
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (data.isEmpty) {
+      getData();
+    }
+  }
 
-  Future openDialog() => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Add new gouvernorat"),
-          content: SafeArea(
-            child: Column(
-              children: [
-                Obx(() {
-                  return CustomDropdown(
-                      labelText: 'Zone',
-                      prefixIcon: Icons.map_outlined,
-                      items: dropdownController.zoneItems.map((zone) {
-                        return DropdownMenuItem(
-                          value: zone,
-                          child: Text(zone),
-                        );
-                      }).toList(),
-                      value: null,
-                      onChanged: (newValue) {
-                        controller.zone.value = newValue ?? "";
-                      });
-                }),
-                TextField(
-                    autofocus: true,
-                    decoration:
-                        InputDecoration(hintText: "Enter gouvernorat name")),
-                TextField(
-                    autofocus: true,
-                    decoration:
-                        InputDecoration(hintText: "Enter gouvernorat code")),
-              ],
+  Future<void> getData() async {
+    setState(() {
+      isLoading = true;
+    });
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection("Gouvernorat").get();
+    if (mounted) {
+      setState(() {
+        data.clear();
+        data.addAll(querySnapshot.docs);
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _handleRefresh() async {
+    await getData();
+  }
+
+  void _navigateToUpdatePage(String selectedGouvernorat, String currentZone) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UpdateGovPage(
+          selectedGouvernorat: selectedGouvernorat,
+          currentZone: currentZone,
+        ),
+      ),
+    ).then((value) {
+      getData();
+    });
+  }
+
+  Future<void> _deleteGouvernorat(String codeGouvernorat, String designation) async {
+  // Show delete confirmation dialog
+  bool confirmDelete = await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(
+        "Delete Gouvernorat",
+        style: TextStyle(
+          color: Colors.red, // Customize title color
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Are you sure you want to delete $designation?",
+            style: TextStyle(
+              color: Colors.black, // Customize content color
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, false); // No, do not delete
+          },
+          child: Text(
+            "No",
+            style: TextStyle(
+              color: Colors.green, // Customize button color
             ),
           ),
         ),
-      );
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, true); // Yes, delete
+          },
+          child: Text(
+            "Yes",
+            style: TextStyle(
+              color: Colors.green, // Customize button color
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  // If user confirmed deletion
+  if (confirmDelete != null && confirmDelete) {
+    // Find the document ID of the Gouvernorat document
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection("Gouvernorat")
+        .where("Code Gouvernorat", isEqualTo: codeGouvernorat)
+        .get();
+    String documentId = querySnapshot.docs.first.id;
+
+    // Delete the Gouvernorat document using the document ID
+    await FirebaseFirestore.instance
+        .collection("Gouvernorat")
+        .doc(documentId)
+        .delete();
+
+    // Check if there are related documents in the Delegation collection
+    QuerySnapshot delegationSnapshot = await FirebaseFirestore.instance
+        .collection("Delegation")
+        .where("Code Gouvernorat", isEqualTo: codeGouvernorat)
+        .get();
+
+    // Delete related documents in the Delegation collection
+    if (delegationSnapshot.docs.isNotEmpty) {
+      for (QueryDocumentSnapshot doc in delegationSnapshot.docs) {
+        await doc.reference.delete();
+      }
+    }
+
+    // Refresh the data after deletion
+    getData();
+  }
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          // leading: const Icon(Icons.menu, color: tPrimaryColor),
-          title: Text("Liste gouvernorat".toUpperCase(),
-              style: GoogleFonts.montserrat(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              )),
+          title: Text(
+            "Liste gouvernorat".toUpperCase(),
+            style: GoogleFonts.montserrat(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
@@ -98,33 +177,83 @@ class _GovPageState extends State<GovPage> {
             ),
           ],
         ),
-        body: ListView.builder(
-          itemCount: data.length,
-          itemBuilder: (context, i) {
-            return Container(
-              decoration: BoxDecoration(
-                color: tLightBackground,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Gouvernorat:" "${data[i]['Désignation']}"),
-                      Text("Code gouvernorat:"
-                          "${data[i]['Code Gouvernorat']}"),
-                    ],
+        body: RefreshIndicator(
+          onRefresh: _handleRefresh,
+          child: isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: tPrimaryColor,
                   ),
-                  Text("Code zone:" "${data[i]['code zone']}")
-                ],
-              ),
-            );
-          },
+                )
+              : ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context, i) {
+                    return Slidable(
+                      startActionPane: ActionPane(
+                        motion: const StretchMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (context) {
+                              String selectedGouvernorat =
+                                  data[i]['Désignation'];
+                              String currentZone = data[i]['code zone'];
+                              _navigateToUpdatePage(
+                                  selectedGouvernorat, currentZone);
+                            },
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                            icon: Icons.edit,
+                            label: 'Edit',
+                          ),
+                        ],
+                      ),
+                      endActionPane: ActionPane(
+                        motion: const StretchMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (context) {
+                              _deleteGouvernorat(
+                                data[i]['Code Gouvernorat'],
+                                data[i]['Désignation'],
+                              );
+                            },
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete,
+                            label: 'Delete',
+                          ),
+                        ],
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: tLightBackground,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 25,
+                          horizontal: 20,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    "Gouvernorat:" "${data[i]['Désignation']}"),
+                                Text("Code gouvernorat:" +
+                                    "${data[i]['Code Gouvernorat']}"),
+                              ],
+                            ),
+                            Text("Code zone:" "${data[i]['code zone']}")
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
         ),
       ),
     );

@@ -50,6 +50,7 @@ dependencies:
   cloud_firestore: ^4.17.0
   geolocator: ^11.0.0
   line_awesome_flutter: ^2.0.0
+  flutter_slidable: ^3.1.0
 
   
 dev_dependencies:
@@ -119,3 +120,6 @@ flutter:
     - assets/images/profile_image.jpg
     - assets/images/user.png
     - assets/images/map.png
+    - assets/images/alert.png
+    - assets/images/map2.png
+    - assets/images/contract.png
