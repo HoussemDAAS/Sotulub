@@ -1,9 +1,18 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/get_core.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sotulub/src/common_widgets/button.dart';
 import 'package:sotulub/src/constants/colors.dart';
-
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/select_role.dart';
 
 class UsersPage extends StatefulWidget {
   const UsersPage({Key? key}) : super(key: key);
@@ -48,6 +57,13 @@ class _UsersPageState extends State<UsersPage> {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Get.to(SelectRole());
+                },
+                icon: Icon(Icons.add)),
+          ],
         ),
         body: ListView.builder(
           itemCount: data.length,
@@ -55,12 +71,11 @@ class _UsersPageState extends State<UsersPage> {
             bool conventionValue = data[i]['convention'];
             return Container(
               decoration: BoxDecoration(
-                color: tLightBackground,
-                borderRadius: BorderRadius.circular(20),
-              ),
+                  color: tLightBackground,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: tDarkColor)),
               margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              padding:
-                  const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -75,16 +90,15 @@ class _UsersPageState extends State<UsersPage> {
                       Column(
                         children: [
                           Text("${data[i]['role']}"),
-                          Text(
-                              "Convention: ${conventionValue ? 'Yes' : 'No'}"),
+                          Text("Convention: ${conventionValue ? 'Yes' : 'No'}"),
                         ],
                       )
                     ],
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 5,
                   ),
-                  Row(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
@@ -93,21 +107,106 @@ class _UsersPageState extends State<UsersPage> {
                           Text("${data[i]['sousSecteurActivite']}"),
                         ],
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                        ),
-                        onPressed: () {},
-                        child: Text("Approve"),
+                      SizedBox(
+                        height: 10,
                       ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: Text("Edit"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: Text("Delete"),
-                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Visibility(
+                            visible: !conventionValue,
+                            child: GestureDetector(
+                              onTap: () async {
+                                // Get the document ID for the current item
+                                String documentId = data[i].id;
+
+                                // Update the 'convention' field in Firestore from false to true
+                                await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(documentId)
+                                    .update({
+                                  'convention': true,
+                                });
+
+                                // Update local data and trigger UI refresh
+                                setState(() {
+                                  data.clear();
+                                  getData();
+                                });
+
+                                // Debugging: Print a message to check if this code block is executed
+                                print(
+                                    "Approve button tapped. UI should refresh now.");
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    color: Colors.green),
+                                height: 40,
+                                width: 80,
+                                child: Center(
+                                    child: Text(
+                                  "Approve".toUpperCase(),
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )),
+                              ),
+                            ),
+                          ),
+
+                          // MyButton(text: "help", onTap: (){}),
+                          // ElevatedButton(
+                          //   style: ElevatedButton.styleFrom(
+                          //     backgroundColor: Colors.green,
+                          //   ),
+                          //   onPressed: () {},
+                          //   child: Text("Approve"),
+                          // ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  color: Colors.blue),
+                              height: 40,
+                              width: 80,
+                              child: Center(
+                                  child: Text(
+                                "edit".toUpperCase(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              String documentId = data[i].id;
+                              await FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(documentId)
+                                  .delete();
+
+                              setState(() {
+                                data.clear();
+                                getData();
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  color: Colors.red),
+                              height: 40,
+                              width: 80,
+                              child: Center(
+                                  child: Text(
+                                "delete".toUpperCase(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ],
