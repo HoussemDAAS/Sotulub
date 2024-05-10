@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
@@ -107,6 +108,9 @@ class AdminRepository extends GetxController {
     }
   }
 
+
+
+
   Future<String> getCodeZone(String selectedZone) async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -140,6 +144,119 @@ class AdminRepository extends GetxController {
       return '';
     }
   }
+Future<bool> checkDesignationZoneExists(String designation) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('zone')
+          .where('designation', isEqualTo: designation)
+          .get();
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking designation existence: $e');
+      return false;
+    }
+  }
+ Future<String> getNextCodeZone() async {
+  try {
+    // Query the existing documents to find the maximum value of codeZone
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('zone')
+        .orderBy('codeZone', descending: true)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // If there are existing documents, extract the last codeZone
+      String lastCode = querySnapshot.docs.first['codeZone'];
+
+      // Extract the numeric part of the last codeZone
+      int lastCodeNumeric = int.parse(lastCode);
+
+      // Increment the numeric part to get the next codeZone
+      int nextCodeNumeric = lastCodeNumeric + 1;
+
+      // Return the next codeZone numeric part as a string
+      return nextCodeNumeric.toString();
+    } else {
+      // If there are no existing documents, start from 1
+      return '1';
+    }
+  } catch (e) {
+    // Handle the error as needed
+    print('Error getting next codeZone: $e');
+    return ''; // Return an empty string as fallback
+  }
+}
+
+ 
+  Future<void> addZone({
+    required String designation,
+    required List<String> selectedGouvernorats,
+  }) async {
+    try {
+      // Get the next code for the new zone
+      String nextCodeZone = await getNextCodeZone();
+
+      // Create a document in the 'zone' collection
+      await FirebaseFirestore.instance.collection('zone').add({
+        'codeZone': nextCodeZone,
+        'codeRegion': '', // Empty for now
+        'designation': designation,
+      });
+
+      // Update the 'codeZone' field in the 'gouvernorat' collection
+      // for each selected gouvernorat with the new zone's code
+      for (String gouvernorat in selectedGouvernorats) {
+        await FirebaseFirestore.instance
+            .collection('Gouvernorat')
+            .where('Désignation', isEqualTo: gouvernorat)
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((doc) async {
+            await FirebaseFirestore.instance
+                .collection('Gouvernorat')
+                .doc(doc.id)
+                .update({
+              'code zone': nextCodeZone,
+            });
+          });
+        });
+      }
+
+      // Success message
+      Get.snackbar(
+        'Success',
+        'Zone added successfully',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      // Error message
+      print('Error adding zone: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to add zone. Please try again.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //secteur
   Future<void> fetchSecteurItems() async {
     try {

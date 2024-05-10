@@ -13,6 +13,7 @@ import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/go
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/sous_secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/users_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/zone/zone.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -66,6 +67,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 labelText: 'Utilisateurs',
                 onTap: () {
                   Get.to(const UsersPage());
+                },
+              ),
+                 ReusableGestureDetector(
+                imagePath: 'assets/images/zone.png',
+                labelText: 'Zone',
+                onTap: () {
+                  Get.to(const ZonePage());
                 },
               ),
               ReusableGestureDetector(
