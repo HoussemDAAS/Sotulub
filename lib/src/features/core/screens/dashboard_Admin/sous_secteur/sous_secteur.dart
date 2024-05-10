@@ -167,7 +167,17 @@ void _navigateToUpdatePage(String selectedSousSecteur, String currentSecteur) {
                   child: CircularProgressIndicator(
                     color: tPrimaryColor,
                   ),
-                )
+                ) : data.isEmpty
+                ? const Center(
+                    child: Text(
+                      "Pas de sous  secteur",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: tSecondaryColor,
+                      ),
+                    ),
+                  )
               : ListView.builder(
                   itemCount: data.length,
                   itemBuilder: (context, i) {

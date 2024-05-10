@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/main.dart';
+import 'package:sotulub/src/common_widgets/button.dart';
+import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/add_detetnteur.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/detenteur_admin/add_detetnteur.dart';
 
 class SelectRole extends StatelessWidget {
   const SelectRole({super.key});
@@ -27,44 +29,52 @@ class SelectRole extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
+              MyButton(
+                text: 'Detenteur',
+                onTap: () {
+                  Get.to(const AddDetenteur());
+                },
+                opacity: 0.8,
+                textColor: tWhiteColor,
+                iconColor: tWhiteColor,
+                buttonColor: tSecondaryColor,
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.to(() => AddDetenteur());
-                  },
-                  child: Text("detenteur".toUpperCase()),
-                ),
+                animateIcon: true,
               ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
+              const SizedBox(height: 10),
+              MyButton(
+                text: 'Sous-traitant',
+                onTap: () {},
+                opacity: 0.8,
+                textColor: tWhiteColor,
+                iconColor: tWhiteColor,
+                buttonColor: tAccentColor,
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text("sous-traitant".toUpperCase()),
-                ),
+                animateIcon: true,
+                reverse: true,
               ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
+              const SizedBox(height: 10),
+              MyButton(
+                text: 'Chef region',
+                onTap: () {},
+                opacity: 0.7,
+                textColor: tWhiteColor,
+                iconColor: tWhiteColor,
+                buttonColor: tAccentColor,
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text("Chef region".toUpperCase()),
-                ),
+                animateIcon: true,
               ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
+              const SizedBox(height: 10),
+              MyButton(
+                text: 'Directeur',
+                onTap: () {},
+                opacity: 0.7,
+                textColor: tWhiteColor,
+                iconColor: tWhiteColor,
+                buttonColor: tPrimaryColor,
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text("directeur".toUpperCase()),
-                ),
+                animateIcon: true,
+                reverse: true,
               ),
             ],
           ),

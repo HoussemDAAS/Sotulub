@@ -54,6 +54,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
             mainAxisSpacing: 15, // Add main axis spacing
             crossAxisCount: 2,
             children: [
+                 ReusableGestureDetector(
+                imagePath: 'assets/images/contrat.png',
+                labelText: 'Conventions',
+                onTap: () {
+                  Get.to(const UsersPage());
+                },
+              ),
               ReusableGestureDetector(
                 imagePath: tUSerImage,
                 labelText: 'Utilisateurs',

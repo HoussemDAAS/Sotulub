@@ -181,6 +181,17 @@ class _SecteurState extends State<Secteur> {
                     color: tPrimaryColor,
                   ),
                 )
+                 : data.isEmpty
+                ? const Center(
+                    child: Text(
+                      "Pas de  secteur",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: tSecondaryColor,
+                      ),
+                    ),
+                  )
               : ListView.builder(
                   itemCount: data.length,
                   itemBuilder: (context, i) {

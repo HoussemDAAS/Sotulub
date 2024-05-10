@@ -1,16 +1,11 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
+
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sotulub/src/common_widgets/button.dart';
+
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/select_role.dart';
 
@@ -48,7 +43,7 @@ class _UsersPageState extends State<UsersPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Users list".toUpperCase(),
+            "Liste des Utilisateurs".toUpperCase(),
             style: GoogleFonts.montserrat(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -89,8 +84,29 @@ class _UsersPageState extends State<UsersPage> {
                       ),
                       Column(
                         children: [
-                          Text("${data[i]['role']}"),
-                          Text("Convention: ${conventionValue ? 'Yes' : 'No'}"),
+                          Text("${data[i]['role']}",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: tSecondaryColor,
+                              )),
+                          Row(
+                            children: [
+                              Text(
+                                "Convention: ",
+                                // Add other text styles as needed
+                              ),
+                              Text(
+                                "${conventionValue ? 'Yes' : 'No'}",
+                                style: TextStyle(
+                                  color: conventionValue
+                                      ? Colors.green
+                                      : Colors.red,
+                                  // Add other text styles as needed
+                                ),
+                              ),
+                            ],
+                          )
                         ],
                       )
                     ],
@@ -148,7 +164,7 @@ class _UsersPageState extends State<UsersPage> {
                                 child: Center(
                                     child: Text(
                                   "Approve".toUpperCase(),
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white,fontSize: 12),
                                 )),
                               ),
                             ),
@@ -173,8 +189,8 @@ class _UsersPageState extends State<UsersPage> {
                               width: 80,
                               child: Center(
                                   child: Text(
-                                "edit".toUpperCase(),
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                "Modifier".toUpperCase(),
+                                style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white,fontSize: 12),
                               )),
                             ),
                           ),
@@ -200,8 +216,8 @@ class _UsersPageState extends State<UsersPage> {
                               width: 80,
                               child: Center(
                                   child: Text(
-                                "delete".toUpperCase(),
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                "Supprimer".toUpperCase(),
+                                style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white, fontSize: 12),
                               )),
                             ),
                           ),
