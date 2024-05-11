@@ -52,6 +52,90 @@ class _ZonePageState extends State<ZonePage> {
     await getData();
   }
 
+Future<void> _deleteZone(String codeZone, String designation) async {
+  // Show delete confirmation dialog
+  bool confirmDelete = await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title:const  Text(
+        "Supprimer Zone",
+        style: TextStyle(
+          color: Colors.red, // Customize title color
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Vous etes sur de vouloir supprimer $designation?",
+            style:const  TextStyle(
+              color: Colors.black, )
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+          child: const Text(
+            "Non",
+            style: TextStyle(
+              color: Colors.green,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, true); 
+          },
+          child:const  Text(
+            "Oui",
+            style: TextStyle(
+              color: Colors.green, 
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  // Handle delete confirmation
+  if (confirmDelete != null && confirmDelete) {
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection("zone")
+        .where("codeZone", isEqualTo: codeZone)
+        .get();
+    String documentId = querySnapshot.docs.first.id;
+
+  
+    await FirebaseFirestore.instance
+        .collection("zone")
+        .doc(documentId)
+        .delete();
+
+
+    QuerySnapshot delegationSnapshot = await FirebaseFirestore.instance
+        .collection("Gouvernorat")
+        .where("code zone", isEqualTo: codeZone)
+        .get();
+
+
+    if (delegationSnapshot.docs.isNotEmpty) {
+  for (QueryDocumentSnapshot doc in delegationSnapshot.docs) {
+    await doc.reference.update({"code zone": ""}); // Update code zone to empty string
+  }
+}
+
+
+    getData();
+  }
+}
+
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -79,7 +163,7 @@ class _ZonePageState extends State<ZonePage> {
         body: RefreshIndicator(
           onRefresh: _handleRefresh,
           child: isLoading
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(
                     color: tPrimaryColor,
                   ),
@@ -106,8 +190,11 @@ class _ZonePageState extends State<ZonePage> {
                         motion: const StretchMotion(),
                         children: [
                           SlidableAction(
-                            onPressed: (context) {
-                              // Implement action if needed
+                             onPressed: (context) {
+                              _deleteZone(
+                                data[i]['codeZone'],
+                                data[i]['designation'],
+                              );
                             },
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,

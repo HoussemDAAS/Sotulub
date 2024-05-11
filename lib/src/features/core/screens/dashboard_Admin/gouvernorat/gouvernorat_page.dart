@@ -145,7 +145,7 @@ class _GovPageState extends State<GovPage> {
       }
     }
 
-    // Refresh the data after deletion
+
     getData();
   }
 }
