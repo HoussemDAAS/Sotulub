@@ -47,6 +47,27 @@ class AdminRepository extends GetxController {
       return '';
     }
   }
+ Future<String> getCodeGouvernorat(String selectedGouvernorat) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Gouvernorat')
+          .where('Désignation', isEqualTo: selectedGouvernorat)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['Code Gouvernorat'].toString();
+      } else {
+        return '';
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      return '';
+    }
+  }
+
+
+
+
+
 
   Future<void> addGouvernorat({
     required String designation,
@@ -133,8 +154,127 @@ Future<List<String>> getAssociatedGouvernorats(String zone) async {
 
   return associatedGouvernorats;
 }
+Future<String> getGouvernoratDesignation(String codeGouvernorat) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Gouvernorat')
+          .where('Code Gouvernorat', isEqualTo: codeGouvernorat)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['Désignation'].toString();
+      } else {
+        return '';
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      return '';
+    }
+  }
 
 
+
+
+
+
+
+
+
+
+ // Delegation
+
+  Future<bool> checkDelegationExists(String designation) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Delegation')
+          .where('Désignation', isEqualTo: designation)
+          .get();
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking designation existence: $e');
+      return false;
+    }
+  }
+ Future<String> makeCodeDelegation(String codeGouvernorat) async {
+  // Initialize the new delegation code
+  String newDelegationCode = "";
+
+  try {
+    // Fetch all documents in the "Delegation" collection
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection("Delegation")
+        .get();
+
+    // Filter documents by the specified gouvernorat code
+    List<DocumentSnapshot> filteredDocs = querySnapshot.docs
+        .where((doc) => doc['Code gouvernorat'] == codeGouvernorat)
+        .toList();
+
+    // Sort filtered documents by delegation code in descending order
+    filteredDocs.sort((a, b) => b['Code délégation'].compareTo(a['Code délégation']));
+
+    // Determine the new delegation code
+    int lastNumber = 0;
+    if (filteredDocs.isNotEmpty) {
+      lastNumber = int.parse(filteredDocs.first['Code délégation'].substring(2));
+    }
+    lastNumber++; // Increment by 1
+
+    // Construct the new delegation code
+    newDelegationCode = "$codeGouvernorat${lastNumber.toString().padLeft(2, '0')}";
+  } catch (e) {
+    print('Error generating delegation code: $e');
+    // Handle the error as needed
+  }
+
+  // Return the new delegation code
+  return newDelegationCode;
+}
+
+
+
+
+
+
+
+
+Future<void> addDelegation({
+    required String designation,
+    required String codeZone,
+  }) async {
+    try {
+      String delegationCode = await makeCodeDelegation(codeZone); // Remove 'await' here
+      await FirebaseFirestore.instance.collection('Delegation').add({
+        'Code délégation': delegationCode, // Use the generated code directly
+        'Désignation': designation,
+        'Code gouvernorat': codeZone,
+      });
+    } catch (e) {
+      print('Error adding gouvernorat: $e');
+    }
+  }
+ Future<void> updateDelegation(String oldDelegation, String newDelegation, String newGouvernorat) async {
+    try {
+      String newCodeZone = await getCodeGouvernorat(newGouvernorat);
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Delegation')
+          .where('Désignation', isEqualTo: oldDelegation)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        QueryDocumentSnapshot docSnapshot = querySnapshot.docs.first;
+        if (newDelegation != oldDelegation) {
+          await docSnapshot.reference.update({'Désignation': newDelegation});
+        }
+        await docSnapshot.reference.update({'Code gouvernorat': newCodeZone});
+        String newCodeDelegation = await makeCodeDelegation(newCodeZone);
+        await docSnapshot.reference.update({'Code délégation': newCodeDelegation});
+        print('Delegation updated successfully');;
+      } else {
+        print('Delegation not found');
+      }
+    } catch (e) {
+      print('Error updating delegation: $e');
+    }
+  }
 
 
 

@@ -9,6 +9,7 @@ import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/delegation_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/gouvernorat_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/sous_secteur.dart';
@@ -69,6 +70,20 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   Get.to(const UsersPage());
                 },
               ),
+               ReusableGestureDetector(
+                imagePath: tMap ,
+                labelText: tGouvernorat,
+                onTap: () {
+                  Get.to(const GovPage());
+                },
+              ),
+                 ReusableGestureDetector(
+                imagePath: 'assets/images/delegation.png' ,
+                labelText: 'Delegation',
+                onTap: () {
+                  Get.to(const DelegationPage());
+                },
+              ),
                  ReusableGestureDetector(
                 imagePath: 'assets/images/zone.png',
                 labelText: 'Zone',
@@ -76,13 +91,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   Get.to(const ZonePage());
                 },
               ),
-              ReusableGestureDetector(
-                imagePath: tMap ,
-                labelText: tGouvernorat,
-                onTap: () {
-                  Get.to(const GovPage());
-                },
-              ),
+             
                 ReusableGestureDetector(
                 imagePath: 'assets/images/secteur.png' ,
                 labelText: 'Secteur',

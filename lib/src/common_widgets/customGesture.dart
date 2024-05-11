@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:sotulub/src/constants/colors.dart';
 
 class ReusableGestureDetector extends StatelessWidget {
@@ -33,10 +32,10 @@ class ReusableGestureDetector extends StatelessWidget {
               imagePath,
               height: 60, // Adjust the height here to make the image smaller
             ),
-            SizedBox(height: 10),
+          const   SizedBox(height: 10),
             Text(
               labelText.toUpperCase(),
-              style: TextStyle(
+              style: const  TextStyle(
                 color: tSecondaryColor, // Update with your desired color
                 fontSize: 15,
               ),

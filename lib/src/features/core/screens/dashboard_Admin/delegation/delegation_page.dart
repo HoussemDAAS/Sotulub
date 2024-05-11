@@ -4,18 +4,19 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/add_gov_page.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/update_gouvernorat.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/add_delegation.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/update_delegation.dart';
+
 import 'package:sotulub/src/repository/admin_repos.dart';
 
-class GovPage extends StatefulWidget {
-  const GovPage({Key? key}) : super(key: key);
+class DelegationPage extends StatefulWidget {
+  const DelegationPage({Key? key}) : super(key: key);
 
   @override
-  State<GovPage> createState() => _GovPageState();
+  State<DelegationPage> createState() => _DelegationPageState();
 }
 
-class _GovPageState extends State<GovPage> {
+class _DelegationPageState extends State<DelegationPage> {
   final AdminRepository adminRepository = Get.put(AdminRepository());
   List<QueryDocumentSnapshot> data = [];
   bool isLoading = false;
@@ -39,7 +40,7 @@ class _GovPageState extends State<GovPage> {
       isLoading = true;
     });
     QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection("Gouvernorat").get();
+        await FirebaseFirestore.instance.collection("Delegation").get();
     if (mounted) {
       setState(() {
         data.clear();
@@ -53,13 +54,13 @@ class _GovPageState extends State<GovPage> {
     await getData();
   }
 
-  void _navigateToUpdatePage(String selectedGouvernorat, String currentZone) {
+  void _navigateToUpdatePage(String selectedDelegation, String currentGouvernorat) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => UpdateGovPage(
-          selectedGouvernorat: selectedGouvernorat,
-          currentZone: currentZone,
+        builder: (context) => UpdateDelegationPage(
+          selectedDelegation: selectedDelegation,
+          currentGouvernorat: currentGouvernorat,
         ),
       ),
     ).then((value) {
@@ -67,13 +68,13 @@ class _GovPageState extends State<GovPage> {
     });
   }
 
-  Future<void> _deleteGouvernorat(String codeGouvernorat, String designation) async {
+  Future<void> _deleteDelegation(String codeDelagation, String designation) async {
   // Show delete confirmation dialog
   bool confirmDelete = await showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: const  Text(
-        "Supprimer Gouvernorat",
+        "Supprimer la delegation",
         style: TextStyle(
           color: Colors.red, // Customize title color
         ),
@@ -121,29 +122,17 @@ class _GovPageState extends State<GovPage> {
   if (confirmDelete != null && confirmDelete) {
     // Find the document ID of the Gouvernorat document
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection("Gouvernorat")
-        .where("Code Gouvernorat", isEqualTo: codeGouvernorat)
+        .collection("Delegation")
+        .where("Code délégation", isEqualTo: codeDelagation)
         .get();
     String documentId = querySnapshot.docs.first.id;
 
     // Delete the Gouvernorat document using the document ID
     await FirebaseFirestore.instance
-        .collection("Gouvernorat")
+        .collection("Delegation")
         .doc(documentId)
         .delete();
 
-    // Check if there are related documents in the Delegation collection
-    QuerySnapshot delegationSnapshot = await FirebaseFirestore.instance
-        .collection("Delegation")
-        .where("Code Gouvernorat", isEqualTo: codeGouvernorat)
-        .get();
-
-    // Delete related documents in the Delegation collection
-    if (delegationSnapshot.docs.isNotEmpty) {
-      for (QueryDocumentSnapshot doc in delegationSnapshot.docs) {
-        await doc.reference.delete();
-      }
-    }
 
 
     getData();
@@ -159,7 +148,7 @@ class _GovPageState extends State<GovPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Liste gouvernorat".toUpperCase(),
+            "Liste Delegation".toUpperCase(),
             style: GoogleFonts.montserrat(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -170,9 +159,9 @@ class _GovPageState extends State<GovPage> {
           backgroundColor: Colors.transparent,
           actions: [
             IconButton(
-              icon: Icon(Icons.add, color: tPrimaryColor),
+              icon:const  Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-                Get.to(AddGovPage());
+                 Get.to(const AddDelgationPage());
               },
             ),
           ],
@@ -194,11 +183,11 @@ class _GovPageState extends State<GovPage> {
                         children: [
                           SlidableAction(
                             onPressed: (context) {
-                              String selectedGouvernorat =
+                              String selectedDelegation =
                                   data[i]['Désignation'];
-                              String currentZone = data[i]['code zone'];
+                              String currentGouvernorat = data[i]['Code gouvernorat'];
                               _navigateToUpdatePage(
-                                  selectedGouvernorat, currentZone);
+                                  selectedDelegation,currentGouvernorat);
                             },
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -212,8 +201,8 @@ class _GovPageState extends State<GovPage> {
                         children: [
                           SlidableAction(
                             onPressed: (context) {
-                              _deleteGouvernorat(
-                                data[i]['Code Gouvernorat'],
+                              _deleteDelegation(
+                                data[i]['Code délégation'],
                                 data[i]['Désignation'],
                               );
                             },
@@ -247,15 +236,15 @@ class _GovPageState extends State<GovPage> {
                                     fontWeight: FontWeight.bold,
                                     color: tSecondaryColor,
                                   ),),
-                                Text("Code gouvernorat:  " +
-                                    "${data[i]['Code Gouvernorat']}",
+                                Text("Code Delegation:  " +
+                                    "${data[i]['Code délégation']}",
                                      style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: tAccentColor,
                                   ),),
                               ],
                             ),
-                            Text("${data[i]['code zone']}",
+                            Text("${data[i]['Code gouvernorat']}",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: tAccentColor,
