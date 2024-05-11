@@ -11,6 +11,7 @@ import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/delegation_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/gouvernorat_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/region/regionPage.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/sous_secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/users_page.dart';
@@ -84,6 +85,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   Get.to(const DelegationPage());
                 },
               ),
+               ReusableGestureDetector(
+                imagePath: 'assets/images/region.png' ,
+                labelText: 'Region',
+                onTap: () {
+                  Get.to(const RegionPage());
+                },
+              ),
+
                  ReusableGestureDetector(
                 imagePath: 'assets/images/zone.png',
                 labelText: 'Zone',

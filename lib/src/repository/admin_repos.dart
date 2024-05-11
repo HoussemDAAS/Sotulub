@@ -485,9 +485,43 @@ Future<void> updateZone(String oldZone, String newZone, List<String> selectedGou
   }
 }
 
+// region 
+Future<void> addRegion({
+    required String designation,
+    required String codeChefRegion,
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection('region').add({
+        'codeRegion': await getNextCodeRegion(),
+        'Designation': designation,
+        'codeChefRegion': '',
+      });
+    } catch (e) {
+      print('Error adding gouvernorat: $e');
+    }
+  }
 
+ Future<String> getNextCodeRegion() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('region')
+          .orderBy('codeRegion', descending: true)
+          .limit(1)
+          .get();
 
-
+      if (querySnapshot.docs.isNotEmpty) {
+        String lastCode = querySnapshot.docs.first['codeRegion'];
+        int lastNumber = int.parse(lastCode);
+        int nextNumber = lastNumber + 1;
+        return nextNumber.toString();
+      } else {
+        return '500';
+      }
+    } catch (e) {
+      print('Error getting next Code Gouvernorat: $e');
+      return '';
+    }
+  }
 
 
 
