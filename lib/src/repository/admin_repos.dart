@@ -97,6 +97,49 @@ class AdminRepository extends GetxController {
       print('Error updating Gouvernorat: $e');
     }
   }
+
+Future<List<String>> getAssociatedGouvernorats(String zone) async {
+  List<String> associatedGouvernorats = [];
+  
+  try {
+    // Find the codeZone based on the provided zone name
+    QuerySnapshot zoneSnapshot = await FirebaseFirestore.instance
+        .collection("zone")
+        .where('designation', isEqualTo: zone)
+        .get();
+
+    // Check if any documents are found in the zoneSnapshot
+    if (zoneSnapshot.docs.isNotEmpty) {
+      String codeZone = zoneSnapshot.docs.first['codeZone'];
+
+      // Use the codeZone to fetch associated gouvernorats
+      if (codeZone.isNotEmpty) {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection("Gouvernorat")
+            .where('code zone', isEqualTo: codeZone)
+            .get();
+
+        associatedGouvernorats = querySnapshot.docs
+            .map((doc) => doc['Désignation'] as String)
+            .toList();
+      }
+    } else {
+      print('No zone found with designation: $zone');
+    }
+  } catch (e) {
+    print('Error fetching associated gouvernorats: $e');
+    // Handle the error as needed
+  }
+
+  return associatedGouvernorats;
+}
+
+
+
+
+
+
+
 //zone
   Future<void> fetchZoneItems() async {
     try {
@@ -241,6 +284,76 @@ Future<bool> checkDesignationZoneExists(String designation) async {
       );
     }
   }
+
+Future<void> updateZone(String oldZone, String newZone, List<String> selectedGouvernorats) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection("zone")
+        .where('designation', isEqualTo: oldZone)
+        .get()
+        .then((value) => value.docs.forEach((doc) {
+              doc.reference.update({'designation': newZone});
+            }));
+
+    String zoneCode = ''; // Initialize zone code
+
+    // Get the codeZone of the old zone
+    QuerySnapshot oldZoneSnapshot = await FirebaseFirestore.instance
+        .collection("zone")
+        .where('designation', isEqualTo: oldZone)
+        .get();
+
+    if (oldZoneSnapshot.docs.isNotEmpty) {
+      zoneCode = oldZoneSnapshot.docs.first['codeZone'];
+    }
+
+    // Update the codeZone for the newly selected gouvernorats
+    selectedGouvernorats.forEach((gouvernorat) async {
+      await FirebaseFirestore.instance
+          .collection("Gouvernorat")
+          .where('Désignation', isEqualTo: gouvernorat)
+          .get()
+          .then((value) => value.docs.forEach((doc) {
+                doc.reference.update({'code zone': zoneCode});
+              }));
+    });
+
+    // Remove the association for any previously associated gouvernorat that is not selected anymore
+    QuerySnapshot associatedGouvernoratsSnapshot = await FirebaseFirestore.instance
+        .collection("Gouvernorat")
+        .where('code zone', isEqualTo: zoneCode)
+        .get();
+
+    List<String> associatedGouvernorats = associatedGouvernoratsSnapshot.docs
+        .map((doc) => doc['Désignation'] as String)
+        .toList();
+
+    associatedGouvernorats.forEach((gouvernorat) async {
+      if (!selectedGouvernorats.contains(gouvernorat)) {
+        await FirebaseFirestore.instance
+            .collection("Gouvernorat")
+            .where('Désignation', isEqualTo: gouvernorat)
+            .get()
+            .then((value) => value.docs.forEach((doc) {
+                  doc.reference.update({'code zone': ''}); // Set codeZone to empty string
+                }));
+      }
+    });
+  } catch (e) {
+    print('Error updating zone: $e');
+    // Handle the error as needed
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

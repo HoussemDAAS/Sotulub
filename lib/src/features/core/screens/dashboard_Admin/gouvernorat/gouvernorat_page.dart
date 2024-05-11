@@ -180,7 +180,7 @@ class _GovPageState extends State<GovPage> {
         body: RefreshIndicator(
           onRefresh: _handleRefresh,
           child: isLoading
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(
                     color: tPrimaryColor,
                   ),

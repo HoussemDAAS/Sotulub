@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/zone/add_zone.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/zone/update_zone.dart';
 import 'package:sotulub/src/repository/admin_repos.dart';
 
 class ZonePage extends StatefulWidget {
@@ -52,6 +53,18 @@ class _ZonePageState extends State<ZonePage> {
     await getData();
   }
 
+void _navigateToUpdatePage(String selectedZone) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UpdateZonePage(
+          selectedZone: selectedZone,
+        ),
+      ),
+    ).then((value) {
+      getData();
+    });
+  }
 Future<void> _deleteZone(String codeZone, String designation) async {
   // Show delete confirmation dialog
   bool confirmDelete = await showDialog(
@@ -176,8 +189,12 @@ Future<void> _deleteZone(String codeZone, String designation) async {
                         motion: const StretchMotion(),
                         children: [
                           SlidableAction(
-                            onPressed: (context) {
-                              // Implement action if needed
+                             onPressed: (context) {
+                              String selectedzone =
+                                  data[i]['designation'];
+                        
+                              _navigateToUpdatePage(
+                                  selectedzone);
                             },
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
