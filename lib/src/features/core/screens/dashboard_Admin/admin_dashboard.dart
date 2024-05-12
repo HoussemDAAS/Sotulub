@@ -9,6 +9,7 @@ import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_by_role.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/convention/convention.dart';
 
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/delegation_page.dart';
 
@@ -73,7 +74,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 imagePath: 'assets/images/contrat.png',
                 labelText: 'Conventions',
                 onTap: () {
-                  Get.to(const DetenteurPage());
+                  Get.to(const ConventionPage());
                 },
               ),
               ReusableGestureDetector(
