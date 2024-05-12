@@ -56,16 +56,19 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
-  void _checkConvention() {
-    AuthRepository.instance.checkConvention().then((isConvention) {
-      setState(() {
-        _isConvention = isConvention;
-        _showToast = !isConvention; // Show the toast if convention is false
-      });
-    }).catchError((error) {
-      print('Error checking convention: $error');
+void _checkConvention() {
+  AuthRepository.instance.checkConvention().then((isConvention) {
+    setState(() {
+      _isConvention = isConvention;
+      _showToast = !isConvention; // Show the toast if convention is false
+      if (_isConvention) {
+        _showToast = false; // Hide the toast if convention is true
+      }
     });
-  }
+  }).catchError((error) {
+    print('Error checking convention: $error');
+  });
+}
 
   void _hideToast() {
     setState(() {
@@ -107,6 +110,7 @@ class _DashboardState extends State<Dashboard> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+           automaticallyImplyLeading: false,
           title: Text(
             tWelcomeTitle.toUpperCase(),
             style: GoogleFonts.montserrat(
@@ -126,7 +130,7 @@ class _DashboardState extends State<Dashboard> {
             ),
           ],
         ),
-        bottomNavigationBar:  BottomNavigation(convention:  _isConvention ),
+        bottomNavigationBar:  BottomNavigation(convention:  _isConvention, defaultIndex: 0 ),
         body: Stack(
           children: [
             SingleChildScrollView(

@@ -6,6 +6,7 @@ import 'package:sotulub/src/execptions/signup_email_password_exception.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_directeur/dashboard_directeur.dart';
 
 class AuthRepository extends GetxController {
   static AuthRepository get instance => Get.find();
@@ -37,7 +38,7 @@ void onReady() {
       if (role != null) {
         switch (role) {
           case 'directeur':
-            Get.offAll(() => const AdminDashboard());
+            Get.offAll(() => const DirecteurDashboard());
             break;
           case 'detenteur':
             Get.offAll(() => const Dashboard());

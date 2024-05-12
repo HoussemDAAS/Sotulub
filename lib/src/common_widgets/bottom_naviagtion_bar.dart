@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sotulub/src/constants/colors.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
+import 'package:sotulub/src/features/core/screens/demande_collecte/demande_collecte.dart';
 import 'package:sotulub/src/features/core/screens/profile/profile_screen.dart';
 
 class BottomNavigation extends StatelessWidget {
   final bool convention;
+  final int defaultIndex;
 
   const BottomNavigation({
     Key? key,
     required this.convention,
+    required this.defaultIndex, // New parameter to specify default index
   }) : super(key: key);
 
   @override
@@ -26,21 +30,21 @@ class BottomNavigation extends StatelessWidget {
                 activeColor: tSecondaryColor,
                 tabBackgroundColor: Colors.yellow.shade100,
                 duration: const Duration(milliseconds: 600),
+                selectedIndex: defaultIndex, // Set the default selected index
                 onTabChange: (index) {
                   // Handle tab changes
-                 switch (index) {
+                  switch (index) {
                     case 0:
-                    
+                    Get.to(()=>const  Dashboard());
                       break;
                     case 1:
-                      // Navigate to demande_collect screen
+                           Get.to(()=>const  DemandeCollecte());
                       break;
                     case 2:
-                     Get.to(()=>ProfileScreen()); // Navigate to profile screen
+                       Get.to(()=>const ProfileScreen()); // Navigate to profile screen
                       break;
                     default:
                   }
-                
                 },
                 iconSize: 27,
                 color: tAccentColor,
@@ -52,19 +56,18 @@ class BottomNavigation extends StatelessWidget {
                   GButton(icon: Icons.person, text: 'Profile')
                 ],
               )
-            :const  Column(
+            : const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.lock ,color:tSecondaryColor, size:27),
-
-                  const SizedBox(height: 8),
+                  Icon(Icons.lock, color: tSecondaryColor, size: 27),
+                  SizedBox(height: 8),
                   Text(
                     "Votre convention est en cours de traitement",
                     style: TextStyle(
-                        color: tSecondaryColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      color: tSecondaryColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
