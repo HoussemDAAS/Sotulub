@@ -4,18 +4,19 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/add_secteur.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/update_Secteur.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/add_delegation.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/update_delegation.dart';
+
 import 'package:sotulub/src/repository/admin_repos.dart';
 
-class Secteur extends StatefulWidget {
-  const Secteur({Key? key}) : super(key: key);
+class DelegationPage extends StatefulWidget {
+  const DelegationPage({Key? key}) : super(key: key);
 
   @override
-  State<Secteur> createState() => _SecteurState();
+  State<DelegationPage> createState() => _DelegationPageState();
 }
 
-class _SecteurState extends State<Secteur> {
+class _DelegationPageState extends State<DelegationPage> {
   final AdminRepository adminRepository = Get.put(AdminRepository());
   List<QueryDocumentSnapshot> data = [];
   bool isLoading = false;
@@ -39,7 +40,7 @@ class _SecteurState extends State<Secteur> {
       isLoading = true;
     });
     QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection("Secteur").get();
+        await FirebaseFirestore.instance.collection("Delegation").get();
     if (mounted) {
       setState(() {
         data.clear();
@@ -53,12 +54,13 @@ class _SecteurState extends State<Secteur> {
     await getData();
   }
 
-  void _navigateToUpdatePage(String selectedSecteur) {
+  void _navigateToUpdatePage(String selectedDelegation, String currentGouvernorat) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => UpdateSecteur(
-          selectedSecteur: selectedSecteur,
+        builder: (context) => UpdateDelegationPage(
+          selectedDelegation: selectedDelegation,
+          currentGouvernorat: currentGouvernorat,
         ),
       ),
     ).then((value) {
@@ -66,13 +68,13 @@ class _SecteurState extends State<Secteur> {
     });
   }
 
-  Future<void> _deleteSecteur(String codeSecteur, String Nom) async {
+  Future<void> _deleteDelegation(String codeDelagation, String designation) async {
   // Show delete confirmation dialog
   bool confirmDelete = await showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text(
-        "Supprimer sous secteur",
+      title: const  Text(
+        "Supprimer la delegation",
         style: TextStyle(
           color: Colors.red, // Customize title color
         ),
@@ -82,8 +84,8 @@ class _SecteurState extends State<Secteur> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "vous etes sur de vouloir supprimer $Nom?",
-            style: TextStyle(
+            "Vous etes sur de vouloir supprimer $designation?",
+            style: const TextStyle(
               color: Colors.black, // Customize content color
             ),
           ),
@@ -94,8 +96,8 @@ class _SecteurState extends State<Secteur> {
           onPressed: () {
             Navigator.pop(context, false); // No, do not delete
           },
-          child: Text(
-            "Non",
+          child: const Text(
+            "No",
             style: TextStyle(
               color: Colors.green, // Customize button color
             ),
@@ -105,8 +107,8 @@ class _SecteurState extends State<Secteur> {
           onPressed: () {
             Navigator.pop(context, true); // Yes, delete
           },
-          child: Text(
-            "Oui",
+          child:const  Text(
+            "Yes",
             style: TextStyle(
               color: Colors.green, // Customize button color
             ),
@@ -120,34 +122,25 @@ class _SecteurState extends State<Secteur> {
   if (confirmDelete != null && confirmDelete) {
     // Find the document ID of the Gouvernorat document
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection("Secteur")
-        .where("Code", isEqualTo: codeSecteur)
+        .collection("Delegation")
+        .where("Code délégation", isEqualTo: codeDelagation)
         .get();
     String documentId = querySnapshot.docs.first.id;
 
     // Delete the Gouvernorat document using the document ID
     await FirebaseFirestore.instance
-        .collection("Secteur")
+        .collection("Delegation")
         .doc(documentId)
         .delete();
 
-    // Check if there are related documents in the Delegation collection
-    QuerySnapshot delegationSnapshot = await FirebaseFirestore.instance
-        .collection("Sous-Secteur")
-        .where("Code Secteur", isEqualTo: codeSecteur)
-        .get();
 
-    // Delete related documents in the Delegation collection
-    if (delegationSnapshot.docs.isNotEmpty) {
-      for (QueryDocumentSnapshot doc in delegationSnapshot.docs) {
-        await doc.reference.delete();
-      }
-    }
 
-    // Refresh the data after deletion
     getData();
   }
 }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +148,7 @@ class _SecteurState extends State<Secteur> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Liste des Secteur".toUpperCase(),
+            "Liste Delegation".toUpperCase(),
             style: GoogleFonts.montserrat(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -166,9 +159,9 @@ class _SecteurState extends State<Secteur> {
           backgroundColor: Colors.transparent,
           actions: [
             IconButton(
-              icon: Icon(Icons.add, color: tPrimaryColor),
+              icon:const  Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-                Get.to(()=> const AddSecteur());
+                 Get.to(()=>const AddDelgationPage());
               },
             ),
           ],
@@ -181,17 +174,6 @@ class _SecteurState extends State<Secteur> {
                     color: tPrimaryColor,
                   ),
                 )
-                 : data.isEmpty
-                ? const Center(
-                    child: Text(
-                      "Pas de  secteur",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: tSecondaryColor,
-                      ),
-                    ),
-                  )
               : ListView.builder(
                   itemCount: data.length,
                   itemBuilder: (context, i) {
@@ -201,11 +183,11 @@ class _SecteurState extends State<Secteur> {
                         children: [
                           SlidableAction(
                             onPressed: (context) {
-                              String selectedGouvernorat =
-                                  data[i]['Nom'];
-                            
+                              String selectedDelegation =
+                                  data[i]['Désignation'];
+                              String currentGouvernorat = data[i]['Code gouvernorat'];
                               _navigateToUpdatePage(
-                                  selectedGouvernorat);
+                                  selectedDelegation,currentGouvernorat);
                             },
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -219,9 +201,9 @@ class _SecteurState extends State<Secteur> {
                         children: [
                           SlidableAction(
                             onPressed: (context) {
-                              _deleteSecteur(
-                                data[i]['Code'],
-                                data[i]['Nom'],
+                              _deleteDelegation(
+                                data[i]['Code délégation'],
+                                data[i]['Désignation'],
                               );
                             },
                             backgroundColor: Colors.red,
@@ -239,7 +221,7 @@ class _SecteurState extends State<Secteur> {
                         margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                         padding: const EdgeInsets.symmetric(
                           vertical: 25,
-                          horizontal: 30,
+                          horizontal: 20,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -248,31 +230,26 @@ class _SecteurState extends State<Secteur> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                               
-                               Text(
-                                    "${data[i]['Nom']}",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: tSecondaryColor,
-                                      fontSize: 12,
-                                    ),
-                                  
-                                ),
-                                // Text("Code gouvernorat:" +
-                                //     "${data[i]['Code Gouvernorat']}",
-                                //      style: const TextStyle(
-                                //     fontWeight: FontWeight.w600,
-                                //     color: tAccentColor,
-                                //   ),),
+                                Text(
+                                    "${data[i]['Désignation']}",
+                                     style:const  TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: tSecondaryColor,
+                                  ),),
+                                Text("Code Delegation:  " +
+                                    "${data[i]['Code délégation']}",
+                                     style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: tAccentColor,
+                                  ),),
                               ],
                             ),
-                            Text(
-                              "${data[i]['Code']}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: tAccentColor,
-                              ),
-                            )
+                            Text("${data[i]['Code gouvernorat']}",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: tAccentColor,
+                                
+                                ))
                           ],
                         ),
                       ),

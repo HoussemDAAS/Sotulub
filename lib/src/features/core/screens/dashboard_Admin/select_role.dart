@@ -35,7 +35,7 @@ class SelectRole extends StatelessWidget {
               MyButton(
                 text: 'Detenteur',
                 onTap: () {
-                  Get.to(const AddDetenteur());
+                  Get.to(()=> const AddDetenteur());
                 },
                 opacity: 0.8,
                 textColor: tWhiteColor,

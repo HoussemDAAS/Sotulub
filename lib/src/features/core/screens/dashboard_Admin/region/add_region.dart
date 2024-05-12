@@ -8,27 +8,28 @@ import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 
 import 'package:sotulub/src/features/core/controllers/gouvernorat_controller.dart';
+import 'package:sotulub/src/features/core/controllers/region_controller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
 import 'package:sotulub/src/repository/admin_repos.dart';
 
 
-class AddGovPage extends StatefulWidget {
-  const AddGovPage({super.key});
+class AddRegion extends StatefulWidget {
+  const AddRegion({super.key});
 
   @override
-  State<AddGovPage> createState() => _AddGovPageState();
+  State<AddRegion> createState() => _AddRegionState();
 }
 
-class _AddGovPageState extends State<AddGovPage> {
+class _AddRegionState extends State<AddRegion> {
   final AdminRepository dropdownController = Get.put((AdminRepository()));
-  final GouvernoratController controller = Get.put((GouvernoratController()));
+  final RegionController controller = Get.put((RegionController()));
   
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Ajouter Gouvernorat".toUpperCase(),
+          title: Text("Ajouter Region".toUpperCase(),
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -45,9 +46,10 @@ class _AddGovPageState extends State<AddGovPage> {
             children: [
               Obx(() {
                 return CustomDropdown(
-                  labelText: 'Zone',
+                  labelText: 'Chef Region',
                   prefixIcon: Icons.map_outlined,
-                  items: dropdownController.zoneItems.map((zone) {
+                  items: 
+                  dropdownController.zoneItems.map((zone) {
                     return DropdownMenuItem(
                       value: zone,
                       child: Text(zone),
@@ -56,15 +58,15 @@ class _AddGovPageState extends State<AddGovPage> {
                   value: null,
                   onChanged: (newValue) async {
                     // Update the selected zone
-                    controller.zone.value = newValue ?? "";
+                    controller.chefRegion.value = newValue ?? "";
 
                     if (newValue != null) {
-                      // Get the codeZone for the selected zone
+           
                       String codeZone =
                           await AdminRepository.instance.getCodeZone(newValue);
 
-                      // Do something with the codeZone, such as updating controller.CodeZone
-                      controller.CodeZone.text = codeZone;
+                  
+                      controller.CodeChefRegion.text = codeZone;
                     }
                   },
                 );
@@ -107,11 +109,11 @@ class _AddGovPageState extends State<AddGovPage> {
                       );
                     } else {
                       // Call the function to add new gouvernorat
-                      AdminRepository.instance.addGouvernorat(
+                      AdminRepository.instance.addRegion(
                         designation: designation,
-                        codeZone: controller.CodeZone.text,
+                        codeChefRegion: controller.CodeChefRegion.text,
                       );
-                     Get.to(()=>AdminDashboard()); 
+                     Get.to(()=> const AdminDashboard()); 
                     }
                   },
                   child: Text('Enregistrer'.toUpperCase()),

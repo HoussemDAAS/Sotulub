@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -8,36 +9,30 @@ import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
-
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/delegation_page.dart';
-
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/gouvernorat_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/region/regionPage.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/sous_secteur.dart';
 
-
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/zone/zone.dart';
-
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/detenteur_page.dart';
-
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
-class AdminDashboard extends StatefulWidget {
-  const AdminDashboard({super.key});
+class DirecteurDashboard extends StatefulWidget {
+  const DirecteurDashboard({super.key});
 
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  State<DirecteurDashboard> createState() => _DirecteurDashboardState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
+class _DirecteurDashboardState extends State<DirecteurDashboard> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           // leading: const Icon(Icons.menu, color: tPrimaryColor),
-          title: Text("admin dashboard".toUpperCase(),
+          title: Text("Directeur dashboard".toUpperCase(),
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -62,9 +57,20 @@ class _AdminDashboardState extends State<AdminDashboard> {
             mainAxisSpacing: 15, // Add main axis spacing
             crossAxisCount: 2,
             children: [
-
-                 
-          
+              //    ReusableGestureDetector(
+              //   imagePath: 'assets/images/contrat.png',
+              //   labelText: 'Conventions',
+              //   onTap: () {
+              //     Get.to(()=> const UsersPage());
+              //   },
+              // ),
+              // ReusableGestureDetector(
+              //   imagePath: tUSerImage,
+              //   labelText: 'Utilisateurs',
+              //   onTap: () {
+              //     Get.to(()=> const UsersPage());
+              //   },
+              // ),
                ReusableGestureDetector(
                 imagePath: tMap ,
                 labelText: tGouvernorat,
@@ -77,20 +83,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 labelText: 'Delegation',
                 onTap: () {
                   Get.to(()=> const DelegationPage());
-
-              ReusableGestureDetector(
-                imagePath: 'assets/images/contrat.png',
-                labelText: 'Conventions',
-                onTap: () {
-                  Get.to(const DetenteurPage());
-
                 },
               ),
                ReusableGestureDetector(
                 imagePath: 'assets/images/region.png' ,
                 labelText: 'Region',
                 onTap: () {
-
                   Get.to(()=> const RegionPage());
                 },
               ),
@@ -98,29 +96,20 @@ class _AdminDashboardState extends State<AdminDashboard> {
                  ReusableGestureDetector(
                 imagePath: 'assets/images/zone.png',
                 labelText: 'Zone',
-
-                  Get.to(const ConsultByRole());
-                },
-              ),
-              ReusableGestureDetector(
-                imagePath: tMap,
-                labelText: tGouvernorat,
-
                 onTap: () {
                   Get.to(()=> const ZonePage());
                 },
               ),
-
-              ReusableGestureDetector(
-                imagePath: 'assets/images/secteur.png',
-
+             
+                ReusableGestureDetector(
+                imagePath: 'assets/images/secteur.png' ,
                 labelText: 'Secteur',
                 onTap: () {
                   Get.to(()=> const Secteur());
                 },
               ),
               ReusableGestureDetector(
-                imagePath: 'assets/images/sous-sectur.png',
+                imagePath: 'assets/images/sous-sectur.png' ,
                 labelText: 'Sous-seteur',
                 onTap: () {
                   Get.to(()=> const SousSecteurPage());

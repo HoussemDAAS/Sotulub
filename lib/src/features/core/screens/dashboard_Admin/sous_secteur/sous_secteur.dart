@@ -155,7 +155,7 @@ void _navigateToUpdatePage(String selectedSousSecteur, String currentSecteur) {
             IconButton(
               icon: Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-                Get.to(const AddSsecteur());
+                Get.to(()=> const AddSsecteur());
               },
             ),
           ],

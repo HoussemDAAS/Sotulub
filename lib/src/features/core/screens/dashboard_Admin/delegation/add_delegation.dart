@@ -6,29 +6,27 @@ import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
 import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
 
 import 'package:sotulub/src/constants/sizes.dart';
-
-import 'package:sotulub/src/features/core/controllers/gouvernorat_controller.dart';
+import 'package:sotulub/src/features/core/controllers/delegationController.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
 import 'package:sotulub/src/repository/admin_repos.dart';
 
-
-class AddGovPage extends StatefulWidget {
-  const AddGovPage({super.key});
+class AddDelgationPage extends StatefulWidget {
+  const AddDelgationPage({super.key});
 
   @override
-  State<AddGovPage> createState() => _AddGovPageState();
+  State<AddDelgationPage> createState() => _AddDelgationPageState();
 }
 
-class _AddGovPageState extends State<AddGovPage> {
+class _AddDelgationPageState extends State<AddDelgationPage> {
   final AdminRepository dropdownController = Get.put((AdminRepository()));
-  final GouvernoratController controller = Get.put((GouvernoratController()));
-  
+  final DelegationController controller = Get.put((DelegationController()));
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Ajouter Gouvernorat".toUpperCase(),
+          title: Text("Ajouter Delegation".toUpperCase(),
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -45,26 +43,26 @@ class _AddGovPageState extends State<AddGovPage> {
             children: [
               Obx(() {
                 return CustomDropdown(
-                  labelText: 'Zone',
+                  labelText: 'Gouvernorat',
                   prefixIcon: Icons.map_outlined,
-                  items: dropdownController.zoneItems.map((zone) {
+                  items: dropdownController.gouvernoratItems.map((gouvernorat) {
                     return DropdownMenuItem(
-                      value: zone,
-                      child: Text(zone),
+                      value: gouvernorat,
+                      child: Text(gouvernorat),
                     );
                   }).toList(),
                   value: null,
                   onChanged: (newValue) async {
                     // Update the selected zone
-                    controller.zone.value = newValue ?? "";
+                    controller.gouvernorat.value = newValue ?? "";
 
                     if (newValue != null) {
                       // Get the codeZone for the selected zone
-                      String codeZone =
-                          await AdminRepository.instance.getCodeZone(newValue);
+                      String CodeGouvernorat =
+                          await AdminRepository.instance.getCodeGouvernorat(newValue);
 
                       // Do something with the codeZone, such as updating controller.CodeZone
-                      controller.CodeZone.text = codeZone;
+                      controller.codeGouvernorat.text = CodeGouvernorat;
                     }
                   },
                 );
@@ -74,8 +72,7 @@ class _AddGovPageState extends State<AddGovPage> {
                 labelText: 'Designation',
                 hintText: '',
                 prefixIcon: Icons.map_outlined,
-                 controller: controller.designation,
-                // controller: controller.responsable,
+                controller: controller.designation,
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'This field is required';
@@ -95,23 +92,38 @@ class _AddGovPageState extends State<AddGovPage> {
 
                     // Check if the designation already exists
                     bool exists = await AdminRepository.instance
-                        .checkDesignationExists(designation);
+                        .checkDelegationExists(designation);
 
                     if (exists) {
                       // Show a popup if the designation exists
                       Get.snackbar(
-                        'Error',
+                        'Erreur',
                         'Cette désignation existe déjà',
                         backgroundColor: Colors.red,
                         colorText: Colors.white,
                       );
                     } else {
-                      // Call the function to add new gouvernorat
-                      AdminRepository.instance.addGouvernorat(
-                        designation: designation,
-                        codeZone: controller.CodeZone.text,
-                      );
-                     Get.to(()=>AdminDashboard()); 
+                      try {
+                        // Call the function to add new gouvernorat
+                        await AdminRepository.instance.addDelegation(
+                          designation: designation,
+                          codeZone: controller.codeGouvernorat.text,
+                        );
+                        Get.snackbar(
+                          'Succès',
+                          'La délégation a été ajoutée avec succès',
+                          backgroundColor: Colors.green,
+                          colorText: Colors.white,
+                        );
+                        Get.off(() => AdminDashboard()); // Navigate back to AdminDashboard
+                      } catch (e) {
+                        Get.snackbar(
+                          'Erreur',
+                          'Une erreur est survenue lors de l\'ajout de la délégation',
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                      }
                     }
                   },
                   child: Text('Enregistrer'.toUpperCase()),

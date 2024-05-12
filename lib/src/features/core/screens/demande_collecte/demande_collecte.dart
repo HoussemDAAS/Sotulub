@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sotulub/src/common_widgets/bottom_naviagtion_bar.dart';
 import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
 import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
@@ -24,6 +25,7 @@ class DemandeCollecte extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text(
             'Demande de Collecte'.toUpperCase(),
             style: GoogleFonts.montserrat(
@@ -35,6 +37,10 @@ class DemandeCollecte extends StatelessWidget {
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
+          bottomNavigationBar: const BottomNavigation(
+        convention: true,
+        defaultIndex: 1,
+      ),
         body: Stack(
           children: [
             SingleChildScrollView(

@@ -19,6 +19,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         // leading: const Icon(Icons.menu, color: tPrimaryColor),
         title: Text(tProfile.toUpperCase(),
             style: GoogleFonts.montserrat(
@@ -40,6 +41,7 @@ class ProfileScreen extends StatelessWidget {
       ),
       bottomNavigationBar: const BottomNavigation(
         convention: true,
+        defaultIndex: 2,
       ),
       body: SingleChildScrollView(
           child: Container(
