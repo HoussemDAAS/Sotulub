@@ -5,20 +5,21 @@ import 'package:sotulub/main.dart';
 import 'package:sotulub/src/common_widgets/button.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/chef_region/add_chef_region.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/detenteur_admin/add_detetnteur.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/directeur/add_directeur.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/soutraitent/add_soutraitant.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/chefregion_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/detenteur_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/directeur_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/soustraitant_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/select_role.dart';
 
-class SelectRole extends StatelessWidget {
-  const SelectRole({super.key});
+class ConsultByRole extends StatelessWidget {
+  const ConsultByRole({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Select Role".toUpperCase(),
+          title: Text("Utilisateurs".toUpperCase(),
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -26,6 +27,13 @@ class SelectRole extends StatelessWidget {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Get.to(SelectRole());
+                },
+                icon: Icon(Icons.add)),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(tDefaultSize),
@@ -35,7 +43,7 @@ class SelectRole extends StatelessWidget {
               MyButton(
                 text: 'Detenteur',
                 onTap: () {
-                  Get.to(()=> const AddDetenteur());
+                  Get.to(const DetenteurPage());
                 },
                 opacity: 0.8,
                 textColor: tWhiteColor,
@@ -48,7 +56,7 @@ class SelectRole extends StatelessWidget {
               MyButton(
                 text: 'Sous-traitant',
                 onTap: () {
-                  Get.to(const AddSousTraitant());
+                  Get.to(() => const SousTraitantPage());
                 },
                 opacity: 0.8,
                 textColor: tWhiteColor,
@@ -62,7 +70,7 @@ class SelectRole extends StatelessWidget {
               MyButton(
                 text: 'Chef region',
                 onTap: () {
-                  Get.to(const AddChefRegion());
+                  Get.to(() => const ChefRegionPage());
                 },
                 opacity: 0.7,
                 textColor: tWhiteColor,
@@ -75,7 +83,7 @@ class SelectRole extends StatelessWidget {
               MyButton(
                 text: 'Directeur',
                 onTap: () {
-                  Get.to(const AddDirecteur());
+                  Get.to(() => const DirecteurPage=());
                 },
                 opacity: 0.7,
                 textColor: tWhiteColor,

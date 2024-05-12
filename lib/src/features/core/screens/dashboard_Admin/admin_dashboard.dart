@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -9,13 +8,19 @@ import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
+
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/delegation_page.dart';
+
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/gouvernorat_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/region/regionPage.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/sous_secteur.dart';
 
+
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/zone/zone.dart';
+
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/detenteur_page.dart';
+
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -57,6 +62,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             mainAxisSpacing: 15, // Add main axis spacing
             crossAxisCount: 2,
             children: [
+
                  
           
                ReusableGestureDetector(
@@ -71,12 +77,20 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 labelText: 'Delegation',
                 onTap: () {
                   Get.to(()=> const DelegationPage());
+
+              ReusableGestureDetector(
+                imagePath: 'assets/images/contrat.png',
+                labelText: 'Conventions',
+                onTap: () {
+                  Get.to(const DetenteurPage());
+
                 },
               ),
                ReusableGestureDetector(
                 imagePath: 'assets/images/region.png' ,
                 labelText: 'Region',
                 onTap: () {
+
                   Get.to(()=> const RegionPage());
                 },
               ),
@@ -84,20 +98,29 @@ class _AdminDashboardState extends State<AdminDashboard> {
                  ReusableGestureDetector(
                 imagePath: 'assets/images/zone.png',
                 labelText: 'Zone',
+
+                  Get.to(const ConsultByRole());
+                },
+              ),
+              ReusableGestureDetector(
+                imagePath: tMap,
+                labelText: tGouvernorat,
+
                 onTap: () {
                   Get.to(()=> const ZonePage());
                 },
               ),
-             
-                ReusableGestureDetector(
-                imagePath: 'assets/images/secteur.png' ,
+
+              ReusableGestureDetector(
+                imagePath: 'assets/images/secteur.png',
+
                 labelText: 'Secteur',
                 onTap: () {
                   Get.to(()=> const Secteur());
                 },
               ),
               ReusableGestureDetector(
-                imagePath: 'assets/images/sous-sectur.png' ,
+                imagePath: 'assets/images/sous-sectur.png',
                 labelText: 'Sous-seteur',
                 onTap: () {
                   Get.to(()=> const SousSecteurPage());

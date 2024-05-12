@@ -163,6 +163,48 @@ void onReady() {
           'longitude': longitude,
         });
       }
+      firebaseUser.value != null
+          ? Get.offAll(() => AdminDashboard())
+          : Get.to(() => SplachScreen());
+    } on FirebaseAuthException catch (e) {
+      final ex = SignUpEmailPasswordException.code(e.code);
+      print("Database " + ex.message);
+      throw ex;
+    } catch (_) {
+      final ex = SignUpEmailPasswordException();
+      print(ex.message);
+      throw ex;
+    }
+  }
+
+  Future<void> createSousTraitantWithEmailAndPassword(
+    String nom,
+    String email,
+    String password,
+    String telephone,
+    String zone,
+    String role,
+  ) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('sousTraitants')
+            .doc(user.uid)
+            .set({
+          'nom': nom,
+          'email': email,
+          'telephone': telephone,
+          'zone': zone,
+          'role': role,
+        });
+      }
 
       firebaseUser.value != null
           ? Get.offAll(() => const Dashboard())
@@ -178,7 +220,92 @@ void onReady() {
     }
   }
 
-  Future<void> loginUserWithEmailAndPassword(String email, String password) async {
+  Future<void> createChefRegionWithEmailAndPassword(
+    String nom,
+    String email,
+    String password,
+    String telephone,
+    String region,
+    String role,
+  ) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('chefRegion')
+            .doc(user.uid)
+            .set({
+          'nom': nom,
+          'email': email,
+          'telephone': telephone,
+          'region': region,
+          'role': role,
+        });
+      }
+
+      firebaseUser.value != null
+          ? Get.offAll(() => AdminDashboard())
+          : Get.to(() => SplachScreen());
+    } on FirebaseAuthException catch (e) {
+      final ex = SignUpEmailPasswordException.code(e.code);
+      print("Database " + ex.message);
+      throw ex;
+    } catch (_) {
+      final ex = SignUpEmailPasswordException();
+      print(ex.message);
+      throw ex;
+    }
+  }
+
+  Future<void> createDirecteurWithEmailAndPassword(
+    String nom,
+    String email,
+    String password,
+    String telephone,
+    String role,
+  ) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('directeur')
+            .doc(user.uid)
+            .set({
+          'nom': nom,
+          'email': email,
+          'telephone': telephone,
+          'role': role,
+        });
+      }
+
+      firebaseUser.value != null
+          ? Get.offAll(() => AdminDashboard())
+          : Get.to(() => SplachScreen());
+    } on FirebaseAuthException catch (e) {
+      final ex = SignUpEmailPasswordException.code(e.code);
+      print("Database " + ex.message);
+      throw ex;
+    } catch (_) {
+      final ex = SignUpEmailPasswordException();
+      print(ex.message);
+      throw ex;
+    }
+  }
+
+  Future<void> loginUserWithEmailAndPassword(
+      String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       User? currentUser = _auth.currentUser;

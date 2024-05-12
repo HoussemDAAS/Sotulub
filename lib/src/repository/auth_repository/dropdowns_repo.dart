@@ -5,6 +5,8 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 class DropdownFetch extends GetxController {
   final RxList<String> gouvernoratItems = <String>[].obs;
   final RxList<String> zoneItems = <String>[].obs;
+  final RxList<String> regionItems = <String>[].obs;
+
   final RxList<String> filteredDelegationItems = <String>[].obs;
   final RxList<String> secteurItems = <String>[].obs;
   final RxList<String> soussecteurItems = <String>[].obs;
@@ -19,6 +21,7 @@ class DropdownFetch extends GetxController {
     fetchSecteurItems();
     fetchSousSecteurItems();
     fetchDelegationItems();
+    fetchRegionItems();
   }
 
   Future<void> fetchGouvernoratItems() async {
@@ -33,7 +36,7 @@ class DropdownFetch extends GetxController {
     }
   }
 
-   Future<void> fetchZoneItems() async {
+  Future<void> fetchZoneItems() async {
     try {
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('zone').get();
@@ -42,6 +45,18 @@ class DropdownFetch extends GetxController {
           .toList());
     } catch (e) {
       print('Error fetching zone items: $e');
+    }
+  }
+
+  Future<void> fetchRegionItems() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('region').get();
+      regionItems.assignAll(querySnapshot.docs
+          .map<String>((doc) => doc['Designation'] as String)
+          .toList());
+    } catch (e) {
+      print('Error fetching region items: $e');
     }
   }
 
@@ -59,7 +74,8 @@ class DropdownFetch extends GetxController {
 
   Future<void> fetchSousSecteurItems() async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Sous-Secteur').get();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('Sous-Secteur').get();
       soussecteurItems.assignAll(querySnapshot.docs
           .map<String>((doc) => doc['Désignations'] as String)
           .toList());
@@ -70,7 +86,8 @@ class DropdownFetch extends GetxController {
 
   Future<void> fetchDelegationItems() async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Delegation').get();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('Delegation').get();
       delegationItems.assignAll(querySnapshot.docs
           .map<String>((doc) => doc['Désignation'] as String)
           .toList());
