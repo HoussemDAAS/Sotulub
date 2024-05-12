@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -9,10 +8,11 @@ import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_by_role.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/gouvernorat_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/sous_secteur.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/users_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/detenteur_page.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -54,36 +54,36 @@ class _AdminDashboardState extends State<AdminDashboard> {
             mainAxisSpacing: 15, // Add main axis spacing
             crossAxisCount: 2,
             children: [
-                 ReusableGestureDetector(
+              ReusableGestureDetector(
                 imagePath: 'assets/images/contrat.png',
                 labelText: 'Conventions',
                 onTap: () {
-                  Get.to(const UsersPage());
+                  Get.to(const DetenteurPage());
                 },
               ),
               ReusableGestureDetector(
                 imagePath: tUSerImage,
                 labelText: 'Utilisateurs',
                 onTap: () {
-                  Get.to(const UsersPage());
+                  Get.to(const ConsultByRole());
                 },
               ),
               ReusableGestureDetector(
-                imagePath: tMap ,
+                imagePath: tMap,
                 labelText: tGouvernorat,
                 onTap: () {
                   Get.to(const GovPage());
                 },
               ),
-                ReusableGestureDetector(
-                imagePath: 'assets/images/secteur.png' ,
+              ReusableGestureDetector(
+                imagePath: 'assets/images/secteur.png',
                 labelText: 'Secteur',
                 onTap: () {
                   Get.to(const Secteur());
                 },
               ),
               ReusableGestureDetector(
-                imagePath: 'assets/images/sous-sectur.png' ,
+                imagePath: 'assets/images/sous-sectur.png',
                 labelText: 'Sous-seteur',
                 onTap: () {
                   Get.to(const SousSecteurPage());

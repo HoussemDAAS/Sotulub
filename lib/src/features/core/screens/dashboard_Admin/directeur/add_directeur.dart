@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/get_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
 import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
@@ -8,23 +9,24 @@ import 'package:sotulub/src/features/core/controllers/admin_controller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
 import 'package:sotulub/src/repository/auth_repository/dropdowns_repo.dart';
 
-class AddChefRegion extends StatefulWidget {
-  const AddChefRegion({Key? key}) : super(key: key);
+class AddDirecteur extends StatefulWidget {
+  const AddDirecteur({Key? key}) : super(key: key);
 
   @override
-  State<AddChefRegion> createState() => _AddChefRegionState();
+  State<AddDirecteur> createState() => _AddDirecteurState();
 }
 
-class _AddChefRegionState extends State<AddChefRegion> {
+class _AddDirecteurState extends State<AddDirecteur> {
   final AdminController controller = Get.put(AdminController());
   final _formKey = GlobalKey<FormState>();
   final DropdownFetch dropdownController = Get.put(DropdownFetch());
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Chef region".toUpperCase(),
+          title: Text("Directeur".toUpperCase(),
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -91,24 +93,7 @@ class _AddChefRegionState extends State<AddChefRegion> {
                       },
                     ),
                     const SizedBox(height: tFormHeight - 10.0),
-                    Obx(() {
-                      return CustomDropdown(
-                        labelText: 'Region',
-                        prefixIcon: Icons.map_outlined,
-                        items: dropdownController.regionItems.map((zone) {
-                          return DropdownMenuItem(
-                            value: zone,
-                            child: Text(zone),
-                          );
-                        }).toList(),
-                        value: null,
-                        onChanged: (newValue) {
-                          // Update the selected delegation in the controller
-                          controller.zone.value = newValue ?? "";
-                        },
-                      );
-                    }),
-                    const SizedBox(height: tFormHeight - 10.0),
+                    
                     CustomTextField(
                       labelText: 'Telephone',
                       hintText: 'Enter your number',
@@ -127,12 +112,12 @@ class _AddChefRegionState extends State<AddChefRegion> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            AdminController.instance.tRegisterChefRegion(
+                            AdminController.instance.tRegisterDirecteur(
                               controller.nom.text.trim(),
                               controller.email.text.trim(),
                               controller.password.text.trim(),
                               controller.telephone.text.trim(),
-                              controller.zone.value,
+                              
                             );
                             Get.offAll(() => const AdminDashboard());
                           }
