@@ -55,7 +55,7 @@ class _UsersPageState extends State<UsersPage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Get.to(SelectRole());
+                  Get.to(()=> SelectRole());
                 },
                 icon: Icon(Icons.add)),
           ],

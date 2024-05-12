@@ -111,7 +111,7 @@ class _AddGovPageState extends State<AddGovPage> {
                         designation: designation,
                         codeZone: controller.CodeZone.text,
                       );
-                     Get.to(AdminDashboard()); 
+                     Get.to(()=>AdminDashboard()); 
                     }
                   },
                   child: Text('Enregistrer'.toUpperCase()),

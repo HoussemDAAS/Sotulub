@@ -171,7 +171,7 @@ class _RegionPageState extends State<RegionPage> {
             IconButton(
               icon: Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-               Get.to(AddRegion());
+               Get.to(()=> AddRegion());
               },
             ),
           ],

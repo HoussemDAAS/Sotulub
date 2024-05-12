@@ -8,12 +8,14 @@ class AdminRepository extends GetxController {
   final RxList<String> zoneItems = <String>[].obs;
   final RxList<String> gouvernoratItems = <String>[].obs;
   final RxList<String> secteurItems = <String>[].obs;
+   final RxList<String> regionItems = <String>[].obs;
 
   void onInit() {
     super.onInit();
     fetchGouvernoratItems();
     fetchZoneItems();
     fetchSecteurItems();
+    fetchRegionItems();
   }
 
   Future<void> fetchGouvernoratItems() async {
@@ -375,20 +377,20 @@ Future<bool> checkDesignationZoneExists(String designation) async {
   Future<void> addZone({
     required String designation,
     required List<String> selectedGouvernorats,
+    required String CodeRegion,
   }) async {
     try {
-      // Get the next code for the new zone
+
       String nextCodeZone = await getNextCodeZone();
 
-      // Create a document in the 'zone' collection
+
       await FirebaseFirestore.instance.collection('zone').add({
         'codeZone': nextCodeZone,
-        'codeRegion': '', // Empty for now
+        'codeRegion': CodeRegion,
         'designation': designation,
       });
 
-      // Update the 'codeZone' field in the 'gouvernorat' collection
-      // for each selected gouvernorat with the new zone's code
+
       for (String gouvernorat in selectedGouvernorats) {
         await FirebaseFirestore.instance
             .collection('Gouvernorat')
@@ -522,7 +524,31 @@ Future<void> addRegion({
       return '';
     }
   }
-
+  Future<void> fetchRegionItems() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('region').get();
+      regionItems.assignAll(querySnapshot.docs.map<String>((doc) => doc['Designation'] as String).toList());
+    } catch (e) {
+      print('Error fetching  region items: $e');
+    }
+  }
+Future<String> getCodeRegion(String selectedRegion) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('region')
+          .where('Designation', isEqualTo: selectedRegion)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['codeRegion'].toString();
+      } else {
+        return '';
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      return '';
+    }
+  }
 
 
 

@@ -36,7 +36,7 @@ class BottomNavigation extends StatelessWidget {
                       // Navigate to demande_collect screen
                       break;
                     case 2:
-                     Get.to(ProfileScreen()); // Navigate to profile screen
+                     Get.to(()=>ProfileScreen()); // Navigate to profile screen
                       break;
                     default:
                   }

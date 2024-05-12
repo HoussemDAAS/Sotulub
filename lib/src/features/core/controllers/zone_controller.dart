@@ -6,6 +6,11 @@ class ZoneController extends GetxController {
 
   RxList<String> Gouvernorats = <String>[].obs;
   final TextEditingController designation = TextEditingController();
+
+  final TextEditingController CodeRegion = TextEditingController(); // Define CodeZone
+
+  final RxString region = RxString("");
+
  void addSelectedGouvernorat(String gouvernorat) {
     if (!Gouvernorats.contains(gouvernorat)) {
       Gouvernorats.add(gouvernorat);
@@ -21,6 +26,8 @@ class ZoneController extends GetxController {
   void onClose() {
 
     designation.dispose();
+    CodeRegion.dispose(); // Dispose CodeZone
+
 
  
     super.onClose();

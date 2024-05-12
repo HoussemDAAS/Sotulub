@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:sotulub/src/common_widgets/bottom_naviagtion_bar.dart';
-
 import 'package:sotulub/src/common_widgets/card_widget.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/line_chart.dart';
@@ -25,22 +23,23 @@ class Dashboard extends StatefulWidget {
 
   @override
   _DashboardState createState() => _DashboardState();
-
-  updatePageIndicator(int index) {}
 }
 
 class _DashboardState extends State<Dashboard> {
-  bool _showToast = true;
+  bool _showToast = false;
+  bool _isConvention = false;
   Timer? _showToastTimer;
 
   @override
   void initState() {
     super.initState();
+    // Call the function to check convention
+    _checkConvention();
     // Show the toast when the page is opened
     _showToast = true;
 
     // Schedule the appearance of the toast after 20 seconds if it's closed
-    _showToastTimer = Timer( const Duration(seconds: 30), () {
+    _showToastTimer = Timer(const Duration(seconds: 20), () {
       if (!_showToast) {
         setState(() {
           _showToast = true;
@@ -49,21 +48,28 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  void _hideToast() {
-    setState(() {
-      _showToast = false;
-    });
-
-    // Cancel the timer before disposing the widget
+  @override
+  void dispose() {
+    super.dispose();
     if (_showToastTimer != null && _showToastTimer!.isActive) {
       _showToastTimer!.cancel();
     }
+  }
 
-    // Schedule the appearance of the toast after 20 seconds
-    _showToastTimer = Timer(Duration(seconds: 30), () {
+  void _checkConvention() {
+    AuthRepository.instance.checkConvention().then((isConvention) {
       setState(() {
-        _showToast = true;
+        _isConvention = isConvention;
+        _showToast = !isConvention; // Show the toast if convention is false
       });
+    }).catchError((error) {
+      print('Error checking convention: $error');
+    });
+  }
+
+  void _hideToast() {
+    setState(() {
+      _showToast = false;
     });
   }
 
@@ -84,6 +90,7 @@ class _DashboardState extends State<Dashboard> {
       description: "L'aspiration des huiles usagées selon le procédé SOTULUB génère deux sous-produits : un résidu de distillation et une fraction d’hydrocarbure assimilée au gasoil. Ils peuvent être valorisés soit :\n  ✅ En mélange comme combustible qui présente un pouvoir calorifique équivalent à celui du fuel-oil\n ✅ En tant qu’adjuvant pour bitume \n ✅ Comme élément de la fabrication des produits d’étanchéité dans le BTP",
     ),
   ];
+
   void navigateToProduitDetails(int index) {
     Navigator.push(
       context,
@@ -100,29 +107,26 @@ class _DashboardState extends State<Dashboard> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          // leading: const Icon(Icons.menu, color: tPrimaryColor),
-          title: Text(tWelcomeTitle.toUpperCase() , 
-          style: GoogleFonts.montserrat(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              )),
+          title: Text(
+            tWelcomeTitle.toUpperCase(),
+            style: GoogleFonts.montserrat(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            )
+          ),
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
           actions: [
-          // Logout Icon Button
-          IconButton(
-            icon: Icon(Icons.logout, color: tPrimaryColor),
-            onPressed: () {
-              _handleLogout();
-            },
-          ),
-        ],
+            IconButton(
+              icon: Icon(Icons.logout, color: tPrimaryColor),
+              onPressed: () {
+                _handleLogout();
+              },
+            ),
+          ],
         ),
-       bottomNavigationBar: BottomNavigation(
-        convention: true,
-       ),
-
+        bottomNavigationBar:  BottomNavigation(convention:  _isConvention ),
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -133,21 +137,28 @@ class _DashboardState extends State<Dashboard> {
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
                     child: TpromoSlider(),
                   ),
-                  const SizedBox(height: 20),
-                 const  LineChartSample2(isVisible: false,),
-                  const SizedBox(height: 20),
-                  CardWidget(title: 'Demande Cuve', buttonText: 'Demander', imagePath: tBarrel, onTap: () {
-                      Get.to(()=>const DemandeCuve());
-                  }
-                    
+                  SizedBox(height: 20),
+                  LineChartSample2(isVisible: _isConvention),
+               const    SizedBox(height: 20),
+                  CardWidget(
+                    title: 'Demande Cuve',
+                    buttonText: 'Demander',
+                    imagePath: tBarrel,
+                    onTap: () {
+                      Get.to(() => const DemandeCuve());
+                    },
                   ),
-                  const SizedBox(height: 20),
-                   CardWidget(title: 'Demande Collect', buttonText: 'Demander', imagePath: tTrack, onTap: () {
-                       Get.to(() => const DemandeCollecte());
-                   },reverse: true
-                    
+             const      SizedBox(height: 20),
+                  CardWidget(
+                    title: 'Demande Collect',
+                    buttonText: 'Demander',
+                    imagePath: tTrack,
+                    onTap: () {
+                      Get.to(() => const DemandeCollecte());
+                    },
+                    reverse: true,
                   ),
-                  const Padding(
+               const    Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.0),
                     child: Text(
                       'Nos produits',
@@ -158,19 +169,20 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 25),
+               const    SizedBox(height: 25),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.43, // Adjust the height as needed
+                    height: MediaQuery.of(context).size.height * 0.43,
                     child: ListView.builder(
                       itemCount: produits.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add horizontal margin
+                        padding:const  EdgeInsets.symmetric(horizontal: 8.0),
                         child: ProduitTitle(
-                          produit: produits[index]
-                          ,onTap: (){
+                          produit: produits[index],
+                          onTap: () {
                             navigateToProduitDetails(index);
-                          }),
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -183,39 +195,34 @@ class _DashboardState extends State<Dashboard> {
                 left: 0,
                 right: 0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  color:const Color(0xFFA6E9D2), // Custom background color
+                  padding:const  EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  color: const Color(0xFFA6E9D2),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                    const   Text(
                         "Demande de convention est en cours",
                         style: TextStyle(color: Colors.white),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close, color: Colors.white),
+                        icon: Icon(Icons.close, color: Colors.white),
                         onPressed: _hideToast,
                       ),
                     ],
                   ),
                 ),
               ),
-            const SizedBox(height: 10),
           ],
         ),
       ),
     );
   }
+
   void _handleLogout() {
-  AuthRepository.instance.logout().then((_) {
-   
-    Get.offAll(() => SplachScreen());
-  }).catchError((error) {
-    
-    print('Logout error: $error');
-  });
+    AuthRepository.instance.logout().then((_) {
+      Get.offAll(() => SplachScreen());
+    }).catchError((error) {
+      print('Logout error: $error');
+    });
+  }
 }
-}
-
-
-

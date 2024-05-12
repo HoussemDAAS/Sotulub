@@ -168,7 +168,7 @@ Future<void> _deleteZone(String codeZone, String designation) async {
             IconButton(
               icon: const Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-                Get.to(const AddZonePage());
+                Get.to(()=>const AddZonePage());
               },
             ),
           ],

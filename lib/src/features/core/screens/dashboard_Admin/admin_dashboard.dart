@@ -61,35 +61,35 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 imagePath: 'assets/images/contrat.png',
                 labelText: 'Conventions',
                 onTap: () {
-                  Get.to(const UsersPage());
+                  Get.to(()=> const UsersPage());
                 },
               ),
               ReusableGestureDetector(
                 imagePath: tUSerImage,
                 labelText: 'Utilisateurs',
                 onTap: () {
-                  Get.to(const UsersPage());
+                  Get.to(()=> const UsersPage());
                 },
               ),
                ReusableGestureDetector(
                 imagePath: tMap ,
                 labelText: tGouvernorat,
                 onTap: () {
-                  Get.to(const GovPage());
+                  Get.to(()=> const GovPage());
                 },
               ),
                  ReusableGestureDetector(
                 imagePath: 'assets/images/delegation.png' ,
                 labelText: 'Delegation',
                 onTap: () {
-                  Get.to(const DelegationPage());
+                  Get.to(()=> const DelegationPage());
                 },
               ),
                ReusableGestureDetector(
                 imagePath: 'assets/images/region.png' ,
                 labelText: 'Region',
                 onTap: () {
-                  Get.to(const RegionPage());
+                  Get.to(()=> const RegionPage());
                 },
               ),
 
@@ -97,7 +97,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 imagePath: 'assets/images/zone.png',
                 labelText: 'Zone',
                 onTap: () {
-                  Get.to(const ZonePage());
+                  Get.to(()=> const ZonePage());
                 },
               ),
              
@@ -105,14 +105,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 imagePath: 'assets/images/secteur.png' ,
                 labelText: 'Secteur',
                 onTap: () {
-                  Get.to(const Secteur());
+                  Get.to(()=> const Secteur());
                 },
               ),
               ReusableGestureDetector(
                 imagePath: 'assets/images/sous-sectur.png' ,
                 labelText: 'Sous-seteur',
                 onTap: () {
-                  Get.to(const SousSecteurPage());
+                  Get.to(()=> const SousSecteurPage());
                 },
               ),
             ],

@@ -113,7 +113,7 @@ class _AddRegionState extends State<AddRegion> {
                         designation: designation,
                         codeChefRegion: controller.CodeChefRegion.text,
                       );
-                     Get.to(AdminDashboard()); 
+                     Get.to(()=> const AdminDashboard()); 
                     }
                   },
                   child: Text('Enregistrer'.toUpperCase()),

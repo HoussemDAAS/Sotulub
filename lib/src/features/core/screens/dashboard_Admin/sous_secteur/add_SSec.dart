@@ -120,7 +120,7 @@ class _AddSsecteurState extends State<AddSsecteur> {
                         designation: designation,
                         codeSecteur: controller.CodeSectur.text,
                       );
-                      Get.to(AdminDashboard());
+                      Get.to(()=> AdminDashboard());
                     }
                   },
                   child: Text('Enregistrer'.toUpperCase()),

@@ -83,7 +83,7 @@ class _AddSecteurState extends State<AddSecteur> {
                      
                       );
                       controller.Secteur.clear();
-                     Get.to(AdminDashboard()); 
+                     Get.to(()=>AdminDashboard()); 
                     }
                   },
                   child: Text('Enregistrer'.toUpperCase()),

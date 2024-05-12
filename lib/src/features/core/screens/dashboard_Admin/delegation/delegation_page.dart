@@ -161,7 +161,7 @@ class _DelegationPageState extends State<DelegationPage> {
             IconButton(
               icon:const  Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-                 Get.to(const AddDelgationPage());
+                 Get.to(()=>const AddDelgationPage());
               },
             ),
           ],

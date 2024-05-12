@@ -168,7 +168,7 @@ class _SecteurState extends State<Secteur> {
             IconButton(
               icon: Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-                Get.to(AddSecteur());
+                Get.to(()=> const AddSecteur());
               },
             ),
           ],

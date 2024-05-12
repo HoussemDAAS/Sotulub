@@ -172,7 +172,7 @@ class _GovPageState extends State<GovPage> {
             IconButton(
               icon: Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-                Get.to(AddGovPage());
+                Get.to(()=>const AddGovPage());
               },
             ),
           ],

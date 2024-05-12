@@ -80,6 +80,33 @@ class _AddZonePageState extends State<AddZonePage> {
                   return null;
                 },
               ),
+                    const SizedBox(height: tFormHeight - 10.0),
+              Obx(() {
+                return CustomDropdown(
+                  labelText: 'Région',
+                  prefixIcon: Icons.map_sharp,
+                  items: dropdownController.regionItems.map((region) {
+                    return DropdownMenuItem(
+                      value: region,
+                      child: Text(region),
+                    );
+                  }).toList(),
+                  value: null,
+                  onChanged: (newValue) async {
+                    // Update the selected zone
+                    controller.region.value = newValue ?? "";
+
+                    if (newValue != null) {
+                      // Get the codeZone for the selected zone
+                      String codeRegion =
+                          await AdminRepository.instance.getCodeRegion(newValue);
+
+                      // Do something with the codeZone, such as updating controller.CodeZone
+                      controller.CodeRegion.text = codeRegion;
+                    }
+                  },
+                );
+              }),
               const SizedBox(height: tFormHeight - 10.0),
               Expanded(
                 child: ListView.builder(
@@ -148,9 +175,10 @@ class _AddZonePageState extends State<AddZonePage> {
                     } else {
                       await AdminRepository.instance.addZone(
                         designation: designation,
-                        selectedGouvernorats: selectedGouvernorats,
+                        selectedGouvernorats: selectedGouvernorats, CodeRegion: controller.CodeRegion.text,
+                          
                       );
-                      Get.to(AdminDashboard());
+                      Get.to(()=>AdminDashboard());
                     }
                   },
                   child: Text('Enregistrer'.toUpperCase()),
