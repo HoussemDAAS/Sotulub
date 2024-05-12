@@ -9,17 +9,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/select_role.dart';
 
-class UsersPage extends StatefulWidget {
-  const UsersPage({Key? key}) : super(key: key);
+class DetenteurPage extends StatefulWidget {
+  const DetenteurPage({Key? key}) : super(key: key);
 
   @override
-  State<UsersPage> createState() => _UsersPageState();
+  State<DetenteurPage> createState() => _DetenteurPageState();
 }
 
-class _UsersPageState extends State<UsersPage> {
+class _DetenteurPageState extends State<DetenteurPage> {
   List<QueryDocumentSnapshot> data = [];
 
-  getData() async {
+  getDetenteurs() async {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection("users").get();
 
@@ -33,7 +33,7 @@ class _UsersPageState extends State<UsersPage> {
 
   @override
   void initState() {
-    getData();
+    getDetenteurs();
     super.initState();
   }
 
@@ -43,7 +43,7 @@ class _UsersPageState extends State<UsersPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Liste des Utilisateurs".toUpperCase(),
+            "Liste des detenteurs".toUpperCase(),
             style: GoogleFonts.montserrat(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -52,13 +52,7 @@ class _UsersPageState extends State<UsersPage> {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Get.to(SelectRole());
-                },
-                icon: Icon(Icons.add)),
-          ],
+          
         ),
         body: ListView.builder(
           itemCount: data.length,
@@ -147,7 +141,7 @@ class _UsersPageState extends State<UsersPage> {
                                 // Update local data and trigger UI refresh
                                 setState(() {
                                   data.clear();
-                                  getData();
+                                  getDetenteurs();
                                 });
 
                                 // Debugging: Print a message to check if this code block is executed
@@ -204,7 +198,7 @@ class _UsersPageState extends State<UsersPage> {
 
                               setState(() {
                                 data.clear();
-                                getData();
+                                getDetenteurs();
                               });
                             },
                             child: Container(

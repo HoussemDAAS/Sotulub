@@ -202,7 +202,6 @@ class _AddDetenteurState extends State<AddDetenteur> {
                           value: sousSecteur,
                           child: Text(truncatedText),
                         );
-                        
                       }).toList(),
                       value: null, // Set the initial value to null
                       onChanged: (newValue) {
