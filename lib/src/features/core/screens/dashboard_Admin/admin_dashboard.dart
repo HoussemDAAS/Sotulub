@@ -14,7 +14,7 @@ import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/go
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/region/regionPage.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/sous_secteur.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/users_page.dart';
+
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/zone/zone.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
@@ -57,20 +57,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
             mainAxisSpacing: 15, // Add main axis spacing
             crossAxisCount: 2,
             children: [
-                 ReusableGestureDetector(
-                imagePath: 'assets/images/contrat.png',
-                labelText: 'Conventions',
-                onTap: () {
-                  Get.to(()=> const UsersPage());
-                },
-              ),
-              ReusableGestureDetector(
-                imagePath: tUSerImage,
-                labelText: 'Utilisateurs',
-                onTap: () {
-                  Get.to(()=> const UsersPage());
-                },
-              ),
+                 
+          
                ReusableGestureDetector(
                 imagePath: tMap ,
                 labelText: tGouvernorat,
