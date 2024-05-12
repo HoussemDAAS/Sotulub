@@ -83,7 +83,7 @@ class ConsultByRole extends StatelessWidget {
               MyButton(
                 text: 'Directeur',
                 onTap: () {
-                  Get.to(() => const DirecteurPage=());
+                  Get.to(() => const DirecteurPage());
                 },
                 opacity: 0.7,
                 textColor: tWhiteColor,
