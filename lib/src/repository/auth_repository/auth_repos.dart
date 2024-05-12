@@ -381,6 +381,50 @@ void onReady() {
     }
   }
 
+
+
+
+Future<Map<String, dynamic>> getDataByEmail(String email) async {
+  try {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // Extract data from the first document
+      var userData = querySnapshot.docs.first.data() as Map<String, dynamic>;;
+      
+      // Check if userData is not null before accessing its fields
+      if (userData != null) {
+        return {
+          'telephone': userData['telephone'],
+          'longitude': userData['longitude'],
+          'latitude': userData['latitude'],
+          'delegation': userData['delegation'],
+          'gouvernorat': userData['gouvernorat'],
+        };
+      } else {
+        // userData is null, handle accordingly
+        return {}; // Return an empty map
+      }
+    } else {
+      // No document found with the given email
+      return {}; // Return an empty map
+    }
+  } catch (e) {
+    Get.snackbar(
+      'Erreur',
+      'Erreur lors de la récupération des données: $e',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+    print('Error fetching user data: $e');
+    rethrow; // Re-throw the error to handle it in the calling code
+  }
+}
+
+
   Future<bool> checkConvention() async {
   try {
     User? user = _auth.currentUser;
