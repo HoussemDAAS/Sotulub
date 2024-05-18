@@ -7,7 +7,7 @@ import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
 
 import 'package:sotulub/src/constants/sizes.dart';
 
-import 'package:sotulub/src/features/core/controllers/gouvernorat_controller.dart';
+
 import 'package:sotulub/src/features/core/controllers/region_controller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
 import 'package:sotulub/src/repository/admin_repos.dart';
@@ -47,12 +47,12 @@ class _AddRegionState extends State<AddRegion> {
               Obx(() {
                 return CustomDropdown(
                   labelText: 'Chef Region',
-                  prefixIcon: Icons.map_outlined,
+                  prefixIcon: Icons.person_2_outlined,
                   items: 
-                  dropdownController.zoneItems.map((zone) {
+                  dropdownController.chefItems.map((chef) {
                     return DropdownMenuItem(
-                      value: zone,
-                      child: Text(zone),
+                      value: chef,
+                      child: Text(chef),
                     );
                   }).toList(),
                   value: null,
@@ -62,11 +62,11 @@ class _AddRegionState extends State<AddRegion> {
 
                     if (newValue != null) {
            
-                      String codeZone =
-                          await AdminRepository.instance.getCodeZone(newValue);
+                      String codeChef =
+                          await AdminRepository.instance.getCodeChef(newValue);
 
                   
-                      controller.CodeChefRegion.text = codeZone;
+                      controller.CodeChefRegion.text = codeChef;
                     }
                   },
                 );

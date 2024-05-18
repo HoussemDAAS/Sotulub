@@ -176,7 +176,39 @@ void onReady() {
       throw ex;
     }
   }
+Future<int> getNextNumeroChef() async {
+  try {
+    // Get the current value of numeroDemande from Firestore
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('idChefRegion')
+        .doc('counter')
+        .get();
 
+    if (snapshot.exists) {
+      int currentNumeroDemande = snapshot.get('numero') as int? ?? 0;
+
+      // Increment the value by 1
+      await FirebaseFirestore.instance
+          .collection('idChefRegion')
+          .doc('counter')
+          .update({'numero': currentNumeroDemande + 1});
+
+      return currentNumeroDemande + 1; // Return the incremented value
+    } else {
+      // If the document doesn't exist, create it with initial value 1
+      await FirebaseFirestore.instance
+          .collection('idChefRegion')
+          .doc('counter')
+          .set({'numero': 1});
+
+      return 1; // Return the initial value
+    }
+  } catch (e) {
+    // Handle errors
+    print('Error getting next numeroDemande: $e');
+    throw e; // Rethrow the exception to propagate it
+  }
+}
   Future<void> createSousTraitantWithEmailAndPassword(
     String nom,
     String email,
@@ -221,6 +253,7 @@ void onReady() {
   }
 
   Future<void> createChefRegionWithEmailAndPassword(
+    
     String nom,
     String email,
     String password,
@@ -235,12 +268,14 @@ void onReady() {
       );
 
       User? user = _auth.currentUser;
-
+     
       if (user != null) {
+      int   id= await getNextNumeroChef();
         await FirebaseFirestore.instance
             .collection('chefRegion')
             .doc(user.uid)
             .set({
+           'id':id.toString(),
           'nom': nom,
           'email': email,
           'telephone': telephone,

@@ -29,9 +29,9 @@ class ConsultByRole extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  Get.to(SelectRole());
+                  Get.to(const SelectRole());
                 },
-                icon: Icon(Icons.add)),
+                icon:const  Icon(Icons.add)),
           ],
         ),
         body: Padding(

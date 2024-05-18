@@ -6,6 +6,7 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 class AdminRepository extends GetxController {
   static AdminRepository get instance => Get.find();
   final RxList<String> zoneItems = <String>[].obs;
+  final RxList<String> chefItems = <String>[].obs;
   final RxList<String> gouvernoratItems = <String>[].obs;
   final RxList<String> secteurItems = <String>[].obs;
    final RxList<String> regionItems = <String>[].obs;
@@ -16,6 +17,7 @@ class AdminRepository extends GetxController {
     fetchZoneItems();
     fetchSecteurItems();
     fetchRegionItems();
+    fetchChefRegionItems();
   }
 
   Future<void> fetchGouvernoratItems() async {
@@ -489,6 +491,7 @@ Future<void> updateZone(String oldZone, String newZone, List<String> selectedGou
 
 // region 
 Future<void> addRegion({
+    
     required String designation,
     required String codeChefRegion,
   }) async {
@@ -496,7 +499,7 @@ Future<void> addRegion({
       await FirebaseFirestore.instance.collection('region').add({
         'codeRegion': await getNextCodeRegion(),
         'Designation': designation,
-        'codeChefRegion': '',
+        'codeChefRegion': codeChefRegion,
       });
     } catch (e) {
       print('Error adding gouvernorat: $e');
@@ -778,5 +781,47 @@ Future<bool> checkNomExists(String designation) async {
       print('Error updating Sous secteur: $e');
     }
   }
-  
+  // chef region 
+
+   Future<void> fetchChefRegionItems() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('chefRegion').get();
+      chefItems.assignAll(querySnapshot.docs.map<String>((doc) => doc['nom'] as String).toList());
+    } catch (e) {
+      print('Error fetching zone items: $e');
+    }
+  }
+
+  Future<String> getCodeChef(String selectedChef) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('chefRegion')
+          .where('nom', isEqualTo: selectedChef)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['id'].toString();
+      } else {
+        return '';
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      return '';
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
