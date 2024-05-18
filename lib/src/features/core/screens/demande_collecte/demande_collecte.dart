@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
-import 'package:get/get_instance/get_instance.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/common_widgets/bottom_naviagtion_bar.dart';
 import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
@@ -10,12 +7,11 @@ import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/features/authentication/screens/login/Login_header_widget.dart';
 import 'package:sotulub/src/features/core/controllers/demande_collecte_contorller.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
 import 'package:sotulub/src/repository/DemandeColect_repos.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
 class DemandeCollecte extends StatelessWidget {
-  const DemandeCollecte({super.key});
+  const DemandeCollecte({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +33,10 @@ class DemandeCollecte extends StatelessWidget {
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
-          bottomNavigationBar: const BottomNavigation(
-        convention: true,
-        defaultIndex: 1,
-      ),
+        bottomNavigationBar: const BottomNavigation(
+          convention: true,
+          defaultIndex: 1,
+        ),
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -83,31 +79,49 @@ class DemandeCollecte extends StatelessWidget {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    // Retrieve logged-in user's email
-                                    
-                                    String email =
-                                        AuthRepository.instance.firebaseUser.value!.email!;
-                                    // Retrieve additional data based on email
-                                    String responsable =
-                                        await AuthRepository.instance
-                                            .getResponsableByEmail(email);
+                                    try {
+                                      // Retrieve logged-in user's email
+                                      String email = AuthRepository.instance.firebaseUser.value!.email!;
+                                      
+                                      // Retrieve additional data based on email
+                                      Map<String, dynamic> userData = await AuthRepository.instance.getDataByEmail(email);
+                                      
+                                      // Retrieve data from the userData map
+                                      String telephone = userData['telephone'].toString();
+                                      String gouvernorat = userData['gouvernorat'].toString();
+                                      String delegation = userData['delegation'].toString();
+                                      String longitude = userData['longitude'].toString();
+                                      String latitude = userData['latitude'].toString();
+                                      String responsable = await AuthRepository.instance.getResponsableByEmail(email);
 
-                                    // Retrieve data from the controller
-                                 
-                                    String month = DateTime.now().month.toString();
-                                    String quentity = controller.quentity.text;
+                                      // Retrieve current month and quantity from the controller
+                                      String month = DateTime.now().month.toString();
+                                      String quantity = controller.quentity.text;
 
-                                    // Add data to the collection
-                                    await DemandeColectRepository.instance
-                                        .addDemandeCollect(
-                                    
-                                      month,
-                                      responsable,
-                                      email,
-                                      quentity,
-                                    );
+                                      // Add data to the collection
+                                      await DemandeColectRepository.instance.addDemandeCollect(
+                                        month,
+                                        responsable,
+                                        email,
+                                        quantity,
+                                        telephone,
+                                        gouvernorat,
+                                        delegation,
+                                        longitude,
+                                        latitude,
+                                      );
+                                    } catch (e) {
+                                      // Handle any errors that occur during the process
+                                      print('Error: $e');
+                                      // Optionally display an error message to the user
+                                      Get.snackbar(
+                                        'Error',
+                                        'An error occurred while processing your request. Please try again later.',
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                      );
+                                    }
                                   }
-                                    Get.to(() => const Dashboard());
                                 },
                                 child: Text(
                                   'envoyer votre demande'.toUpperCase(),
