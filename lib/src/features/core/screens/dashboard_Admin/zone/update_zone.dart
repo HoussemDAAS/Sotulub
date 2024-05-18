@@ -51,14 +51,11 @@ class _UpdateZonePageState extends State<UpdateZonePage> {
   }
 
   Future<void> fetchGouvernorats() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection("Gouvernorat")
-        .get();
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection("Gouvernorat").get();
 
-    List<String> gouvernorats = querySnapshot.docs
-        .map((doc) => doc['Désignation'] as String)
-        .toList();
-
+    List<String> gouvernorats =
+        querySnapshot.docs.map((doc) => doc['Désignation'] as String).toList();
 
     List<String> associatedGouvernorats =
         await adminRepository.getAssociatedGouvernorats(widget.selectedZone);
@@ -73,7 +70,7 @@ class _UpdateZonePageState extends State<UpdateZonePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Update Gouvernorat'.toUpperCase(),
+          'Update Zone'.toUpperCase(),
           style: GoogleFonts.montserrat(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -145,31 +142,31 @@ class _UpdateZonePageState extends State<UpdateZonePage> {
             ),
             SizedBox(height: tFormHeight),
             ElevatedButton(
-  onPressed: () async {
-    if (zoneController!.text.isNotEmpty) {
-      // Update the zone
-      await adminRepository.updateZone(
-        widget.selectedZone,
-        zoneController!.text,
-        selectedGouvernorats,
-      );
-      Get.snackbar(
-        'Succès',
-        'La zone a été mise à jour avec succès',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-    } else {
-      Get.snackbar(
-        'Erreur',
-        'Veuillez remplir tous les champs',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-  },
-  child: Text('Mettre à jour'.toUpperCase()),
-),
+              onPressed: () async {
+                if (zoneController!.text.isNotEmpty) {
+                  // Update the zone
+                  await adminRepository.updateZone(
+                    widget.selectedZone,
+                    zoneController!.text,
+                    selectedGouvernorats,
+                  );
+                  Get.snackbar(
+                    'Succès',
+                    'La zone a été mise à jour avec succès',
+                    backgroundColor: Colors.green,
+                    colorText: Colors.white,
+                  );
+                } else {
+                  Get.snackbar(
+                    'Erreur',
+                    'Veuillez remplir tous les champs',
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                }
+              },
+              child: Text('Mettre à jour'.toUpperCase()),
+            ),
           ],
         ),
       ),

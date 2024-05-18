@@ -35,4 +35,17 @@ class AdminController extends GetxController {
     AuthRepository.instance.createDirecteurWithEmailAndPassword(
         nom, email, password, telephone, "directeur");
   }
+
+  void tUpdateUser(
+      String userUID,
+      String email,
+      String raisonSociale,
+      String responsable,
+      String telephone,
+      String gov,
+      String delegation,
+      String secteur) {
+    AuthRepository.instance.updateUser(userUID, email, raisonSociale,
+        responsable, telephone, gov, delegation, secteur);
+  }
 }

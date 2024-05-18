@@ -53,7 +53,7 @@ class _ZonePageState extends State<ZonePage> {
     await getData();
   }
 
-void _navigateToUpdatePage(String selectedZone) {
+  void _navigateToUpdatePage(String selectedZone) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -65,89 +65,83 @@ void _navigateToUpdatePage(String selectedZone) {
       getData();
     });
   }
-Future<void> _deleteZone(String codeZone, String designation) async {
-  // Show delete confirmation dialog
-  bool confirmDelete = await showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title:const  Text(
-        "Supprimer Zone",
-        style: TextStyle(
-          color: Colors.red, // Customize title color
+
+  Future<void> _deleteZone(String codeZone, String designation) async {
+    // Show delete confirmation dialog
+    bool confirmDelete = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          "Supprimer Zone",
+          style: TextStyle(
+            color: Colors.red, // Customize title color
+          ),
         ),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Vous etes sur de vouloir supprimer $designation?",
-            style:const  TextStyle(
-              color: Colors.black, )
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Vous etes sur de vouloir supprimer $designation?",
+                style: const TextStyle(
+                  color: Colors.black,
+                )),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+            child: const Text(
+              "Non",
+              style: TextStyle(
+                color: Colors.green,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            child: const Text(
+              "Oui",
+              style: TextStyle(
+                color: Colors.green,
+              ),
+            ),
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context, false);
-          },
-          child: const Text(
-            "Non",
-            style: TextStyle(
-              color: Colors.green,
-            ),
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context, true); 
-          },
-          child:const  Text(
-            "Oui",
-            style: TextStyle(
-              color: Colors.green, 
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
+    );
 
-  // Handle delete confirmation
-  if (confirmDelete != null && confirmDelete) {
+    // Handle delete confirmation
+    if (confirmDelete != null && confirmDelete) {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("zone")
+          .where("codeZone", isEqualTo: codeZone)
+          .get();
+      String documentId = querySnapshot.docs.first.id;
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection("zone")
-        .where("codeZone", isEqualTo: codeZone)
-        .get();
-    String documentId = querySnapshot.docs.first.id;
+      await FirebaseFirestore.instance
+          .collection("zone")
+          .doc(documentId)
+          .delete();
 
-  
-    await FirebaseFirestore.instance
-        .collection("zone")
-        .doc(documentId)
-        .delete();
+      QuerySnapshot delegationSnapshot = await FirebaseFirestore.instance
+          .collection("Gouvernorat")
+          .where("code zone", isEqualTo: codeZone)
+          .get();
 
+      if (delegationSnapshot.docs.isNotEmpty) {
+        for (QueryDocumentSnapshot doc in delegationSnapshot.docs) {
+          await doc.reference
+              .update({"code zone": ""}); // Update code zone to empty string
+        }
+      }
 
-    QuerySnapshot delegationSnapshot = await FirebaseFirestore.instance
-        .collection("Gouvernorat")
-        .where("code zone", isEqualTo: codeZone)
-        .get();
-
-
-    if (delegationSnapshot.docs.isNotEmpty) {
-  for (QueryDocumentSnapshot doc in delegationSnapshot.docs) {
-    await doc.reference.update({"code zone": ""}); // Update code zone to empty string
+      getData();
+    }
   }
-}
-
-
-    getData();
-  }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +149,7 @@ Future<void> _deleteZone(String codeZone, String designation) async {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Liste gouvernorat".toUpperCase(),
+            "Liste zones".toUpperCase(),
             style: GoogleFonts.montserrat(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -168,7 +162,7 @@ Future<void> _deleteZone(String codeZone, String designation) async {
             IconButton(
               icon: const Icon(Icons.add, color: tPrimaryColor),
               onPressed: () {
-                Get.to(()=>const AddZonePage());
+                Get.to(() => const AddZonePage());
               },
             ),
           ],
@@ -189,12 +183,10 @@ Future<void> _deleteZone(String codeZone, String designation) async {
                         motion: const StretchMotion(),
                         children: [
                           SlidableAction(
-                             onPressed: (context) {
-                              String selectedzone =
-                                  data[i]['designation'];
-                        
-                              _navigateToUpdatePage(
-                                  selectedzone);
+                            onPressed: (context) {
+                              String selectedzone = data[i]['designation'];
+
+                              _navigateToUpdatePage(selectedzone);
                             },
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -207,7 +199,7 @@ Future<void> _deleteZone(String codeZone, String designation) async {
                         motion: const StretchMotion(),
                         children: [
                           SlidableAction(
-                             onPressed: (context) {
+                            onPressed: (context) {
                               _deleteZone(
                                 data[i]['codeZone'],
                                 data[i]['designation'],
@@ -244,7 +236,9 @@ Future<void> _deleteZone(String codeZone, String designation) async {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 10), // Add space between code zone and designation
+                                const SizedBox(
+                                    width:
+                                        10), // Add space between code zone and designation
                                 Expanded(
                                   flex: 3,
                                   child: Align(
@@ -267,10 +261,12 @@ Future<void> _deleteZone(String codeZone, String designation) async {
                             child: FutureBuilder<QuerySnapshot>(
                               future: FirebaseFirestore.instance
                                   .collection("Gouvernorat")
-                                  .where('code zone', isEqualTo: data[i]['codeZone'])
+                                  .where('code zone',
+                                      isEqualTo: data[i]['codeZone'])
                                   .get(),
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
                                   return const Center(
                                     child: CircularProgressIndicator(
                                       color: tPrimaryColor,
@@ -291,17 +287,21 @@ Future<void> _deleteZone(String codeZone, String designation) async {
                                     itemBuilder: (context, index) {
                                       final gouvernorat = gouvernorats[index];
                                       return Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
                                         child: Card(
                                           elevation: 0,
-                                          color: tSecondaryColor.withOpacity(0.1),
+                                          color:
+                                              tSecondaryColor.withOpacity(0.1),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                           ),
                                           child: Padding(
                                             padding: const EdgeInsets.all(12.0),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 Text(
                                                   '${gouvernorat['Désignation']}',

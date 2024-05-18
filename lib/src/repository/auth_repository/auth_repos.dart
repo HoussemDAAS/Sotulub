@@ -401,4 +401,40 @@ void onReady() {
 }
 
 
+
+Future<void> updateUser(
+  String userUID,String email,String raisonSociale,String responsable,String telephone, String gov,String delegation, String secteur) async {
+  try {
+    // Access Firestore instance
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // Reference to the user document in Firestore
+    DocumentReference userRef = firestore.collection('users').doc(userUID);
+
+    // Data to update
+    Map<String, dynamic> userData = {};
+    if (email != null) userData['email'] = email;
+    if (raisonSociale != null) userData['raisonSocial'] = raisonSociale;
+    if (responsable != null) userData['responsable'] = responsable;
+    if (telephone != null) userData['telephone'] = telephone;
+    if (gov != null) userData['gouvernorat'] = gov;
+    if (delegation != null) userData['delegation'] = delegation;
+    if (secteur != null) userData['secteurActivite'] = secteur;
+
+
+
+
+
+
+    // Update the user document
+    await userRef.update(userData);
+
+    print('User data updated successfully!');
+  } catch (error) {
+    print('Error updating user data: $error');
+    // Handle error
+  }
+}
+
+
 }
