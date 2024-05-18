@@ -175,25 +175,25 @@ class _ConventionPageState extends State<ConventionPage> {
                             //   onPressed: () {},
                             //   child: Text("Approve"),
                             // ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                    color: Colors.blue),
-                                height: 40,
-                                width: 80,
-                                child: Center(
-                                    child: Text(
-                                  "Modifier".toUpperCase(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.white,
-                                      fontSize: 12),
-                                )),
-                              ),
-                            ),
+                            // GestureDetector(
+                            //   onTap: () {},
+                            //   child: Container(
+                            //     decoration: BoxDecoration(
+                            //         borderRadius:
+                            //             BorderRadius.all(Radius.circular(10)),
+                            //         color: Colors.blue),
+                            //     height: 40,
+                            //     width: 80,
+                            //     child: Center(
+                            //         child: Text(
+                            //       "Modifier".toUpperCase(),
+                            //       style: TextStyle(
+                            //           fontWeight: FontWeight.w300,
+                            //           color: Colors.white,
+                            //           fontSize: 12),
+                            //     )),
+                            //   ),
+                            // ),
                             GestureDetector(
                               onTap: () async {
                                 String documentId = data[i].id;
