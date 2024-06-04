@@ -5,6 +5,12 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 class DemandeColectRepository extends GetxController {
   static DemandeColectRepository get instance => Get.find();
 
+
+  Future<List<QueryDocumentSnapshot>> getDemandeCollectData() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("DemandeCollect").get();
+    return querySnapshot.docs;
+  }
+
  Future<int> getNextNumeroDemande() async {
   try {
     // Get the current value of numeroDemande from Firestore
