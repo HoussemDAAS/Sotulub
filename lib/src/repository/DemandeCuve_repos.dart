@@ -61,6 +61,8 @@ Future<void> addDemandeCuve(
         'nbCuve': nbCuve,
         'capaciteCuve': capaciteCuve,
         'approved': false,
+        'date ': DateTime.now().toString(),
+      'delivred':false,
       });
     } catch (e) {
       // Handle errors
