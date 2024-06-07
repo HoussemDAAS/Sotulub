@@ -100,11 +100,17 @@ class DemandeCuve extends StatelessWidget {
                                           String responsable =
                                         await AuthRepository.instance
                                             .getResponsableByEmail(email);
+                                            Map<String, dynamic> userData = await AuthRepository.instance.getDataByEmail(email);
                                              String month = DateTime.now().month.toString();
                                     String nbCuve = controller.nbCuve.text;
                                     String capaciteCuve = controller.capaciteCuve.value;
+                                      String telephone = userData['telephone'].toString();
+                                      String gouvernorat = userData['gouvernorat'].toString();
+                                      String delegation = userData['delegation'].toString();
+                                      String longitude = userData['longitude'].toString();
+                                      String latitude = userData['latitude'].toString();
 
-                                    await DemandeCuveRepo.instance.addDemandeCuve(month, responsable, email, nbCuve, capaciteCuve);
+                                    await DemandeCuveRepo.instance.addDemandeCuve(month, responsable, email, nbCuve, capaciteCuve, telephone, gouvernorat, delegation, longitude, latitude);
 
                                   }
                                    Get.to(() => const Dashboard());

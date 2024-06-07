@@ -27,21 +27,14 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
   int _selectedToggleIndex = 0; // 0 for Demande Cuve, 1 for Demande Collect
   bool isLoading = false;
   List<QueryDocumentSnapshot> demandeCollectData = [];
-  List<Polyline> polylines = [];
+  List<QueryDocumentSnapshot> demandeCuveData = [];
 
   @override
   void initState() {
     super.initState();
     _getLocation();
     getData();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (demandeCollectData.isEmpty) {
-      getData();
-    }
+    getDataCuve();
   }
 
   Future<void> getData() async {
@@ -51,7 +44,7 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection("DemandeCollect")
-          .where('delivred', isEqualTo: false) // Fetch only non-delivered demands
+          .where('delivred', isEqualTo: false)
           .get();
       if (mounted) {
         setState(() {
@@ -59,17 +52,30 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
           isLoading = false;
         });
       }
-      // Clear polylines
-      polylines.clear();
-      // Call planRoute for each demande collect point
-      demandeCollectData.where((doc) => doc['approved'] == true).forEach((doc) {
-        double latitude = double.parse(doc['latitude']);
-        double longitude = double.parse(doc['longitude']);
-        LatLng destination = LatLng(latitude, longitude);
-        // planRoute(_currentLocation, destination);
-      });
     } catch (e) {
-      // Handle any errors here
+      print("Error fetching data: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> getDataCuve() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("DemandeCuve")
+          .where('delivred', isEqualTo: false)
+          .get();
+      if (mounted) {
+        setState(() {
+          demandeCuveData = querySnapshot.docs;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
       print("Error fetching data: $e");
       setState(() {
         isLoading = false;
@@ -79,6 +85,7 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
 
   Future<void> _handleRefresh() async {
     await getData();
+    await getDataCuve();
   }
 
   @override
@@ -139,30 +146,18 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
                         center: _currentLocation,
                         zoom: 13.0,
                       ),
-                     children: [
+                      children: [
                         TileLayer(
-                          urlTemplate: _selectedToggleIndex == 0
-                              ? "https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key=$apiKey"
-                              : "https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key=$apiKey",
+                          urlTemplate:
+                              "https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key=$apiKey",
                           additionalOptions: {
                             'apiKey': apiKey,
                           },
                         ),
-                      MarkerLayer(
+                        MarkerLayer(
                           markers: _buildMarkers(),
                         ),
-                         
-                        
-//                     PolylineLayer(
-//   polylines: [
-//     Polyline(
-//       points: _generatePolylinePoints(),
-//       color: Colors.blue,
-//     ),
-//   ],
-// ),
                       ],
-                     
                     ),
                   ),
                 ],
@@ -178,7 +173,7 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
             Icons.refresh,
             color: tPrimaryColor,
           ),
-          backgroundColor: tLightBackground
+          backgroundColor: tLightBackground,
         ),
       ),
     );
@@ -193,25 +188,23 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
         width: 100.0,
         height: 80.0,
         point: _currentLocation,
-        child: Container(
-          child: Column(
-            children: [
-              Image.asset(
-                'assets/images/currentLocation.png',
-                width: 20,
-                height: 20,
+        child:  Column(
+          children: [
+            Image.asset(
+              'assets/images/currentLocation.png',
+              width: 20,
+              height: 20,
+            ),
+            const Text(
+              'Votre location',
+              style: TextStyle(
+                color: tAccentColor,
+                fontSize: 9,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Montserrat",
               ),
-              const Text(
-                'Votre location',
-                style: TextStyle(
-                  color: tAccentColor,
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "Montserrat",
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -229,7 +222,7 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
             width: 100.0,
             height: 80.0,
             point: LatLng(latitude, longitude),
-            child: InkWell(
+            child:InkWell(
               onTap: () {
                 _showDetailBottomSheet(doc);
               },
@@ -255,12 +248,51 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
           );
         }).toList(),
       );
+    } else if (_selectedToggleIndex == 0) {
+      markers.addAll(
+        demandeCuveData.where((doc) => doc['approved'] == true).map((doc) {
+          double latitude = double.parse(doc['latitude']);
+          double longitude = double.parse(doc['longitude']);
+          String responsable = doc['responsable'];
+          String capacite = doc['capaciteCuve'];
+          bool delivered = doc['delivred'];
+
+          return Marker(
+            width: 100.0,
+            height: 80.0,
+            point: LatLng(latitude, longitude),
+            child:  InkWell(
+              onTap: () {
+                _showDetailBottomSheetCuve(doc);
+              },
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/images/cuve.png',
+                    width: 20,
+                    height: 20,
+                  ),
+                  Text(
+                    responsable,
+                    style: TextStyle(
+                      color: delivered ? Colors.yellow : tAccentColor,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Montserrat",
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      );
     }
 
     return markers;
   }
 
-  void _showDetailBottomSheet(QueryDocumentSnapshot doc) {
+ void _showDetailBottomSheet(QueryDocumentSnapshot doc) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -289,12 +321,13 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
                           .doc(doc.id)
                           .update({'delivred': true});
                       Navigator.of(context).pop(); // Close the bottom sheet immediately
-                      _showSuccessSnackbar();
+                      _showSnackBar(
+                          "Succès", "Demande marquée comme livrée.", Colors.green);
                       await getData(); // Refresh the data to hide the delivered demand
-                    } catch (error, stackTrace) {
+                    } catch (error) {
                       // Handle errors gracefully
-                      print("Error updating document: $error");
-                      print(stackTrace);
+                      _showSnackBar("Erreur"," essayer de nouveau", Colors.red);
+                  
                     }
                   },
                   backgroundColor: Colors.green,
@@ -433,132 +466,211 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
     );
   }
 
-  void _showSuccessSnackbar() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'La demande a été livrée avec succès.',
-          style: TextStyle(color: Colors.white),
+  void _showDetailBottomSheetCuve(QueryDocumentSnapshot doc) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
         ),
-        backgroundColor: Colors.green,
       ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(10.0),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          child: Slidable(
+            startActionPane: ActionPane(
+              motion: const StretchMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: (context) async {
+                    try {
+                      await FirebaseFirestore.instance
+                          .collection("DemandeCuve")
+                          .doc(doc.id)
+                          .update({'delivred': true});
+                      Navigator.of(context).pop(); // Close the bottom sheet immediately
+                      _showSnackBar(
+                          "Succès", "Demande marquée comme livrée.", Colors.green);
+                      await getData(); // Refresh the data to hide the delivered demand
+                    } catch (error) {
+                      // Handle errors gracefully
+                      _showSnackBar("Erreur"," essayer de nouveau", Colors.red);
+                  
+                    }
+                  },
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                  icon: Icons.check,
+                  label: 'Delivrer',
+                ),
+              ],
+            ),
+            endActionPane: ActionPane(
+              motion: const StretchMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: (context) async {
+                    try {
+                      await FirebaseFirestore.instance
+                          .collection("DemandeCuve")
+                          .doc(doc.id)
+                          .update({'delivred': false});
+                      Navigator.of(context).pop(); // Close the bottom sheet immediately
+                      await getData();
+                    } catch (error, stackTrace) {
+                      print("Error updating document: $error");
+                      print(stackTrace);
+                    }
+                  },
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  icon: Icons.close,
+                  label: 'Reject',
+                ),
+              ],
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: doc['delivred']
+                    ? Colors.yellow.withOpacity(0.3)
+                    : doc['approved']
+                        ? Colors.blue.withOpacity(0.3)
+                        : tLightBackground,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 10,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Détenteur: ${doc['responsable']}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: tSecondaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    "Numero Demande: ${doc['numeroDemandeCuve']}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: tAccentColor,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      const Icon(Icons.phone, color: tDarkBackground),
+                      const SizedBox(width: 5),
+                      Text(
+                        "${doc['telephone']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: tAccentColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Text(
+                        "${doc['gouvernorat']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: tDarkColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      const Text(
+                        "Mois: ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: tDarkBackground,
+                        ),
+                      ),
+                      Text(
+                        "${doc['month']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: tAccentColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      const Text(
+                        "Capacité: ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: tDarkBackground,
+                        ),
+                      ),
+                      Text(
+                        "${doc['capaciteCuve']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: tAccentColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  void _getLocation() async {
+  void _showSnackBar(String title, String message, Color color) {
+    Get.snackbar(
+      title,
+      message,
+      backgroundColor: color,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+    );
+  }
+
+  void _handleLogout() {
+    final authRepository = Get.find<AuthRepository>();
+    authRepository.logout();
+    Get.offAll(() => SplachScreen());
+  }
+
+  Future<void> _getLocation() async {
     try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission != LocationPermission.whileInUse &&
-            permission != LocationPermission.always) {
-          throw Exception('Location permission not granted.');
-        }
-      }
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low,
+        desiredAccuracy: LocationAccuracy.high,
       );
       setState(() {
         _currentLocation = LatLng(position.latitude, position.longitude);
       });
     } catch (e) {
-      // Show snackbar for location permission error
-      Get.snackbar(
-        "Erreur",
-        "Impossible de récupérer la localisation: $e",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      print("Error getting current location: $e");
     }
   }
 
-  void _reloadLocation() {
-    _getLocation();
+  Future<void> _reloadLocation() async {
+    await _getLocation();
+    await _handleRefresh();
   }
-
-  void _handleLogout() {
-    AuthRepository.instance.logout().then((_) {
-      Get.offAll(() => SplachScreen());
-    }).catchError((error) {
-      print('Logout error: $error');
-    });
-  }
-
-//   Future<void> planRoute(LatLng origin, LatLng destination) async {
-//   final String apiUrl = "https://api.tomtom.com/routing/1/calculateRoute/${origin.latitude},${origin.longitude}:${destination.latitude},${destination.longitude}/json";
-//   final response = await http.get(Uri.parse('$apiUrl?key=$apiKey'));
-
-//   if (response.statusCode == 200) {
-//     final jsonResponse = json.decode(response.body);
-//     final List<dynamic> legs = jsonResponse['routes'][0]['legs'];
-//     List<LatLng> points = [];
-//     for (var leg in legs) {
-//       final List<dynamic> steps = leg['points'];
-//       for (var step in steps) {
-//         double lat = step['latitude'];
-//         double lng = step['longitude'];
-//         points.add(LatLng(lat, lng));
-//       }
-//     }
-//     setState(() {
-//       polylines.add(
-//         Polyline(
-//           points: points,
-//           color: Colors.red, // You can set your desired color here
-//           strokeWidth: 3,
-//         ),
-//       );
-//     });
-//   } else {
-//     print('Failed to plan route: ${response.statusCode}');
-//   }
-// }
-
-
-  // Decode encoded polyline from TomTom API response
-  // List<LatLng> _decodePolyline(String encoded) {
-  //   List<LatLng> points = [];
-  //   int index = 0, len = encoded.length;
-  //   int lat = 0, lng = 0;
-  //   while (index < len) {
-  //     int b, shift = 0, result = 0;
-  //     do {
-  //       b = encoded.codeUnitAt(index++) - 63;
-  //       result |= (b & 0x1f) << shift;
-  //       shift += 5;
-  //     } while (b >= 0x20);
-  //     int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-  //     lat += dlat;
-  //     shift = 0;
-  //     result = 0;
-  //     do {
-  //       b = encoded.codeUnitAt(index++) - 63;
-  //       result |= (b & 0x1f) << shift;
-  //       shift += 5;
-  //     } while (b >= 0x20);
-  //     int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-  //     lng += dlng;
-  //     points.add(LatLng(lat / 1E5, lng / 1E5));
-  //   }
-  //   return points;
-  // }
-
-//   List<LatLng> _generatePolylinePoints() {
-//   List<LatLng> points = [];
-  
-//   // Add current location as the starting point
-//   points.add(_currentLocation);
-
-//   // Add demanded collect locations as intermediate points
-//   for (var doc in demandeCollectData) {
-//     if (doc['approved'] == true) {
-//       double latitude = double.parse(doc['latitude']);
-//       double longitude = double.parse(doc['longitude']);
-//       points.add(LatLng(latitude, longitude));
-//     }
-//   }
-
-//   return points;
-// }
 }
