@@ -75,6 +75,9 @@ class DemandeColectRepository extends GetxController {
       'longitude': longitude,
       'latitude': latitude,
       'approved' : false,
+      'date ': DateTime.now().toString(),
+      'delivred':false,
+      'outdated':false,
     });
   } catch (e) {
     // Handle errors

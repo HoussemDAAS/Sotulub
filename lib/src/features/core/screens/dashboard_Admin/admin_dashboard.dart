@@ -9,7 +9,7 @@ import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/constants/text_strings.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/Collect_oil/collect_page.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/Collect_oil/cuve_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/cuve/cuve_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_by_role.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/convention/convention.dart';
 

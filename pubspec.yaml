@@ -53,6 +53,9 @@ dependencies:
   flutter_map: ^6.1.0
   http: ^1.2.1
   latlong2: ^0.9.1
+  flutter_polyline_points: ^2.0.0
+
+
 
   
 dev_dependencies:
@@ -133,4 +136,7 @@ flutter:
     - assets/images/region.png
     - assets/images/alert.png
     - assets/images/pointer.png
+    - assets/images/currentLocation.png
+    - assets/images/cuve.png
+    
     
