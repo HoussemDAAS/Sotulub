@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sotulub/src/execptions/signup_email_password_exception.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/chefregion_page.dart';
+
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_chef_region/chef_region.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_directeur/dashboard_directeur.dart';
