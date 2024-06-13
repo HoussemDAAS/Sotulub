@@ -242,16 +242,16 @@ class _CuvePageState extends State<CuvePage> {
                                       Row(
                                         children: [
                                           const Text(
-                                            "Nombre de cuve : ",
+                                            "NB cuve : ",
                                             style: TextStyle(
-                                              fontWeight: FontWeight.w600,
+                                              fontWeight: FontWeight.w400,
                                               color: tDarkBackground,
                                             ),
                                           ),
                                           Text(
                                             "${data[i]['nbCuve']}L",
                                             style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
+                                              fontWeight: FontWeight.w400,
                                               color: tAccentColor,
                                             ),
                                           ),

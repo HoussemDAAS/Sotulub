@@ -27,16 +27,18 @@ class _SignUpState extends State<SignUp> {
     final SignUpController controller = Get.put(SignUpController());
     final _formKey = GlobalKey<FormState>();
     final DropdownFetch dropdownController = Get.put(DropdownFetch());
-void geoLocation() async {
-  await Geolocator.checkPermission();
-  await Geolocator.requestPermission();
-  Position position = await Geolocator.getCurrentPosition(
-    desiredAccuracy: LocationAccuracy.low,
-  );
-  print(position);
-  controller.latitude.value = position.latitude; // Update latitude
-  controller.longitude.value = position.longitude; // Update longitude
-}
+
+    void geoLocation() async {
+      await Geolocator.checkPermission();
+      await Geolocator.requestPermission();
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.low,
+      );
+      print(position);
+      controller.latitude.value = position.latitude; // Update latitude
+      controller.longitude.value = position.longitude; // Update longitude
+    }
+
     // Call geoLocation() function when the page is opened
     geoLocation();
 
@@ -67,26 +69,24 @@ void geoLocation() async {
                           controller: controller.email,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Email is required';
+                              return 'L\'email est requis';
                             }
                             if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                                 .hasMatch(value)) {
-                              return 'Enter a valid email address';
+                              return 'Entrez une adresse email valide';
                             }
                             return null;
                           },
                         ),
                         const SizedBox(height: tFormHeight - 10.0),
                         CustomTextField(
-                          
-                          labelText: 'Password',
-                          hintText: 'Enter your password',
+                          labelText: 'Mot de passe',
+                          hintText: 'Entrez votre mot de passe',
                           prefixIcon: Icons.lock_outline,
-                          
                           controller: controller.password,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Password is required';
+                              return 'Le mot de passe est requis';
                             }
                             // Add additional validation rules if needed
                             return null;
@@ -100,16 +100,16 @@ void geoLocation() async {
                         ),
                         const SizedBox(height: tFormHeight - 10.0),
                         CustomTextField(
-                          labelText: 'Raison Social',
+                          labelText: 'Raison Sociale',
                           hintText: 'Raison Sociale (identité demandeur)',
                           prefixIcon: Icons.home_work_outlined,
                           controller: controller.raisonSocial,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'This field is required';
+                              return 'Ce champ est requis';
                             }
                             if (value.length < 8) {
-                              return 'Must be at least 8 characters long';
+                              return 'Doit comporter au moins 8 caractères';
                             }
                             return null;
                           },
@@ -122,10 +122,10 @@ void geoLocation() async {
                           controller: controller.responsable,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'This field is required';
+                              return 'Ce champ est requis';
                             }
                             if (value.length < 8) {
-                              return 'Must be at least 8 characters long';
+                              return 'Doit comporter au moins 8 caractères';
                             }
                             return null;
                           },
@@ -138,13 +138,13 @@ void geoLocation() async {
                           controller: controller.telephone,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'This field is required';
+                              return 'Ce champ est requis';
                             }
                             if (value.length < 8) {
-                              return 'Must be at least 8 characters long';
+                              return 'Doit comporter au moins 8 caractères';
                             }
                             if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                              return 'Please enter only numbers';
+                              return 'Veuillez entrer uniquement des chiffres';
                             }
                             return null;
                           },
@@ -163,6 +163,7 @@ void geoLocation() async {
                               }).toList(),
                               value: null,
                               onChanged: (newValue) {
+                                 controller.updateGouvernorat(newValue!);
                                 controller.gouvernorat.value = newValue ?? "";
                               });
                         }),
@@ -171,7 +172,7 @@ void geoLocation() async {
                           return CustomDropdown(
                             labelText: 'Délégation',
                             prefixIcon: Icons.map_outlined,
-                            items: dropdownController.delegationItems
+                            items: dropdownController.filteredDelegationItems
                                 .map((delegation) {
                               return DropdownMenuItem(
                                 value: delegation,
@@ -202,6 +203,7 @@ void geoLocation() async {
                             }).toList(),
                             value: null,
                             onChanged: (newValue) {
+                              controller.updateSecteur(newValue!);
                               controller.secteurActivite.value = newValue ?? "";
                             },
                           );
@@ -211,7 +213,7 @@ void geoLocation() async {
                           return CustomDropdown(
                             labelText: 'Sous-Secteur d’activité',
                             prefixIcon: Icons.play_for_work_outlined,
-                            items: dropdownController.soussecteurItems
+                            items: dropdownController.filteredSousSecteurItems
                                 .map((sousSecteur) {
                               final truncatedText = sousSecteur.length <= 25
                                   ? sousSecteur
@@ -247,7 +249,7 @@ void geoLocation() async {
                                 Get.to(() => const Dashboard());
                               }
                             },
-                            child: Text(tLogin.toUpperCase()),
+                            child: Text('INSCRIPTION'.toUpperCase()),
                           ),
                         ),
                       ],
@@ -258,11 +260,11 @@ void geoLocation() async {
                   onPressed: () => Get.to(() => const Login()),
                   child: Text.rich(
                     TextSpan(
-                      text: "Tu a deja un compte ?  ",
+                      text: "Tu as déjà un compte ?  ",
                       style: TTextTheme.lightTextTheme.displaySmall,
                       children: const [
                         TextSpan(
-                          text: tRegister,
+                          text: 'Se connecter',
                           style: TextStyle(color: tPrimaryColor),
                         )
                       ],
