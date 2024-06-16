@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:sotulub/src/repository/detenteur_repos.dart';
 
 class ReclamationController extends GetxController {
@@ -15,23 +15,12 @@ class ReclamationController extends GetxController {
 
   final DetenteurRepository _repository = DetenteurRepository.instance;
 
-  @override
-  void onClose() {
-    numeroReclamation.dispose();
-    month.dispose();
-    responsable.dispose();
-    email.dispose();
-    Raison.dispose();
-    Description.dispose();
-    replyController.dispose();
-    super.onClose();
-  }
+  
 
-  void sendReply(String email) async {
+  void sendReply(String email, String documentId) async {
     try {
       String replyText = replyController.text.trim();
       
-      // Check if replyText is blank or null
       if (replyText.isEmpty) {
         Get.snackbar(
           'Erreur',
@@ -43,7 +32,7 @@ class ReclamationController extends GetxController {
         return;
       }
 
-      await _repository.addReplyToReclamation(email, replyText);
+      await _repository.addReplyToReclamation(email, documentId, replyText);
 
       replyController.clear();
 

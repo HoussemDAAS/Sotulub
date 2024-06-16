@@ -16,6 +16,7 @@ import 'package:sotulub/src/features/core/screens/dashboard_Admin/convention/con
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/delegation/delegation_page.dart';
 
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/gouvernorat/gouvernorat_page.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/reclamation/reclamation_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/region/regionPage.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/secteur/secteur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/sous_secteur.dart';
@@ -83,7 +84,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 imagePath: 'assets/images/alert.png',
                 labelText: 'Réclamation',
                 onTap: () {
-                  Get.to(const DetenteurPage());
+                  Get.to(const ReclamationPage());
                 },
               ),
               ReusableGestureDetector(

@@ -30,7 +30,10 @@ class NotifcationPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+
+          ),
           child: Padding(
             padding: const EdgeInsets.all(tDefaultSize),
             child: Column(
@@ -46,7 +49,9 @@ class NotifcationPage extends StatelessWidget {
                   future: _fetchReclamationsForCurrentUser(_repository),
                   builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator(
+                        color: tPrimaryColor,
+                      ));
                     } else if (snapshot.hasError) {
                       Get.snackbar(
                         'Erreur',
@@ -132,9 +137,11 @@ class NotifcationPage extends StatelessWidget {
                                 style: TextStyle(fontWeight: FontWeight.bold, color: tPrimaryColor),
                               ),
                               const SizedBox(height: 10),
-                              _buildReplyField(controller, reclamation['id']), // Pass reclamation id or identifier
+                              _buildReplyField(controller, reclamation['id']),
                               const SizedBox(height: 20),
-                              _buildSendButton(controller, reclamation['id']), // Pass reclamation id or identifier
+                              _buildSendButton(controller, reclamation['id'], reclamation['email']), // Pass reclamation ID and email
+                              const SizedBox(height: tDefaultSize), // Add space before the next reclamation
+                              const Divider(color: tPrimaryColor), // Divider between each reclamation
                             ],
                           );
                         }).toList(),
@@ -153,89 +160,36 @@ class NotifcationPage extends StatelessWidget {
   Widget _buildReplyField(ReclamationController controller, String reclamationId) {
     return TextFormField(
       controller: controller.replyController,
-      decoration: const InputDecoration(
-        labelStyle: TextStyle(color: tPrimaryColor),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: tPrimaryColor, width: 2.0),
-        ),
-        labelText: 'Votre Réponse',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          borderSide: BorderSide(color: tPrimaryColor),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      maxLines: 5,
+      decoration:const  InputDecoration(
+        labelText: 'Entrez votre réponse ici',
+        border: OutlineInputBorder(),
       ),
-      maxLines: 4,
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Veuillez entrer une réponse';
-        }
-        return null;
-      },
     );
   }
 
-  Widget _buildSendButton(ReclamationController controller, String reclamationId) {
-  return SizedBox(
-    width: double.infinity,
-    child: ElevatedButton(
-      onPressed: () async {
-        if (controller.replyController.text.isEmpty) {
-          Get.snackbar(
-            'Erreur',
-            'Veuillez entrer une réponse avant d\'envoyer.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        } else {
-          try {
-            String? uid = await DetenteurRepository.instance.getCurrentDetenteurUid();
-            if (uid != null) {
-              String? email = await DetenteurRepository.instance.getDetenteurEmailByUid(uid);
-              if (email != null) {
-                controller.sendReply(email); // Pass email to sendReply
-              } else {
-                throw Exception("Email not found for current user");
-              }
-            } else {
-              throw Exception("UID not found for current user");
-            }
-          } catch (e) {
-            print('Error sending reply: $e');
-            Get.snackbar(
-              'Erreur',
-              'Erreur lors de l\'envoi de la réponse',
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-            );
-          }
-        }
-      },
-      child: Text('Envoyer la Réponse'.toUpperCase()),
-    ),
-  );
-}
-
+  Widget _buildSendButton(ReclamationController controller, String reclamationId, String email) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () => controller.sendReply(email, reclamationId),
+        child:const  Text('Envoyer la Réponse'),
+      ),
+    );
+  }
 
   Future<List<Map<String, dynamic>>> _fetchReclamationsForCurrentUser(DetenteurRepository repository) async {
+
     try {
-      String? uid = await repository.getCurrentDetenteurUid();
-      if (uid != null) {
-        String? email = await repository.getDetenteurEmailByUid(uid);
-        if (email != null) {
-          print(email);
-          return await repository.getReclamationsByEmail(email);
-          
-        } else {
-          throw Exception("Email not found for current user");
-        }
-      } else {
-        throw Exception("UID not found for current user");
-      }
+      return await repository.getReclamationsForCurrentUser();
     } catch (e) {
-      print('Error fetching reclamation data: $e');
+      Get.snackbar(
+        'Erreur',
+        'Erreur lors de la récupération des réclamations',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       throw e;
     }
   }

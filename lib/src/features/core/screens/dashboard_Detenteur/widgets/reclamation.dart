@@ -7,6 +7,7 @@ import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/features/authentication/screens/login/Login_header_widget.dart';
 import 'package:sotulub/src/features/core/controllers/reclamation_controller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
+import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 import 'package:sotulub/src/repository/detenteur_repos.dart';
 
 class ReclamationPage extends StatelessWidget {
@@ -81,14 +82,25 @@ class ReclamationPage extends StatelessWidget {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 try {
-                                  String email = ''; // Replace with actual logic to get email
-                                  String responsable = ''; // Replace with actual logic to get responsable
-                                  String month = DateTime.now().month.toString();
+                                  String email = AuthRepository
+                                      .instance.firebaseUser.value!.email!;
+                                  String responsable = await AuthRepository
+                                      .instance
+                                      .getResponsableByEmail(
+                                          email); // Replace with actual logic to get email
+                                  Map<String, dynamic> userData =
+                                      await AuthRepository.instance.getDataByEmail(
+                                          email); // Replace with actual logic to get responsable
+                                  String month =
+                                      DateTime.now().month.toString();
                                   String raison = controller.Raison.text;
-                                  String description = controller.Description.text;
-                                  String telephone = ''; // Replace with actual logic to get telephone
+                                  String description =
+                                      controller.Description.text;
+                                  String telephone =
+                                      userData['telephone'].toString();
 
-                                  await DetenteurRepository.instance.addDemandeReclamation(
+                                  await DetenteurRepository.instance
+                                      .addDemandeReclamation(
                                     month,
                                     responsable,
                                     email,
@@ -121,7 +133,8 @@ class ReclamationPage extends StatelessWidget {
                                     backgroundColor: Colors.red,
                                     colorText: Colors.white,
                                   );
-                                  print('Error adding demandeReclamation document: $e');
+                                  print(
+                                      'Error adding demandeReclamation document: $e');
                                 }
                               }
                             },

@@ -74,6 +74,57 @@ Future<DocumentSnapshot> getDetenteurDataByUid(String uid) async {
       return null;
     }
   }
+  Future<int> getNextNumeroDemande() async {
+    try {
+      // Get the current value of numeroDemande from Firestore
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('CounterReclamation')
+          .doc('counter')
+          .get();
+
+      if (snapshot.exists) {
+        int currentNumeroDemande = snapshot.get('numeroDemande') as int? ?? 0;
+
+        // Increment the value by 1
+        await FirebaseFirestore.instance
+            .collection('CounterReclamation')
+            .doc('counter')
+            .update({'numeroDemande': currentNumeroDemande + 1});
+
+        return currentNumeroDemande + 1; // Return the incremented value
+      } else {
+        // If the document doesn't exist, create it with initial value 1
+        await FirebaseFirestore.instance
+            .collection('CounterReclamation')
+            .doc('counter')
+            .set({'numeroDemande': 1});
+
+        return 1; // Return the initial value
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error getting next numeroDemande: $e');
+      throw e; // Rethrow the exception to propagate it
+    }
+  }
+  Future<Map<String, dynamic>?> getReclamationByEmail(String email) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('DemandeReclamation')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Assuming there's only one reclamation per email for simplicity
+        return querySnapshot.docs.first.data() as Map<String, dynamic>?;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching reclamation by email: $e');
+      return null;
+    }
+  }
   Future<void> addDemandeReclamation(
     String month,
     String responsable,
@@ -121,108 +172,47 @@ Future<DocumentSnapshot> getDetenteurDataByUid(String uid) async {
     }
   }
 
-  Future<int> getNextNumeroDemande() async {
+  
+  Future<void> addReplyToReclamation(String email, String documentId, String replyText) async {
     try {
-      // Get the current value of numeroDemande from Firestore
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('CounterReclamation')
-          .doc('counter')
-          .get();
+      DocumentReference reclamationRef = _firestore.collection('DemandeReclamation').doc(documentId);
+      DocumentSnapshot reclamationSnapshot = await reclamationRef.get();
 
-      if (snapshot.exists) {
-        int currentNumeroDemande = snapshot.get('numeroDemande') as int? ?? 0;
+      if (reclamationSnapshot.exists) {
+        // Add the reply to the 'replies' array in Firestore
+        await reclamationRef.update({
+          'replies': FieldValue.arrayUnion([replyText]),
+        });
 
-        // Increment the value by 1
-        await FirebaseFirestore.instance
-            .collection('CounterReclamation')
-            .doc('counter')
-            .update({'numeroDemande': currentNumeroDemande + 1});
-
-        return currentNumeroDemande + 1; // Return the incremented value
+        Get.snackbar(
+          'Succès',
+          'Réponse ajoutée avec succès',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
       } else {
-        // If the document doesn't exist, create it with initial value 1
-        await FirebaseFirestore.instance
-            .collection('CounterCuve')
-            .doc('counter')
-            .set({'numeroDemande': 1});
-
-        return 1; // Return the initial value
+        Get.snackbar(
+          'Erreur',
+          'Aucune réclamation trouvée pour cet ID de document',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        print('No document found with ID: $documentId');
       }
     } catch (e) {
-      // Handle errors
-      print('Error getting next numeroDemande: $e');
-      throw e; // Rethrow the exception to propagate it
-    }
-  }
-  Future<Map<String, dynamic>?> getReclamationByEmail(String email) async {
-    try {
-      QuerySnapshot querySnapshot = await _firestore
-          .collection('DemandeReclamation')
-          .where('email', isEqualTo: email)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        // Assuming there's only one reclamation per email for simplicity
-        return querySnapshot.docs.first.data() as Map<String, dynamic>?;
-      } else {
-        return null;
-      }
-    } catch (e) {
-      print('Error fetching reclamation by email: $e');
-      return null;
-    }
-  }
-   Future<void> addReplyToReclamation(String email, String replyText) async {
-  try {
-    // Query Firestore to find the document reference based on the email
-    QuerySnapshot querySnapshot = await _firestore
-        .collection('DemandeReclamation')
-        .where('email', isEqualTo: email)
-        .get();
-
-    // Check if any documents match the query
-    if (querySnapshot.size > 0) {
-      // Get the document reference from the query snapshot
-      DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
-      DocumentReference reclamationRef = documentSnapshot.reference;
-
-      // Add the reply to the 'replies' array in Firestore
-      await reclamationRef.update({
-        'replies': FieldValue.arrayUnion([replyText]),
-      });
-
-      // Show success snackbar in French
-      Get.snackbar(
-        'Succès',
-        'Réponse ajoutée avec succès',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-    } else {
-      // Handle case where no document was found with the provided email
       Get.snackbar(
         'Erreur',
-        'Aucune réclamation trouvée pour cet email',
+        'Erreur lors de l\'ajout de la réponse',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      print('No document found with email: $email');
+      print('Error adding reply to reclamation: $e');
+      throw e; // Rethrow the exception to propagate it
     }
-  } catch (e) {
-    // Show error snackbar in French
-    Get.snackbar(
-      'Erreur',
-      'Erreur lors de l\'ajout de la réponse',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
-    );
-    print('Error adding reply to reclamation: $e');
-    throw e; // Rethrow the exception to propagate it
   }
-}
 
  Future<List<Map<String, dynamic>>> getReclamationsByEmail(String email) async {
     try {
@@ -247,6 +237,35 @@ Future<DocumentSnapshot> getDetenteurDataByUid(String uid) async {
       throw e;
     }
   }
+Future<List<Map<String, dynamic>>> getReclamationsForCurrentUser() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("Utilisateur non connecté");
+      }
 
+      String userEmail = user.email!;
+
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('DemandeReclamation')
+          .where('email', isEqualTo: userEmail)
+          .get();
+
+      return querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        data['id'] = doc.id; // Add document ID to the data
+        return data;
+      }).toList();
+    } catch (e) {
+      Get.snackbar(
+        'Erreur',
+        'Erreur lors de la récupération des réclamations',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      throw e;
+    }
+  }
 
 }

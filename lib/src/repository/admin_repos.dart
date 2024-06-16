@@ -810,6 +810,25 @@ Future<bool> checkNomExists(String designation) async {
     }
   }
 
+ Future<Map<String, dynamic>?> getReclamationByEmailAndId(String email, String id) async {
+    try {
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('DemandeReclamation').doc(id).get();
+      
+      if (docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        if (data['email'] == email) {
+          return data;
+        } else {
+          return null; // Email does not match
+        }
+      } else {
+        return null; // Document does not exist
+      }
+    } catch (e) {
+      print('Error fetching reclamation by email and id: $e');
+      throw e;
+    }
+  }
 
 
 

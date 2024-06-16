@@ -254,7 +254,7 @@ class _RegionPageState extends State<RegionPage> {
                                   ),),
                               ],
                             ),
-                            Text( "Code Chef région:" + "${data[i][ 'codeChefRegion']}",
+                            Text("${data[i][ 'codeChefRegion']}",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: tAccentColor,
