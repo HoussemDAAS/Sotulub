@@ -7,10 +7,13 @@ import 'package:sotulub/src/common_widgets/bottom_naviagtion_bar.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/notifcation.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/reclamation.dart';
 import 'package:sotulub/src/features/core/screens/profile/update_profile_screen.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 import 'package:sotulub/src/repository/detenteur_repos.dart';
 import 'package:sotulub/src/utils/theme/text_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -24,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _detenteurUid;
   String? _detenteurResponsable;
   String? _detenteurEmail;
-
+ final Uri phoneNumber = Uri.parse('tel:+216-71-861-234');
   @override
   void initState() {
     super.initState();
@@ -110,19 +113,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 20),
                 const Divider(),
                 ProfileMenuWidget(
-                  title: "Paramètres",
+                  title: "Réponses",
                   icon: LineAwesomeIcons.cog,
-                  onPress: () {},
+                  onPress: () {
+                    Get.to(() => const NotifcationPage());
+                  },
                 ),
                 ProfileMenuWidget(
                   title: "Assistance",
                   icon: LineAwesomeIcons.user_check,
-                  onPress: () {},
+                  onPress: () async {
+              Navigator.pop(context);
+              if (await canLaunch(phoneNumber.toString())) {
+                await launch(phoneNumber.toString());
+              } else {
+                Get.snackbar('Erreur', 'Impossible d\'ouvrir l\'application de téléphone.',
+                    snackPosition: SnackPosition.BOTTOM);
+              }
+            },
                 ),
                 ProfileMenuWidget(
                   title: "Réclamation",
                   icon: LineAwesomeIcons.exclamation_circle,
-                  onPress: () {},
+                  onPress: () {
+                      Get.to(() => const ReclamationPage());
+                  },
                 ),
                 const Divider(),
                 const SizedBox(height: 10),

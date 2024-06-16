@@ -7,6 +7,7 @@ import 'package:sotulub/src/features/authentication/screens/welcome/welcome_scre
 import 'package:sotulub/src/repository/DemandeColect_repos.dart';
 import 'package:sotulub/src/repository/DemandeCuve_repos.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
+import 'package:sotulub/src/repository/detenteur_repos.dart';
 import 'package:sotulub/src/utils/theme/theme.dart';
 
 void main() async {
@@ -18,6 +19,7 @@ void main() async {
   Get.put(AuthRepository());
   Get.put(DemandeColectRepository()); 
   Get.put(DemandeCuveRepo());
+  Get.put(DetenteurRepository()); 
 
   runApp( App());
 }
