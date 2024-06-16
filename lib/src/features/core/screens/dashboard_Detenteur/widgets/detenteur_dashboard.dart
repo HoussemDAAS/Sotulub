@@ -151,6 +151,7 @@ void _checkConvention() {
                     onTap: () {
                       Get.to(() => const DemandeCuve());
                     },
+                    disabled:! _isConvention,
                   ),
              const      SizedBox(height: 20),
                   CardWidget(
