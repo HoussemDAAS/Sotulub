@@ -8,9 +8,9 @@ class ZoneController extends GetxController {
   final TextEditingController designation = TextEditingController();
 
   final TextEditingController CodeRegion = TextEditingController(); // Define CodeZone
-
+final TextEditingController emailSousTraitant = TextEditingController();
   final RxString region = RxString("");
-
+  final RxString sousTraiatnt = RxString("");
  void addSelectedGouvernorat(String gouvernorat) {
     if (!Gouvernorats.contains(gouvernorat)) {
       Gouvernorats.add(gouvernorat);

@@ -12,6 +12,7 @@ import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 import 'package:http/http.dart' as http;
+import 'package:sotulub/src/repository/sousTraitant_reps.dart';
 
 class SousTraitantDashboardPage extends StatefulWidget {
   const SousTraitantDashboardPage({Key? key}) : super(key: key);
@@ -22,6 +23,11 @@ class SousTraitantDashboardPage extends StatefulWidget {
 }
 
 class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
+  final SoustraitantReps _sousTraitantRepository = SoustraitantReps();
+
+  String? _SousTraitantName;
+  String? _SousTraitantEmail;
+  
   final String apiKey = "0NrrwaQ25mSu3dVpD0OMdeMzhxj0dAAD";
   LatLng _currentLocation = LatLng(0, 0);
   int _selectedToggleIndex = 0; // 0 for Demande Cuve, 1 for Demande Collect
@@ -35,8 +41,21 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
     _getLocation();
     getData();
     getDataCuve();
+     _fetchSousTraitantData();
   }
+Future<void> _fetchSousTraitantData() async {
 
+      
+      String? email = await _sousTraitantRepository.getCurrentSousTraitantEmail();
+      if (email != null) {
+        String? name = await _sousTraitantRepository.getSoutraintNameByEmail(email);
+        setState(() {
+          _SousTraitantName = name;
+          _SousTraitantEmail = email;
+        });
+      }
+   
+  }
   Future<void> getData() async {
     setState(() {
       isLoading = true;
@@ -110,63 +129,72 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
             ),
           ],
         ),
-        body: _currentLocation.latitude != 0 && _currentLocation.longitude != 0
-            ? Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ToggleButtons(
-                      borderRadius: BorderRadius.circular(8.0),
-                      selectedColor: tAccentColor,
-                      fillColor: tLightBackground,
-                      isSelected: [
-                        _selectedToggleIndex == 0,
-                        _selectedToggleIndex == 1
-                      ],
-                      onPressed: (index) {
-                        setState(() {
-                          _selectedToggleIndex = index;
-                        });
-                      },
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Text('Demande Cuve'),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Text('Demande Collect'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: FlutterMap(
-                      options: MapOptions(
-                        center: _currentLocation,
-                        zoom: 13.0,
-                      ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+  _buildWelcomeMessage(),
+            const SizedBox(height: 20),
+            Expanded(
+              child: _currentLocation.latitude != 0 && _currentLocation.longitude != 0
+                  ? Column(
                       children: [
-                        TileLayer(
-                          urlTemplate:
-                              "https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key=$apiKey",
-                          additionalOptions: {
-                            'apiKey': apiKey,
-                          },
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ToggleButtons(
+                            borderRadius: BorderRadius.circular(8.0),
+                            selectedColor: tAccentColor,
+                            fillColor: tLightBackground,
+                            isSelected: [
+                              _selectedToggleIndex == 0,
+                              _selectedToggleIndex == 1
+                            ],
+                            onPressed: (index) {
+                              setState(() {
+                                _selectedToggleIndex = index;
+                              });
+                            },
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text('Demande Cuve'),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text('Demande Collect'),
+                              ),
+                            ],
+                          ),
                         ),
-                        MarkerLayer(
-                          markers: _buildMarkers(),
+                        Expanded(
+                          child: FlutterMap(
+                            options: MapOptions(
+                              center: _currentLocation,
+                              zoom: 13.0,
+                            ),
+                            children: [
+                              TileLayer(
+                                urlTemplate:
+                                    "https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key=$apiKey",
+                                additionalOptions: {
+                                  'apiKey': apiKey,
+                                },
+                              ),
+                              MarkerLayer(
+                                markers: _buildMarkers(),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(
+                        color: tPrimaryColor,
+                      ),
                     ),
-                  ),
-                ],
-              )
-            : const Center(
-                child: CircularProgressIndicator(
-                  color: tPrimaryColor,
-                ),
-              ),
+            ),
+          ],
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: _reloadLocation,
           child: const Icon(
@@ -672,5 +700,39 @@ class _SousTraitantDashboardPageState extends State<SousTraitantDashboardPage> {
   Future<void> _reloadLocation() async {
     await _getLocation();
     await _handleRefresh();
+  }
+   Widget _buildWelcomeMessage() {
+    return Padding(
+       padding: const EdgeInsets.only(left: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Bienvenue,',
+            style: GoogleFonts.montserrat(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+             _SousTraitantName ?? 'Sous Traitant Name',
+            style: GoogleFonts.montserrat(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: tPrimaryColor,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            _SousTraitantEmail ?? 'sousTraitant@gmail.com',
+            style: GoogleFonts.montserrat(
+              fontSize: 14,
+              color: tSecondaryColor,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

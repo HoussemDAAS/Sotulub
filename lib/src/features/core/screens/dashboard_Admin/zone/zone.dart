@@ -53,12 +53,13 @@ class _ZonePageState extends State<ZonePage> {
     await getData();
   }
 
-  void _navigateToUpdatePage(String selectedZone) {
+  void _navigateToUpdatePage(String selectedZone, String emailSousTraitant) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => UpdateZonePage(
           selectedZone: selectedZone,
+          emailSousTraitant: emailSousTraitant,
         ),
       ),
     ).then((value) {
@@ -185,8 +186,8 @@ class _ZonePageState extends State<ZonePage> {
                           SlidableAction(
                             onPressed: (context) {
                               String selectedzone = data[i]['designation'];
-
-                              _navigateToUpdatePage(selectedzone);
+                              String emailSousTraitant = data[i]['emailSousTraitant'];
+                              _navigateToUpdatePage(selectedzone, emailSousTraitant);
                             },
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,

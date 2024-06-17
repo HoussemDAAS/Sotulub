@@ -4,21 +4,20 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/region/add_region.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/region/update_region.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/reclamation/reply_reclamation.dart';
+
 import 'package:sotulub/src/repository/admin_repos.dart';
 
-class RegionPage extends StatefulWidget {
-  const RegionPage({Key? key}) : super(key: key);
+class ReclamationPage extends StatefulWidget {
+  const ReclamationPage({Key? key}) : super(key: key);
 
   @override
-  State<RegionPage> createState() => _RegionPageState();
+  State<ReclamationPage> createState() => _ReclamationPageState();
 }
 
-class _RegionPageState extends State<RegionPage> {
+class _ReclamationPageState extends State<ReclamationPage> {
   final AdminRepository adminRepository = Get.put(AdminRepository());
   List<QueryDocumentSnapshot> data = [];
-  List<String> chefRegionNames = [];
   bool isLoading = false;
 
   @override
@@ -39,23 +38,12 @@ class _RegionPageState extends State<RegionPage> {
     setState(() {
       isLoading = true;
     });
-
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("region").get();
-      List<QueryDocumentSnapshot> documents = querySnapshot.docs;
-      List<String> chefNames = [];
-
-      for (var doc in documents) {
-        String chefName = await adminRepository.getChefRegion(doc['codeChefRegion']);
-        chefNames.add(chefName);
-      }
-
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("DemandeReclamation").get();
       if (mounted) {
         setState(() {
           data.clear();
-          data.addAll(documents);
-          chefRegionNames.clear();
-          chefRegionNames.addAll(chefNames);
+          data.addAll(querySnapshot.docs);
           isLoading = false;
         });
       }
@@ -76,13 +64,13 @@ class _RegionPageState extends State<RegionPage> {
     await getData();
   }
 
-  void _navigateToUpdatePage(String selectedRegion, String selectedChefRegion) {
+  void _navigateToReplyPage(String email, String id) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ModifyRegion(
-          selectedRegion: selectedRegion,
-          currentChefRegion: selectedChefRegion,
+        builder: (context) => ReplyReclamtion(
+          email: email,
+          id: id,
         ),
       ),
     ).then((value) {
@@ -90,19 +78,19 @@ class _RegionPageState extends State<RegionPage> {
     });
   }
 
-  Future<void> _deleteRegion(String regionId, String regionName) async {
+  Future<void> _deleteReclamation(String email, String id) async {
     bool confirmDelete = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text(
-          "Supprimer Région",
+          "Supprimer Réclamation",
           style: TextStyle(
             color: Colors.red,
           ),
         ),
-        content: Text(
-          "Vous êtes sûr de vouloir supprimer $regionName?",
-          style: const TextStyle(
+        content: const Text(
+          "Vous êtes sûr de vouloir supprimer cette réclamation?",
+          style: TextStyle(
             color: Colors.black,
           ),
         ),
@@ -135,14 +123,14 @@ class _RegionPageState extends State<RegionPage> {
 
     if (confirmDelete != null && confirmDelete) {
       try {
-        await FirebaseFirestore.instance.collection("region").doc(regionId).delete();
+        await FirebaseFirestore.instance.collection("DemandeReclamation").doc(id).delete();
         getData();
-        Get.snackbar('Succès', 'Région supprimée avec succès',
+        Get.snackbar('Succès', 'Réclamation supprimée avec succès',
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.green,
             colorText: Colors.white);
       } catch (e) {
-        Get.snackbar('Erreur', 'Erreur lors de la suppression de la région',
+        Get.snackbar('Erreur', 'Erreur lors de la suppression de la réclamation',
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.red,
             colorText: Colors.white);
@@ -156,7 +144,7 @@ class _RegionPageState extends State<RegionPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Liste Région".toUpperCase(),
+            "Liste Des Réclamations".toUpperCase(),
             style: GoogleFonts.montserrat(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -165,14 +153,6 @@ class _RegionPageState extends State<RegionPage> {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.add, color: tPrimaryColor),
-              onPressed: () {
-                Get.to(() => AddRegion());
-              },
-            ),
-          ],
         ),
         body: RefreshIndicator(
           onRefresh: _handleRefresh,
@@ -194,7 +174,7 @@ class _RegionPageState extends State<RegionPage> {
                           ),
                           const SizedBox(height: 20),
                           Text(
-                            'Aucune région trouvée',
+                            'Aucune réclamation trouvée',
                             style: GoogleFonts.montserrat(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -213,14 +193,14 @@ class _RegionPageState extends State<RegionPage> {
                             children: [
                               SlidableAction(
                                 onPressed: (context) {
-                                  String selectedRegion = data[i]['Designation'];
-                                  String currentChefRegion = data[i]['codeChefRegion'];
-                                  _navigateToUpdatePage(selectedRegion, currentChefRegion);
+                                  String email = data[i]['email'];
+                                  String id = data[i].id;
+                                  _navigateToReplyPage(email, id);
                                 },
-                                backgroundColor: Colors.green,
+                                backgroundColor: Colors.lightBlueAccent,
                                 foregroundColor: Colors.white,
-                                icon: Icons.edit,
-                                label: 'Modifier',
+                                icon: Icons.reply,
+                                label: 'Répondre',
                               ),
                             ],
                           ),
@@ -229,7 +209,10 @@ class _RegionPageState extends State<RegionPage> {
                             children: [
                               SlidableAction(
                                 onPressed: (context) {
-                                  _deleteRegion(data[i].id, data[i]['Designation']);
+                                  _deleteReclamation(
+                                    data[i]['email'],
+                                    data[i].id,
+                                  );
                                 },
                                 backgroundColor: Colors.red,
                                 foregroundColor: Colors.white,
@@ -256,14 +239,14 @@ class _RegionPageState extends State<RegionPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "${data[i]['Designation']}",
+                                      "${data[i]['raison']}",
                                       style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.bold,
                                         color: tSecondaryColor,
                                       ),
                                     ),
                                     Text(
-                                      "${data[i]['codeRegion']}",
+                                      "${data[i]['description']}",
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         color: tAccentColor,
@@ -272,10 +255,10 @@ class _RegionPageState extends State<RegionPage> {
                                   ],
                                 ),
                                 Text(
-                                  chefRegionNames.isNotEmpty ? chefRegionNames[i] : '',
+                                  "${data[i]['responsable']}",
                                   style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: tAccentColor,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black87,
                                   ),
                                 )
                               ],

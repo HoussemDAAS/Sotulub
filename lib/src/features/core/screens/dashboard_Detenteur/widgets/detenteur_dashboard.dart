@@ -141,8 +141,8 @@ void _checkConvention() {
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
                     child: TpromoSlider(),
                   ),
-                  SizedBox(height: 20),
-                  LineChartSample2(isVisible: _isConvention),
+                  // SizedBox(height: 20),
+                  // LineChartSample2(isVisible: _isConvention),
                const    SizedBox(height: 20),
                   CardWidget(
                     title: 'Demande Cuve',
@@ -151,6 +151,7 @@ void _checkConvention() {
                     onTap: () {
                       Get.to(() => const DemandeCuve());
                     },
+                    disabled:! _isConvention,
                   ),
              const      SizedBox(height: 20),
                   CardWidget(
@@ -161,6 +162,7 @@ void _checkConvention() {
                       Get.to(() => const DemandeCollecte());
                     },
                     reverse: true,
+                     disabled:! _isConvention,
                   ),
                const    Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.0),

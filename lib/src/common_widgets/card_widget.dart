@@ -7,37 +7,42 @@ class CardWidget extends StatelessWidget {
   final String title;
   final String buttonText;
   final String imagePath;
-  final void Function() onTap;
+  final void Function()? onTap;
   final bool reverse;
+  final bool disabled; // New property to disable the card
 
   const CardWidget({
     Key? key,
     required this.title,
     required this.buttonText,
     required this.imagePath,
-    required this.onTap,
+    this.onTap,
     this.reverse = false,
+    this.disabled = false, // Default to enabled
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: tLightBackground,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (reverse) // Check if reverse is true
-            _buildImage(),
-          _buildContent(),
-          if (!reverse) // Check if reverse is false
-            _buildImage(),
-        ],
+    return Opacity(
+      opacity: disabled ? 0.5 : 1.0, // Reduce opacity if disabled
+      child: Container(
+        decoration: BoxDecoration(
+          color: tLightBackground,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (reverse)
+              _buildImage(),
+            _buildContent(),
+            if (!reverse)
+              _buildImage(),
+          ],
+        ),
       ),
     );
   }
@@ -52,8 +57,7 @@ class CardWidget extends StatelessWidget {
   Widget _buildContent() {
     return Expanded(
       child: Column(
-        
-         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
@@ -66,7 +70,7 @@ class CardWidget extends StatelessWidget {
           const SizedBox(height: 15),
           MyButton(
             text: buttonText,
-            onTap: onTap,
+            onTap: disabled ? null : onTap, // Disable onTap if disabled
           ),
         ],
       ),

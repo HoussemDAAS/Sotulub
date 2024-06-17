@@ -108,6 +108,34 @@ class _AddZonePageState extends State<AddZonePage> {
                 );
               }),
               const SizedBox(height: tFormHeight - 10.0),
+               Obx(() {
+                return CustomDropdown(
+                  labelText: 'Sous_Traitant',
+                  prefixIcon: Icons.person_pin_circle_rounded,
+                  items: dropdownController.SousTraitantItems.map((sousTraitant) {
+                    return DropdownMenuItem(
+                      value: sousTraitant,
+                      child: Text(sousTraitant),
+                    );
+                  }).toList(),
+                  value: null,
+                  onChanged: (newValue) async {
+                    // Update the selected zone
+                    controller.sousTraiatnt.value = newValue ?? "";
+
+                    if (newValue != null) {
+                      // Get the codeZone for the selected zone
+                      String emailSousTraitant=
+                          await AdminRepository.instance.getEmailSoutraitant(newValue);
+
+                      // Do something with the codeZone, such as updating controller.CodeZone
+                      controller.emailSousTraitant.text = emailSousTraitant;
+                    }
+                  },
+                );
+              }),
+
+              const SizedBox(height: tFormHeight - 10.0),
               Expanded(
                 child: ListView.builder(
                   itemCount: dropdownController.gouvernoratItems.length,
@@ -174,6 +202,7 @@ class _AddZonePageState extends State<AddZonePage> {
                       );
                     } else {
                       await AdminRepository.instance.addZone(
+                        sousTraiatnt: controller.emailSousTraitant.text,
                         designation: designation,
                         selectedGouvernorats: selectedGouvernorats, CodeRegion: controller.CodeRegion.text,
                           

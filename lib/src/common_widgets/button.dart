@@ -4,7 +4,7 @@ import 'package:sotulub/src/constants/colors.dart';
 
 class MyButton extends StatelessWidget {
   final String text;
-  final void Function() onTap;
+ final void Function()? onTap; 
   final Color? buttonColor;
   final double? width;
   final bool animateIcon;
@@ -15,7 +15,7 @@ class MyButton extends StatelessWidget {
 
   const MyButton({
     required this.text,
-    required this.onTap,
+  this.onTap,
     this.buttonColor,
     this.width,
     this.animateIcon = false,
@@ -32,7 +32,7 @@ class MyButton extends StatelessWidget {
     _buttonColor = _buttonColor.withOpacity(opacity);
 
     return GestureDetector(
-      onTap: onTap,
+ onTap: onTap ?? () {},
       child: Container(
         width: width,
         decoration: BoxDecoration(

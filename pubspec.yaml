@@ -54,6 +54,7 @@ dependencies:
   http: ^1.2.1
   latlong2: ^0.9.1
   flutter_polyline_points: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
 
 
 
@@ -62,8 +63,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  
 
-
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/ic_launcher.png"
 
 flutter_native_splash:
    color: "#D3F4E8"
@@ -138,5 +143,6 @@ flutter:
     - assets/images/pointer.png
     - assets/images/currentLocation.png
     - assets/images/cuve.png
+    - assets/images/reply.png
     
     
