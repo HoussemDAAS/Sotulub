@@ -490,6 +490,22 @@ Future<void> updateZone(String oldZone, String newZone, List<String> selectedGou
 }
 
 // region 
+  Future<String> getChefRegion(String codeChef) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('chefRegion')
+          .where('id', isEqualTo: codeChef)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['nom'].toString();
+      } else {
+        return '';
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      return '';
+    }
+  }
 Future<void> addRegion({
     
     required String designation,
@@ -552,8 +568,43 @@ Future<String> getCodeRegion(String selectedRegion) async {
       return '';
     }
   }
-
-
+  Future<String> getCodeChefRegion(String selectedChef) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('chefRegion')
+          .where('nom', isEqualTo: selectedChef)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['id'].toString();
+      } else {
+        return '';
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      return '';
+    }
+  }
+Future<void> updateRegion(String oldDelegation, String newDelegation, String newChef) async {
+    try {
+      String newCodeChefRegion = await getCodeChefRegion(newChef);
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('region')
+          .where('Designation', isEqualTo: oldDelegation)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        QueryDocumentSnapshot docSnapshot = querySnapshot.docs.first;
+        if (newDelegation != oldDelegation) {
+          await docSnapshot.reference.update({'Designation': newDelegation});
+        }
+        await docSnapshot.reference.update({'codeChefRegion': newCodeChefRegion});
+        print('REgion updated successfully');
+      } else {
+        print('REgion not found');
+      }
+    } catch (e) {
+      print('Error updating REgion: $e');
+    }
+  }
 
 
 

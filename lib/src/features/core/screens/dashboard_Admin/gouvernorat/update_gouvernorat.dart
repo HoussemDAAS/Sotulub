@@ -58,7 +58,7 @@ class _UpdateGovPageState extends State<UpdateGovPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Update Gouvernorat'.toUpperCase(),
+          'Modifier Gouvernorate'.toUpperCase(),
           style: GoogleFonts.montserrat(
             fontSize: 16,
             fontWeight: FontWeight.bold,
