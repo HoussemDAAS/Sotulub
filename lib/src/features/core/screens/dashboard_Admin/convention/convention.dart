@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:get/get.dart';
+
 
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:sotulub/src/constants/colors.dart';
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/select_role.dart';
+
 
 class ConventionPage extends StatefulWidget {
   const ConventionPage({Key? key}) : super(key: key);

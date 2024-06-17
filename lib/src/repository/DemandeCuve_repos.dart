@@ -47,6 +47,11 @@ Future<void> addDemandeCuve(
     String email,
     String nbCuve,
    String  capaciteCuve,
+   String telephone,
+   String gouvernorat,
+   String delegation,
+   String longitude,
+   String latitude
   ) async {
     try {
       // Get the next value for numeroDemande
@@ -61,6 +66,13 @@ Future<void> addDemandeCuve(
         'nbCuve': nbCuve,
         'capaciteCuve': capaciteCuve,
         'approved': false,
+        'date ': DateTime.now().toString(),
+      'delivred':false,
+      'telephone':telephone,
+      'gouvernorat':gouvernorat,
+      'delegation':delegation,
+      'longitude':longitude,
+      'latitude':latitude,
       });
     } catch (e) {
       // Handle errors

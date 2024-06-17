@@ -5,6 +5,12 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 class DemandeColectRepository extends GetxController {
   static DemandeColectRepository get instance => Get.find();
 
+
+  Future<List<QueryDocumentSnapshot>> getDemandeCollectData() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("DemandeCollect").get();
+    return querySnapshot.docs;
+  }
+
  Future<int> getNextNumeroDemande() async {
   try {
     // Get the current value of numeroDemande from Firestore
@@ -42,27 +48,42 @@ class DemandeColectRepository extends GetxController {
 
 
   Future<void> addDemandeCollect(
-    String month,
-    String responsable,
-    String email,
-    String quentity,
-  ) async {
-    try {
-      // Get the next value for numeroDemande
-      int nextNumeroDemande = await getNextNumeroDemande();
+  String month,
+  String responsable,
+  String email,
+  String quentity,
+  String telephone,
+  String gouvernorat,
+  String delegation,
+  String longitude,
+  String latitude,
+) async {
+  try {
+    // Get the next value for numeroDemande
+    int nextNumeroDemande = await getNextNumeroDemande();
 
-      // Add data to Firestore collection
-      await FirebaseFirestore.instance.collection('DemandeCollect').add({
-        'numeroDemande': nextNumeroDemande.toString(),
-        'month': month,
-        'responsable': responsable,
-        'email': email,
-        'quentity': quentity,
-      });
-    } catch (e) {
-      // Handle errors
-      print('Error adding demandeCollect document: $e');
-      throw e; // Rethrow the exception to propagate it
-    }
+    // Add data to Firestore collection
+    await FirebaseFirestore.instance.collection('DemandeCollect').add({
+      'numeroDemande': nextNumeroDemande.toString(),
+      'month': month,
+      'responsable': responsable,
+      'email': email,
+      'quentity': quentity,
+      'telephone': telephone,
+      'gouvernorat': gouvernorat,
+      'delegation': delegation,
+      'longitude': longitude,
+      'latitude': latitude,
+      'approved' : false,
+      'date ': DateTime.now().toString(),
+      'delivred':false,
+      'outdated':false,
+    });
+  } catch (e) {
+    // Handle errors
+    print('Error adding demandeCollect document: $e');
+    throw e; // Rethrow the exception to propagate it
   }
+}
+
 }

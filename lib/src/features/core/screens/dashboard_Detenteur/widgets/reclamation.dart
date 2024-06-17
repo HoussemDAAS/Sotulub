@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sotulub/src/common_widgets/CustomTextArea.dart';
 import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
 import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
 import 'package:sotulub/src/constants/image_string.dart';
@@ -13,8 +14,8 @@ import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/de
 import 'package:sotulub/src/repository/DemandeCuve_repos.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
-class DemandeCuve extends StatelessWidget {
-  const DemandeCuve({super.key});
+class ReclamationPage extends StatelessWidget {
+  const ReclamationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class DemandeCuve extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           // leading: const Icon(Icons.menu, color: tPrimaryColor),
-          title: Text('Demande de Cuve'.toUpperCase(),
+          title: Text('Reclamation'.toUpperCase(),
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -42,9 +43,9 @@ class DemandeCuve extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const LoginHeader(
-                      image: tBarrel,
-                      title: "Demande de Cuve",
-                      subtitle: "Formulaire demande de cuve",
+                      image: 'assets/images/alert.png',
+                      title: "Remplir une Reclamation",
+                      subtitle: "Formulaire Reclamation",
                     ),
                     Form(
                       key: _formKey,
@@ -54,66 +55,75 @@ class DemandeCuve extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CustomDropdown(
-                              labelText: 'Capacité de la cuve',
-                              prefixIcon: Icons.oil_barrel_outlined,
-                           
-                              items: const [
-                                DropdownMenuItem(
-                                    value: '250L', child: Text('250L')),
-                                DropdownMenuItem(
-                                    value: '500L', child: Text('500L')),
-                                DropdownMenuItem(
-                                    value: '1000L', child: Text('1000L')),
-                              ],
-                              value: null,
-                              onChanged: (newValue) {
-                              controller.capaciteCuve.value =
-                                  newValue ?? "";
-                            },
-                            ),
-                            const SizedBox(height: tFormHeight - 10.0),
                             CustomTextField(
-                              labelText: 'Nbre Cuve demandé',
+                              labelText: 'Raison du Réclamation',
                               hintText: '',
                               prefixIcon: Icons.question_mark_outlined,
                               controller: controller
                                   .nbCuve, // Use textEditingController property
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'This field is required';
-                                }
-                                if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                                  return 'Please enter only numbers';
+                                  return 'S' 'il vous plaît entrer une raison';
                                 }
                                 return null;
                               },
                             ),
                             const SizedBox(height: tFormHeight - 10.0),
+                            CustomTextArea(
+                              labelText: 'Description',
+                              hintText: 'Enter your description here',
+                              prefixIcon: Icons.description,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                            ),
+                              const SizedBox(height: tFormHeight - 10.0),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: () async{
+                                onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    String email =
-                                        AuthRepository.instance.firebaseUser.value!.email!;
-                                          String responsable =
+                                    String email = AuthRepository
+                                        .instance.firebaseUser.value!.email!;
+                                    String responsable = await AuthRepository
+                                        .instance
+                                        .getResponsableByEmail(email);
+                                    Map<String, dynamic> userData =
                                         await AuthRepository.instance
-                                            .getResponsableByEmail(email);
-                                            Map<String, dynamic> userData = await AuthRepository.instance.getDataByEmail(email);
-                                             String month = DateTime.now().month.toString();
+                                            .getDataByEmail(email);
+                                    String month =
+                                        DateTime.now().month.toString();
                                     String nbCuve = controller.nbCuve.text;
-                                    String capaciteCuve = controller.capaciteCuve.value;
-                                      String telephone = userData['telephone'].toString();
-                                      String gouvernorat = userData['gouvernorat'].toString();
-                                      String delegation = userData['delegation'].toString();
-                                      String longitude = userData['longitude'].toString();
-                                      String latitude = userData['latitude'].toString();
+                                    String capaciteCuve =
+                                        controller.capaciteCuve.value;
+                                    String telephone =
+                                        userData['telephone'].toString();
+                                    String gouvernorat =
+                                        userData['gouvernorat'].toString();
+                                    String delegation =
+                                        userData['delegation'].toString();
+                                    String longitude =
+                                        userData['longitude'].toString();
+                                    String latitude =
+                                        userData['latitude'].toString();
 
-                                    await DemandeCuveRepo.instance.addDemandeCuve(month, responsable, email, nbCuve, capaciteCuve, telephone, gouvernorat, delegation, longitude, latitude);
-
+                                    await DemandeCuveRepo.instance
+                                        .addDemandeCuve(
+                                            month,
+                                            responsable,
+                                            email,
+                                            nbCuve,
+                                            capaciteCuve,
+                                            telephone,
+                                            gouvernorat,
+                                            delegation,
+                                            longitude,
+                                            latitude);
                                   }
-                                   Get.to(() => const Dashboard());
+                                  Get.to(() => const Dashboard());
                                 },
                                 child:
                                     Text('envoyer votre demande'.toUpperCase()),

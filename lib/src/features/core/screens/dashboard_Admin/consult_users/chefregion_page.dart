@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
+
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/chef_region/update_chef_region.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/select_role.dart';
+
 
 class ChefRegionPage extends StatefulWidget {
   const ChefRegionPage({Key? key}) : super(key: key);
@@ -85,7 +86,7 @@ class _ChefRegionPageState extends State<ChefRegionPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          CircleAvatar(
+                      const     CircleAvatar(
                             backgroundImage:
                                 AssetImage("assets/images/profile_image.jpg"),
                           ),
@@ -102,13 +103,13 @@ class _ChefRegionPageState extends State<ChefRegionPage> {
                           )),
                     ],
                   ),
-                  SizedBox(
+             const      SizedBox(
                     height: tFormHeight - 10,
                   ),
                   Text(
                     "Region: ${data[i]['region']}",
                   ),
-                  SizedBox(
+                const   SizedBox(
                     height: tFormHeight - 10,
                   ),
                   Row(
@@ -123,7 +124,7 @@ class _ChefRegionPageState extends State<ChefRegionPage> {
                           _navigateToUpdatePage(context, data[i], data[i].id);
                         },
                         child: Container(
-                          decoration: BoxDecoration(
+                          decoration:const  BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
                               color: Colors.blue),
@@ -132,7 +133,7 @@ class _ChefRegionPageState extends State<ChefRegionPage> {
                           child: Center(
                               child: Text(
                             "Modifier".toUpperCase(),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w300,
                                 color: Colors.white,
                                 fontSize: 12),

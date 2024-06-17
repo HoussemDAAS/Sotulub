@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sotulub/main.dart';
 import 'package:sotulub/src/common_widgets/button.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
@@ -30,9 +29,9 @@ class ConsultByRole extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  Get.to(SelectRole());
+                  Get.to(const SelectRole());
                 },
-                icon: Icon(Icons.add)),
+                icon:const  Icon(Icons.add)),
           ],
         ),
         body: Padding(
