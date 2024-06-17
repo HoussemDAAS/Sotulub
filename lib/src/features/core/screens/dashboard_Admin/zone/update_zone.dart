@@ -10,10 +10,11 @@ import 'package:sotulub/src/repository/admin_repos.dart';
 
 class UpdateZonePage extends StatefulWidget {
   final String selectedZone;
-
+final String emailSousTraitant;
   const UpdateZonePage({
     Key? key,
     required this.selectedZone,
+    required this.emailSousTraitant,
   }) : super(key: key);
 
   @override
@@ -24,12 +25,14 @@ class _UpdateZonePageState extends State<UpdateZonePage> {
   final AdminRepository adminRepository = Get.put(AdminRepository());
   TextEditingController? zoneController;
   List<String> gouvernorats = [];
-
+String? selectedSoutraint;
+String? oldselectedSoutraint;
   @override
   void initState() {
     super.initState();
     zoneController = TextEditingController(text: widget.selectedZone);
     fetchGouvernorats();
+    fetchSoutraintName();
   }
 
   List<String> selectedGouvernorats = [];
@@ -43,7 +46,14 @@ class _UpdateZonePageState extends State<UpdateZonePage> {
       }
     });
   }
-
+Future<void> fetchSoutraintName() async {
+    String? Nom =
+        await adminRepository.getNomSousTraitant(widget.emailSousTraitant);
+    setState(() {
+      selectedSoutraint = Nom;
+      oldselectedSoutraint = Nom;
+    });
+  }
   @override
   void dispose() {
     zoneController?.dispose();
@@ -139,7 +149,28 @@ class _UpdateZonePageState extends State<UpdateZonePage> {
                   );
                 },
               ),
-            ),
+            ), Obx(() {
+                return CustomDropdown(
+                  labelText: 'Sous_Traitant',
+                  prefixIcon: Icons.person_pin_circle_rounded,
+                  items: adminRepository.SousTraitantItems.map((sousTraitant) {
+                    return DropdownMenuItem(
+                      value: sousTraitant,
+                      child: Text(sousTraitant),
+                    );
+                  }).toList(),
+                  value: selectedSoutraint,
+                  onChanged: (newValue) async {
+                 
+                setState(() {
+                  selectedSoutraint = newValue;
+                });
+            
+                  },
+                );
+              }),
+
+              const SizedBox(height: tFormHeight - 10.0),
             SizedBox(height: tFormHeight),
             ElevatedButton(
               onPressed: () async {
@@ -147,8 +178,10 @@ class _UpdateZonePageState extends State<UpdateZonePage> {
                   // Update the zone
                   await adminRepository.updateZone(
                     widget.selectedZone,
+                    widget.emailSousTraitant,
                     zoneController!.text,
                     selectedGouvernorats,
+                    selectedSoutraint!,
                   );
                   Get.snackbar(
                     'Succès',

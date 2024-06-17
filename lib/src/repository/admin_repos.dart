@@ -10,7 +10,7 @@ class AdminRepository extends GetxController {
   final RxList<String> gouvernoratItems = <String>[].obs;
   final RxList<String> secteurItems = <String>[].obs;
    final RxList<String> regionItems = <String>[].obs;
-
+  final RxList<String> SousTraitantItems = <String>[].obs;
   void onInit() {
     super.onInit();
     fetchGouvernoratItems();
@@ -18,6 +18,7 @@ class AdminRepository extends GetxController {
     fetchSecteurItems();
     fetchRegionItems();
     fetchChefRegionItems();
+    fetchSousTraiantItems();
   }
 
   Future<void> fetchGouvernoratItems() async {
@@ -285,6 +286,47 @@ Future<void> addDelegation({
 
 
 //zone
+ Future<void> fetchSousTraiantItems() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('sousTraitants').get();
+      SousTraitantItems.assignAll(querySnapshot.docs.map<String>((doc) => doc['nom'] as String).toList());
+    } catch (e) {
+      print('Error fetching zone items: $e');
+    }
+  }
+  Future<String> getEmailSoutraitant(String selectedSoutraitnat) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('sousTraitants')
+          .where('nom', isEqualTo: selectedSoutraitnat)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['email'].toString();
+      } else {
+        return '';
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      return '';
+    }
+  }
+   Future<String> getNomSousTraitant(String email) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('sousTraitants')
+          .where('email', isEqualTo: email)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['nom'].toString();
+      } else {
+        return '';
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      return '';
+    }
+  }
   Future<void> fetchZoneItems() async {
     try {
       QuerySnapshot querySnapshot =
@@ -377,6 +419,7 @@ Future<bool> checkDesignationZoneExists(String designation) async {
 
  
   Future<void> addZone({
+    required String sousTraiatnt,
     required String designation,
     required List<String> selectedGouvernorats,
     required String CodeRegion,
@@ -387,6 +430,7 @@ Future<bool> checkDesignationZoneExists(String designation) async {
 
 
       await FirebaseFirestore.instance.collection('zone').add({
+        'emailSousTraitant': sousTraiatnt,
         'codeZone': nextCodeZone,
         'codeRegion': CodeRegion,
         'designation': designation,
@@ -429,16 +473,8 @@ Future<bool> checkDesignationZoneExists(String designation) async {
     }
   }
 
-Future<void> updateZone(String oldZone, String newZone, List<String> selectedGouvernorats) async {
+Future<void> updateZone(String oldZone, String oldSoutraitant, String newZone, List<String> selectedGouvernorats, String newSoutraitant) async {
   try {
-    await FirebaseFirestore.instance
-        .collection("zone")
-        .where('designation', isEqualTo: oldZone)
-        .get()
-        .then((value) => value.docs.forEach((doc) {
-              doc.reference.update({'designation': newZone});
-            }));
-
     String zoneCode = ''; // Initialize zone code
 
     // Get the codeZone of the old zone
@@ -449,18 +485,27 @@ Future<void> updateZone(String oldZone, String newZone, List<String> selectedGou
 
     if (oldZoneSnapshot.docs.isNotEmpty) {
       zoneCode = oldZoneSnapshot.docs.first['codeZone'];
+      
+      // Get the email for the new soutraitant
+      String newSoutraitantEmail = await getEmailSoutraitant(newSoutraitant);
+      
+      // Update the designation and soutraitant fields if they have changed
+      await oldZoneSnapshot.docs.first.reference.update({
+        'designation': newZone,
+        if (oldSoutraitant != newSoutraitantEmail) 'emailSousTraitant': newSoutraitantEmail,
+      });
     }
 
     // Update the codeZone for the newly selected gouvernorats
-    selectedGouvernorats.forEach((gouvernorat) async {
-      await FirebaseFirestore.instance
+    for (String gouvernorat in selectedGouvernorats) {
+      QuerySnapshot gouvernoratSnapshot = await FirebaseFirestore.instance
           .collection("Gouvernorat")
           .where('Désignation', isEqualTo: gouvernorat)
-          .get()
-          .then((value) => value.docs.forEach((doc) {
-                doc.reference.update({'code zone': zoneCode});
-              }));
-    });
+          .get();
+      for (var doc in gouvernoratSnapshot.docs) {
+        await doc.reference.update({'code zone': zoneCode});
+      }
+    }
 
     // Remove the association for any previously associated gouvernorat that is not selected anymore
     QuerySnapshot associatedGouvernoratsSnapshot = await FirebaseFirestore.instance
@@ -472,22 +517,23 @@ Future<void> updateZone(String oldZone, String newZone, List<String> selectedGou
         .map((doc) => doc['Désignation'] as String)
         .toList();
 
-    associatedGouvernorats.forEach((gouvernorat) async {
+    for (String gouvernorat in associatedGouvernorats) {
       if (!selectedGouvernorats.contains(gouvernorat)) {
-        await FirebaseFirestore.instance
+        QuerySnapshot gouvernoratSnapshot = await FirebaseFirestore.instance
             .collection("Gouvernorat")
             .where('Désignation', isEqualTo: gouvernorat)
-            .get()
-            .then((value) => value.docs.forEach((doc) {
-                  doc.reference.update({'code zone': ''}); // Set codeZone to empty string
-                }));
+            .get();
+        for (var doc in gouvernoratSnapshot.docs) {
+          await doc.reference.update({'code zone': ''}); // Set codeZone to empty string
+        }
       }
-    });
+    }
   } catch (e) {
     print('Error updating zone: $e');
     // Handle the error as needed
   }
 }
+
 
 // region 
   Future<String> getChefRegion(String codeChef) async {
@@ -832,6 +878,8 @@ Future<bool> checkNomExists(String designation) async {
       print('Error updating Sous secteur: $e');
     }
   }
+
+
   // chef region 
 
    Future<void> fetchChefRegionItems() async {
