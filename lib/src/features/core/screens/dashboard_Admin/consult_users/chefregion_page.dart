@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/chef_region/update_chef_region.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/select_role.dart';
 
 class ChefRegionPage extends StatefulWidget {
@@ -26,6 +27,19 @@ class _ChefRegionPageState extends State<ChefRegionPage> {
         data.addAll(querySnapshot.docs);
       });
     }
+  }
+
+  String documentId = "";
+  void _navigateToUpdatePage(
+      BuildContext context, dynamic itemData, String userUID) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => UpdateChefRegion(
+                data: itemData,
+                userUID: documentId,
+              )),
+    );
   }
 
   @override
@@ -101,7 +115,13 @@ class _ChefRegionPageState extends State<ChefRegionPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          setState(() {
+                            documentId = data[i].id;
+                          });
+
+                          _navigateToUpdatePage(context, data[i], data[i].id);
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                               borderRadius:

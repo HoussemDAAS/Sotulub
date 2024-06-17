@@ -14,18 +14,17 @@ class AuthRepository extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
 
- @override
-void onReady() {
-  firebaseUser = Rx<User?>(_auth.currentUser);
-  firebaseUser.bindStream(_auth.userChanges());
-  ever(firebaseUser, _setInitialScreen);
+  @override
+  void onReady() {
+    firebaseUser = Rx<User?>(_auth.currentUser);
+    firebaseUser.bindStream(_auth.userChanges());
+    ever(firebaseUser, _setInitialScreen);
 
-  // Only redirect to the splash screen if the user is not logged in
-  if (_auth.currentUser == null) {
-    Get.offAll(() => SplachScreen());
+    // Only redirect to the splash screen if the user is not logged in
+    if (_auth.currentUser == null) {
+      Get.offAll(() => SplachScreen());
+    }
   }
-}
-
 
   _setInitialScreen(User? user) async {
     if (user == null) {
@@ -192,7 +191,6 @@ void onReady() {
       );
 
       User? user = _auth.currentUser;
-
       if (user != null) {
         await FirebaseFirestore.instance
             .collection('sousTraitants')
@@ -207,7 +205,7 @@ void onReady() {
       }
 
       firebaseUser.value != null
-          ? Get.offAll(() => const Dashboard())
+          ? Get.offAll(() => const AdminDashboard())
           : Get.to(() => SplachScreen());
     } catch (e) {
       Get.snackbar(
@@ -382,59 +380,118 @@ void onReady() {
   }
 
   Future<bool> checkConvention() async {
-  try {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      if (snapshot.exists) {
-        return snapshot.get('convention');
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DocumentSnapshot snapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (snapshot.exists) {
+          return snapshot.get('convention');
+        }
       }
+      return false; // Return false if user or convention not found
+    } catch (e) {
+      print('Error checking convention: $e');
+      return false;
     }
-    return false; // Return false if user or convention not found
-  } catch (e) {
-    print('Error checking convention: $e');
-    return false;
   }
-}
 
+  Future<void> updateDirecteur(String userUID,
+      String email,
+      String nom,
+      String telephone,)async {
+        try {
+      // Access Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+      // Reference to the user document in Firestore
+      DocumentReference userRef = firestore.collection('directeur').doc(userUID);
 
-Future<void> updateUser(
-  String userUID,String email,String raisonSociale,String responsable,String telephone, String gov,String delegation, String secteur) async {
-  try {
-    // Access Firestore instance
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
+      // Data to update
+      Map<String, dynamic> userData = {};
+      if (email != null) userData['email'] = email;
+      
+      if (telephone != null) userData['telephone'] = telephone;
+      
+      if (nom != null) userData['nom'] = nom;
 
-    // Reference to the user document in Firestore
-    DocumentReference userRef = firestore.collection('users').doc(userUID);
+      // Update the user document
+      await userRef.update(userData);
 
-    // Data to update
-    Map<String, dynamic> userData = {};
-    if (email != null) userData['email'] = email;
-    if (raisonSociale != null) userData['raisonSocial'] = raisonSociale;
-    if (responsable != null) userData['responsable'] = responsable;
-    if (telephone != null) userData['telephone'] = telephone;
-    if (gov != null) userData['gouvernorat'] = gov;
-    if (delegation != null) userData['delegation'] = delegation;
-    if (secteur != null) userData['secteurActivite'] = secteur;
-
-
-
-
-
-
-    // Update the user document
-    await userRef.update(userData);
-
-    print('User data updated successfully!');
-  } catch (error) {
-    print('Error updating user data: $error');
-    // Handle error
+      print('User data updated successfully!');
+    } catch (error) {
+      print('Error updating user data: $error');
+      // Handle error
+    }
   }
-}
 
+  Future<void> updateChefRegion(String userUID,
+      String email,
+      String nom,
+      String telephone,
+      String region)async {
+        try {
+      // Access Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+      // Reference to the user document in Firestore
+      DocumentReference userRef = firestore.collection('directeur').doc(userUID);
+
+      // Data to update
+      Map<String, dynamic> userData = {};
+      if (email != null) userData['email'] = email;
+      
+      if (telephone != null) userData['telephone'] = telephone;
+      
+      if (nom != null) userData['nom'] = nom;
+      if (region != null) userData['region'] = region;
+
+      // Update the user document
+      await userRef.update(userData);
+
+      print('User data updated successfully!');
+    } catch (error) {
+      print('Error updating user data: $error');
+      // Handle error
+    }
+  }
+      
+
+  Future<void> updateUser(
+      String userUID,
+      String email,
+      String raisonSociale,
+      String responsable,
+      String telephone,
+      String gov,
+      String delegation,
+      String secteur) async {
+    try {
+      // Access Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Reference to the user document in Firestore
+      DocumentReference userRef = firestore.collection('users').doc(userUID);
+
+      // Data to update
+      Map<String, dynamic> userData = {};
+      if (email != null) userData['email'] = email;
+      if (raisonSociale != null) userData['raisonSocial'] = raisonSociale;
+      if (responsable != null) userData['responsable'] = responsable;
+      if (telephone != null) userData['telephone'] = telephone;
+      if (gov != null) userData['gouvernorat'] = gov;
+      if (delegation != null) userData['delegation'] = delegation;
+      if (secteur != null) userData['secteurActivite'] = secteur;
+
+      // Update the user document
+      await userRef.update(userData);
+
+      print('User data updated successfully!');
+    } catch (error) {
+      print('Error updating user data: $error');
+      // Handle error
+    }
+  }
 }

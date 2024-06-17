@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
 class AdminController extends GetxController {
-  static AdminController get instance => Get.find();
+  static AdminController get instance => Get.put(AdminController());
 
   final zone = RxString("");
   final region = RxString("");
@@ -47,5 +47,16 @@ class AdminController extends GetxController {
       String secteur) {
     AuthRepository.instance.updateUser(userUID, email, raisonSociale,
         responsable, telephone, gov, delegation, secteur);
+  }
+
+  void tUpdateDirecteur(
+      String userUID, String email, String nom, String telephone) {
+    AuthRepository.instance.updateDirecteur(userUID, email, nom, telephone);
+  }
+
+  void tUpdateChefRegion(String userUID, String email, String nom,
+      String telephone, String region) {
+    AuthRepository.instance
+        .updateChefRegion(userUID, email, nom, telephone, region);
   }
 }

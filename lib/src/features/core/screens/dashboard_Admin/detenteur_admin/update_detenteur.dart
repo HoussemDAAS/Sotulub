@@ -234,7 +234,7 @@ class _UpdateDetenteurState extends State<UpdateDetenteur> {
                         delegationController.text.trim(),
                         secteurController.text.trim(),
                       );
-                      Get.to(() => const Dashboard());
+                      Get.to(() => AdminController());
                     },
                     child: Text("CONFIRM".toUpperCase()),
                   ),

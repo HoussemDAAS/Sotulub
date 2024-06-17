@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,8 @@ class _DetenteurPageState extends State<DetenteurPage> {
 
   String documentId = "";
 
-  void _navigateToUpdatePage(BuildContext context, dynamic itemData,String userUID) {
+  void _navigateToUpdatePage(
+      BuildContext context, dynamic itemData, String userUID) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -146,9 +148,9 @@ class _DetenteurPageState extends State<DetenteurPage> {
                                 setState(() {
                                   documentId = data[i].id;
                                 });
-                                String selectedDetenteur = data[i]['email'];
 
-                                _navigateToUpdatePage(context, data[i],data[i].id);
+                                _navigateToUpdatePage(
+                                    context, data[i], data[i].id);
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -170,10 +172,18 @@ class _DetenteurPageState extends State<DetenteurPage> {
                             GestureDetector(
                               onTap: () async {
                                 String documentId = data[i].id;
-                                await FirebaseFirestore.instance
-                                    .collection("users")
-                                    .doc(documentId)
-                                    .delete();
+                                try {
+                                  User u = documentId as User;
+                                  u.delete();
+
+                                  await FirebaseFirestore.instance
+                                      .collection("users")
+                                      .doc(documentId)
+                                      .delete();
+                                  print("account deleted successfully");
+                                } catch (e) {
+                                  print("Error deleting account : $e");
+                                }
 
                                 setState(() {
                                   data.clear();
