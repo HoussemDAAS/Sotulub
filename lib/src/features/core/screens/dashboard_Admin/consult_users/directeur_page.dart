@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/directeur/update_directeur.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/select_role.dart';
 
 class DirecteurPage extends StatefulWidget {
@@ -26,6 +27,20 @@ class _DirecteurPageState extends State<DirecteurPage> {
         data.addAll(querySnapshot.docs);
       });
     }
+  }
+
+  String documentId = "";
+
+  void _navigateToUpdatePage(
+      BuildContext context, dynamic itemData, String userUID) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => UpdateDirecteur(
+                data: itemData,
+                userUID: documentId,
+              )),
+    );
   }
 
   @override
@@ -95,7 +110,13 @@ class _DirecteurPageState extends State<DirecteurPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          setState(() {
+                            documentId = data[i].id;
+                          });
+
+                          _navigateToUpdatePage(context, data[i], data[i].id);
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                               borderRadius:
