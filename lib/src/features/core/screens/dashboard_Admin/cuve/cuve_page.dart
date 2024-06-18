@@ -106,6 +106,10 @@ class _CuvePageState extends State<CuvePage> {
                                         .collection("DemandeCuve")
                                         .doc(data[i].id)
                                         .update({'approved': true});
+                                            await FirebaseFirestore.instance
+                                        .collection("DemandeCuve")
+                                        .doc(data[i].id)
+                                        .update({'DateApproved': DateTime.now().toString()});
 
                                     // Refresh the data to reflect the changes
                                     await getData();

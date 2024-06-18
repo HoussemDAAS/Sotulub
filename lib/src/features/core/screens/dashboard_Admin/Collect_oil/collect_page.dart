@@ -106,7 +106,10 @@ class _CollectPageState extends State<CollectPage> {
                                         .collection("DemandeCollect")
                                         .doc(data[i].id)
                                         .update({'approved': true});
-
+                                    await FirebaseFirestore.instance
+                                        .collection("DemandeCollect")
+                                        .doc(data[i].id)
+                                        .update({'DateApproved': DateTime.now().toString()});
                                     // Refresh the data to reflect the changes
                                     await getData();
                                   },

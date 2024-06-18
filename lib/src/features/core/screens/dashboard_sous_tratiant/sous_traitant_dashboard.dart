@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sotulub/src/constants/colors.dart';
@@ -69,6 +70,7 @@ Future<void> _fetchSousTraitantData() async {
         setState(() {
           demandeCollectData = querySnapshot.docs;
           isLoading = false;
+          print(demandeCollectData.first.data());
         });
       }
     } catch (e) {
@@ -402,89 +404,120 @@ Future<void> _fetchSousTraitantData() async {
                 vertical: 10,
                 horizontal: 10,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    "Détenteur: ${doc['responsable']}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: tSecondaryColor,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    "Numero Demande: ${doc['numeroDemande']}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: tAccentColor,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.phone, color: tDarkBackground),
-                      const SizedBox(width: 5),
                       Text(
-                        "${doc['telephone']}",
+                        "Détenteur: ${doc['responsable']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: tSecondaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        "Numero Demande: ${doc['numeroDemande']}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           color: tAccentColor,
                         ),
                       ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Icon(Icons.phone, color: tDarkBackground),
+                          const SizedBox(width: 5),
+                          Text(
+                            "${doc['telephone']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tAccentColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Text(
+                            "${doc['gouvernorat']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tDarkColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Text(
+                            "Mois: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tDarkBackground,
+                            ),
+                          ),
+                          Text(
+                            "${doc['month']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tAccentColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Text(
+                            "Quantité: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tDarkBackground,
+                            ),
+                          ),
+                          Text(
+                            "${doc['quentity']}L",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tAccentColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
+                  const Spacer(),
+                   Row(
+                        children: [
                       Text(
-                        "${doc['gouvernorat']}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tDarkColor,
-                        ),
+  () {
+    try {
+      if (doc['DateApproved'] is Timestamp) {
+        return DateFormat('dd/MM/yyyy').format((doc['DateApproved'] as Timestamp).toDate());
+      } else if (doc['DateApproved'] is String) {
+        DateTime date = DateTime.parse(doc['DateApproved']);
+        return DateFormat('dd/MM/yyyy').format(date);
+      } else {
+        return 'Invalid date';
+      }
+    } catch (e) {
+      // Handle any parsing exceptions here
+      return 'Invalid date format';
+    }
+  }(),
+  style: const TextStyle(
+    fontWeight: FontWeight.w600,
+    color: tAccentColor,
+  ),
+)
+
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      const Text(
-                        "Mois: ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tDarkBackground,
-                        ),
-                      ),
-                      Text(
-                        "${doc['month']}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tAccentColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      const Text(
-                        "Quantité: ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tDarkBackground,
-                        ),
-                      ),
-                      Text(
-                        "${doc['quentity']}L",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tAccentColor,
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -576,89 +609,120 @@ Future<void> _fetchSousTraitantData() async {
                 vertical: 10,
                 horizontal: 10,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    "Détenteur: ${doc['responsable']}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: tSecondaryColor,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    "Numero Demande: ${doc['numeroDemandeCuve']}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: tAccentColor,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.phone, color: tDarkBackground),
-                      const SizedBox(width: 5),
                       Text(
-                        "${doc['telephone']}",
+                        "Détenteur: ${doc['responsable']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: tSecondaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        "Numero Demande: ${doc['numeroDemandeCuve']}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           color: tAccentColor,
                         ),
                       ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Icon(Icons.phone, color: tDarkBackground),
+                          const SizedBox(width: 5),
+                          Text(
+                            "${doc['telephone']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tAccentColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Text(
+                            "${doc['gouvernorat']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tDarkColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Text(
+                            "Mois: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tDarkBackground,
+                            ),
+                          ),
+                          Text(
+                            "${doc['month']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tAccentColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Text(
+                            "Capacité: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tDarkBackground,
+                            ),
+                          ),
+                          Text(
+                            "${doc['capaciteCuve']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: tAccentColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
+                   const Spacer(),
+                   Row(
+                        children: [
                       Text(
-                        "${doc['gouvernorat']}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tDarkColor,
-                        ),
+  () {
+    try {
+      if (doc['DateApproved'] is Timestamp) {
+        return DateFormat('dd/MM/yyyy').format((doc['DateApproved'] as Timestamp).toDate());
+      } else if (doc['DateApproved'] is String) {
+        DateTime date = DateTime.parse(doc['DateApproved']);
+        return DateFormat('dd/MM/yyyy').format(date);
+      } else {
+        return 'Invalid date';
+      }
+    } catch (e) {
+      // Handle any parsing exceptions here
+      return 'Invalid date format';
+    }
+  }(),
+  style: const TextStyle(
+    fontWeight: FontWeight.w600,
+    color: tAccentColor,
+  ),
+)
+
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      const Text(
-                        "Mois: ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tDarkBackground,
-                        ),
-                      ),
-                      Text(
-                        "${doc['month']}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tAccentColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      const Text(
-                        "Capacité: ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tDarkBackground,
-                        ),
-                      ),
-                      Text(
-                        "${doc['capaciteCuve']}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: tAccentColor,
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

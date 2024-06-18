@@ -126,6 +126,10 @@ class _ChefRegionCollectPageState extends State<ChefRegionCollectPage> {
                                     .collection("DemandeCollect")
                                     .doc(data[i].id)
                                     .update({'approved': true});
+                                      await FirebaseFirestore.instance
+                                        .collection("DemandeCollect")
+                                        .doc(data[i].id)
+                                        .update({'DateApproved': DateTime.now().toString()});
                                   await getData();
                                   Get.snackbar('Succès', 'Demande approuvée avec succès', snackPosition: SnackPosition.BOTTOM);
                                 },

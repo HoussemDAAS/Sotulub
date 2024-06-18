@@ -73,6 +73,7 @@ Future<void> addDemandeCuve(
       'delegation':delegation,
       'longitude':longitude,
       'latitude':latitude,
+      'DateApproved':'',
       });
     } catch (e) {
       // Handle errors
