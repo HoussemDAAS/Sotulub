@@ -101,6 +101,18 @@ class AdminRepository extends GetxController {
       return false;
     }
   }
+ Future<bool> checkDesignationRegionExists(String designation) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('region')
+          .where('Designation', isEqualTo: designation)
+          .get();
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking designation existence: $e');
+      return false;
+    }
+  }
 
   Future<void> updateGouvernorat(String oldDelegation, String newDelegation, String newZone) async {
     try {
@@ -387,25 +399,27 @@ Future<bool> checkDesignationZoneExists(String designation) async {
   }
  Future<String> getNextCodeZone() async {
   try {
-    // Query the existing documents to find the maximum value of codeZone
+    // Query all documents in the 'zone' collection
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('zone')
-        .orderBy('codeZone', descending: true)
-        .limit(1)
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      // If there are existing documents, extract the last codeZone
-      String lastCode = querySnapshot.docs.first['codeZone'];
+      // Extract all codeZone values and parse them to integers
+      List<int> codeZoneValues = querySnapshot.docs.map((doc) {
+        String codeZoneStr = doc['codeZone'];
+        int? codeZone = int.tryParse(codeZoneStr);
+        return codeZone ?? 0;
+      }).toList();
 
-      // Extract the numeric part of the last codeZone
-      int lastCodeNumeric = int.parse(lastCode);
+      // Find the maximum value in the list
+      int maxCodeZone = codeZoneValues.isNotEmpty ? codeZoneValues.reduce((a, b) => a > b ? a : b) : 0;
 
-      // Increment the numeric part to get the next codeZone
-      int nextCodeNumeric = lastCodeNumeric + 1;
+      // Increment the maximum value to get the next codeZone
+      int nextCodeZone = maxCodeZone + 1;
 
-      // Return the next codeZone numeric part as a string
-      return nextCodeNumeric.toString();
+      // Return the next codeZone as a string
+      return nextCodeZone.toString();
     } else {
       // If there are no existing documents, start from 1
       return '1';
@@ -427,7 +441,7 @@ Future<bool> checkDesignationZoneExists(String designation) async {
     try {
 
       String nextCodeZone = await getNextCodeZone();
-
+    print(nextCodeZone);
 
       await FirebaseFirestore.instance.collection('zone').add({
         'emailSousTraitant': sousTraiatnt,

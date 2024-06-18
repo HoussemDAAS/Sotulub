@@ -97,7 +97,7 @@ class _AddRegionState extends State<AddRegion> {
 
                     // Check if the designation already exists
                     bool exists = await AdminRepository.instance
-                        .checkDesignationExists(designation);
+                        .checkDesignationRegionExists(designation);
 
                     if (exists) {
                       // Show a popup if the designation exists

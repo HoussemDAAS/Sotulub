@@ -2,11 +2,89 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:sotulub/src/execptions/signup_email_password_exception.dart';
 
 class ChefRegionRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+static ChefRegionRepository get instance => Get.find();
+Future<int> getNextNumeroChef() async {
 
+
+  try {
+    // Get the current value of numeroDemande from Firestore
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('idChefRegion')
+        .doc('counter')
+        .get();
+
+    if (snapshot.exists) {
+      int currentNumeroDemande = snapshot.get('numero') as int? ?? 0;
+
+      // Increment the value by 1
+      await FirebaseFirestore.instance
+          .collection('idChefRegion')
+          .doc('counter')
+          .update({'numero': currentNumeroDemande + 1});
+
+      return currentNumeroDemande + 1; // Return the incremented value
+    } else {
+      // If the document doesn't exist, create it with initial value 1
+      await FirebaseFirestore.instance
+          .collection('idChefRegion')
+          .doc('counter')
+          .set({'numero': 1});
+
+      return 1; // Return the initial value
+    }
+  } catch (e) {
+    // Handle errors
+    print('Error getting next numeroDemande: $e');
+    throw e; // Rethrow the exception to propagate it
+  }
+}
+Future<void> createChefRegionWithEmailAndPassword(
+    
+    String nom,
+    String email,
+    String password,
+    String telephone,
+  ) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = _auth.currentUser;
+     
+      if (user != null) {
+      int   id= await getNextNumeroChef();
+        await FirebaseFirestore.instance
+            .collection('chefRegion')
+            .doc(user.uid)
+            .set({
+           'id':id.toString(),
+          'nom': nom,
+          'email': email,
+          'telephone': telephone,
+          'role': 'chef region',
+        });
+      }
+
+    } on FirebaseAuthException catch (e) {
+      final ex = SignUpEmailPasswordException.code(e.code);
+      print("Database " + ex.message);
+      throw ex;
+    } catch (_) {
+      final ex = SignUpEmailPasswordException();
+      print(ex.message);
+      throw ex;
+    }
+  }
+
+  
   // Get the email of the currently logged-in ChefRegion
   Future<String?> getCurrentChefRegionEmail() async {
     User? user = _auth.currentUser;

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
-import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
+
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/features/core/controllers/admin_controller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
@@ -41,7 +41,7 @@ class _AddDirecteurState extends State<AddDirecteur> {
             child: Form(
               key: _formKey,
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: tFormHeight - 10.0),
+                padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -117,9 +117,8 @@ class _AddDirecteurState extends State<AddDirecteur> {
                               controller.email.text.trim(),
                               controller.password.text.trim(),
                               controller.telephone.text.trim(),
-                              
                             );
-                            Get.offAll(() => const AdminDashboard());
+                        
                           }
                           // Get.offAll(() => AdminDashboard());
                         },

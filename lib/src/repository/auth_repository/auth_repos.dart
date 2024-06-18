@@ -512,7 +512,7 @@ Future<Map<String, dynamic>> getDataByEmail(String email) async {
       String email,
       String nom,
       String telephone,
-      String region)async {
+      )async {
         try {
       // Access Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -527,7 +527,7 @@ Future<Map<String, dynamic>> getDataByEmail(String email) async {
       if (telephone != null) userData['telephone'] = telephone;
       
       if (nom != null) userData['nom'] = nom;
-      if (region != null) userData['region'] = region;
+  
 
       // Update the user document
       await userRef.update(userData);

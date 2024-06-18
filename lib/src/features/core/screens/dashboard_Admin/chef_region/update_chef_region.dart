@@ -45,7 +45,7 @@ class _UpdateChefRegionState extends State<UpdateChefRegion> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Update detenteur'.toUpperCase(),
+          'Modifier Chef Region'.toUpperCase(),
           style: GoogleFonts.montserrat(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -117,21 +117,6 @@ class _UpdateChefRegionState extends State<UpdateChefRegion> {
                   },
                 ),
                 const SizedBox(height: tFormHeight - 10.0),
-                Obx(() {
-                  return CustomDropdown(
-                      labelText: 'Region',
-                      prefixIcon: Icons.map_rounded,
-                      items: dropdownController.regionItems.map((region) {
-                        return DropdownMenuItem(
-                          value: region,
-                          child: Text(region),
-                        );
-                      }).toList(),
-                      value: regionController.text,
-                      onChanged: (newValue) {
-                        regionController.text = newValue ?? "";
-                      });
-                }),
                 const SizedBox(height: tFormHeight - 10.0),
                 SizedBox(
                   width: double.infinity,
@@ -141,8 +126,7 @@ class _UpdateChefRegionState extends State<UpdateChefRegion> {
                         widget.userUID,
                         emailController.text.trim(),
                         nomController.text.trim(),
-                        phoneController.text.trim(),
-                        regionController.text.trim(),
+                        phoneController.text.trim()
                       );
                       Get.to(() => AdminDashboard());
                     },

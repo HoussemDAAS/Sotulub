@@ -106,9 +106,7 @@ class _ChefRegionPageState extends State<ChefRegionPage> {
              const      SizedBox(
                     height: tFormHeight - 10,
                   ),
-                  Text(
-                    "Region: ${data[i]['region']}",
-                  ),
+                
                 const   SizedBox(
                     height: tFormHeight - 10,
                   ),
