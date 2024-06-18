@@ -79,6 +79,7 @@ class DemandeColectRepository extends GetxController {
       'delivred':false,
       'outdated':false,
       'DateApproved':'',
+      'DateDelivred':'',
     });
   } catch (e) {
     // Handle errors

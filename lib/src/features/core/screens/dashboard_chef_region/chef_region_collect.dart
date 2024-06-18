@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/features/authentication/screens/login/Login_header_widget.dart';
@@ -223,10 +224,40 @@ class _ChefRegionCollectPageState extends State<ChefRegionCollectPage> {
                                           ),
                                         ],
                                       ),
+                                      
                                     ),
                                           
                                       ],
                                     ),
+                                     const SizedBox(
+                                      height: 7,
+                                    ),
+                                     Row(
+                        children: [
+                      Text(
+  () {
+    try {
+      if (data[i]['DateDelivred'] is Timestamp) {
+        return DateFormat('dd/MM/yyyy').format((data[i]['DateDelivred'] as Timestamp).toDate());
+      } else if (data[i]['DateDelivred'] is String) {
+        DateTime date = DateTime.parse(data[i]['DateDelivred']);
+        return DateFormat('dd/MM/yyyy').format(date);
+      } else {
+        return '';
+      }
+    } catch (e) {
+      // Handle any parsing exceptions here
+      return '';
+    }
+  }(),
+  style: const TextStyle(
+    fontWeight: FontWeight.w600,
+    color: tAccentColor,
+  ),
+)
+
+                        ],
+                      ),
                                     
                                   ],
                                 ),

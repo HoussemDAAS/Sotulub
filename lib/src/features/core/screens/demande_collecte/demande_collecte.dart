@@ -7,6 +7,7 @@ import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/features/authentication/screens/login/Login_header_widget.dart';
 import 'package:sotulub/src/features/core/controllers/demande_collecte_contorller.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
 import 'package:sotulub/src/repository/DemandeColect_repos.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 
@@ -110,6 +111,7 @@ class DemandeCollecte extends StatelessWidget {
                                         longitude,
                                         latitude,
                                       );
+
                                     } catch (e) {
                                       // Handle any errors that occur during the process
                                       print('Error: $e');
@@ -122,6 +124,7 @@ class DemandeCollecte extends StatelessWidget {
                                       );
                                     }
                                   }
+                                    Get.to(() => const Dashboard());
                                 },
                                 child: Text(
                                   'envoyer votre demande'.toUpperCase(),

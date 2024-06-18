@@ -350,9 +350,14 @@ Future<void> _fetchSousTraitantData() async {
                           .collection("DemandeCollect")
                           .doc(doc.id)
                           .update({'delivred': true});
+                         
                       Navigator.of(context).pop(); // Close the bottom sheet immediately
                       _showSnackBar(
                           "Succès", "Demande marquée comme livrée.", Colors.green);
+                            await FirebaseFirestore.instance
+                          .collection("DemandeCollect")
+                          .doc(doc.id)
+                          .update({'DateDelivred': DateTime.now().toString()});
                       await getData(); // Refresh the data to hide the delivered demand
                     } catch (error) {
                       // Handle errors gracefully
@@ -555,9 +560,14 @@ Future<void> _fetchSousTraitantData() async {
                           .collection("DemandeCuve")
                           .doc(doc.id)
                           .update({'delivred': true});
+                     
                       Navigator.of(context).pop(); // Close the bottom sheet immediately
                       _showSnackBar(
                           "Succès", "Demande marquée comme livrée.", Colors.green);
+                           await FirebaseFirestore.instance
+                          .collection("DemandeCuve")
+                          .doc(doc.id)
+                          .update({'DateDelivred': DateTime.now().toString()});
                       await getData(); // Refresh the data to hide the delivered demand
                     } catch (error) {
                       // Handle errors gracefully
