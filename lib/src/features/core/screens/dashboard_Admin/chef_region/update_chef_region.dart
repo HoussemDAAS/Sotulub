@@ -45,9 +45,7 @@ class _UpdateChefRegionState extends State<UpdateChefRegion> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-
           'modifier chef region'.toUpperCase(),
-
           style: GoogleFonts.montserrat(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -128,7 +126,8 @@ class _UpdateChefRegionState extends State<UpdateChefRegion> {
                         widget.userUID,
                         // emailController.text.trim(),
                         nomController.text.trim(),
-                        phoneController.text.trim()
+                        phoneController.text.trim(),
+                        regionController.text.trim(),
                       );
                       Get.to(() => AdminDashboard());
                     },
