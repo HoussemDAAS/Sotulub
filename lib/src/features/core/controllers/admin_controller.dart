@@ -41,25 +41,28 @@ class AdminController extends GetxController {
 
   void tUpdateUser(
       String userUID,
-      String email,
+      // String email,
       String raisonSociale,
       String responsable,
       String telephone,
       String gov,
       String delegation,
       String secteur) {
-    AuthRepository.instance.updateUser(userUID, email, raisonSociale,
-        responsable, telephone, gov, delegation, secteur);
+    AuthRepository.instance.updateUser(userUID, raisonSociale, responsable,
+        telephone, gov, delegation, secteur);
   }
 
-  void tUpdateDirecteur(
-      String userUID, String email, String nom, String telephone) {
-    AuthRepository.instance.updateDirecteur(userUID, email, nom, telephone);
+  void tUpdateDirecteur(String userUID, String nom, String telephone) {
+    AuthRepository.instance.updateDirecteur(userUID, nom, telephone);
   }
 
-  void tUpdateChefRegion(String userUID, String email, String nom,
-      String telephone) {
-    AuthRepository.instance
-        .updateChefRegion(userUID, email, nom, telephone);
+  void tUpdateChefRegion(
+      String userUID, String nom, String telephone, String region) {
+    AuthRepository.instance.updateChefRegion(userUID, nom, telephone, region);
+  }
+
+  void tUpdateSousTraitant(
+      String userUID, String nom, String telephone, String zone) {
+    AuthRepository.instance.UpdateSousTraitant(userUID, nom, telephone, zone);
   }
 }
