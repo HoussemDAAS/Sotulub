@@ -9,6 +9,7 @@ import 'package:sotulub/src/features/authentication/screens/splash_screen/splash
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/detenteur_page.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_chef_region/chef_region_collect.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_chef_region/chef_region_convention.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_chef_region/chef_region_reclamation.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 import 'package:sotulub/src/repository/chefregion_repos.dart';
 
@@ -39,10 +40,11 @@ class _ChefRegionDashboardState extends State<ChefRegionDashboard> {
       setState(() {
         _chefRegionId = chefRegionId;
       });
-      
+
       String? email = await _chefRegionRepository.getCurrentChefRegionEmail();
       if (email != null) {
-        String? name = await _chefRegionRepository.getChefRegionNameByEmail(email);
+        String? name =
+            await _chefRegionRepository.getChefRegionNameByEmail(email);
         setState(() {
           _chefRegionName = name;
           _chefRegionEmail = email;
@@ -102,7 +104,7 @@ class _ChefRegionDashboardState extends State<ChefRegionDashboard> {
                     ReusableGestureDetector(
                       imagePath: 'assets/images/alert.png',
                       labelText: 'Réclamation',
-                      onTap: () => _navigateToDetenteurPage(),
+                      onTap: () => _navigateToReclamationPage(),
                     ),
                     ReusableGestureDetector(
                       imagePath: tBarrel,
@@ -164,8 +166,12 @@ class _ChefRegionDashboardState extends State<ChefRegionDashboard> {
     }
   }
 
-  void _navigateToDetenteurPage() {
-    Get.to(const DetenteurPage());
+  void _navigateToReclamationPage() {
+    if (_chefRegionId != null) {
+      Get.to(() => ChefRegionReclamationPage(chefRegionId: _chefRegionId!));
+    } else {
+      print('Chef Region ID not available');
+    }
   }
 
   void _navigateToCollectPage() {
