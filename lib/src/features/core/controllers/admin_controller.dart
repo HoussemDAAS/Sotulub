@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
+import 'package:sotulub/src/repository/chefregion_repos.dart';
+import 'package:sotulub/src/repository/directeur_dashboard_repo.dart';
+import 'package:sotulub/src/repository/sousTraitant_reps.dart';
 
 class AdminController extends GetxController {
   static AdminController get instance => Get.put(AdminController());
@@ -15,7 +18,7 @@ class AdminController extends GetxController {
 
   void tRegisterSousTraitant(String nom, String email, String password,
       String telephone, String zone) {
-    AuthRepository.instance.createSousTraitantWithEmailAndPassword(
+    SoustraitantReps.instance.createSousTraitantWithEmailAndPassword(
         nom,
         email,
         password,
@@ -25,14 +28,14 @@ class AdminController extends GetxController {
   }
 
   void tRegisterChefRegion(String nom, String email, String password,
-      String telephone, String region) {
-    AuthRepository.instance.createChefRegionWithEmailAndPassword(
-        nom, email, password, telephone, region, "chef region");
+      String telephone) {
+    ChefRegionRepository.instance.createChefRegionWithEmailAndPassword(
+        nom, email, password, telephone);
   }
 
   void tRegisterDirecteur(
       String nom, String email, String password, String telephone) {
-    AuthRepository.instance.createDirecteurWithEmailAndPassword(
+    DirecteurDashboardRepo.instance.createDirecteurWithEmailAndPassword(
         nom, email, password, telephone, "directeur");
   }
 

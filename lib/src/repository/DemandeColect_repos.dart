@@ -78,6 +78,8 @@ class DemandeColectRepository extends GetxController {
       'date ': DateTime.now().toString(),
       'delivred':false,
       'outdated':false,
+      'DateApproved':'',
+      'DateDelivred':'',
     });
   } catch (e) {
     // Handle errors

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/image_string.dart';
 import 'package:sotulub/src/features/authentication/screens/login/Login_header_widget.dart';
@@ -106,6 +107,10 @@ class _CuvePageState extends State<CuvePage> {
                                         .collection("DemandeCuve")
                                         .doc(data[i].id)
                                         .update({'approved': true});
+                                            await FirebaseFirestore.instance
+                                        .collection("DemandeCuve")
+                                        .doc(data[i].id)
+                                        .update({'DateApproved': DateTime.now().toString()});
 
                                     // Refresh the data to reflect the changes
                                     await getData();
@@ -257,6 +262,35 @@ class _CuvePageState extends State<CuvePage> {
                                           ),
                                         ],
                                       ),
+                                       const SizedBox(
+                                      height: 7,
+                                    ),
+                                     Row(
+                        children: [
+                      Text(
+  () {
+    try {
+      if (data[i]['DateDelivred'] is Timestamp) {
+        return DateFormat('dd/MM/yyyy').format((data[i]['DateDelivred'] as Timestamp).toDate());
+      } else if (data[i]['DateDelivred'] is String) {
+        DateTime date = DateTime.parse(data[i]['DateDelivred']);
+        return DateFormat('dd/MM/yyyy').format(date);
+      } else {
+        return '';
+      }
+    } catch (e) {
+      // Handle any parsing exceptions here
+      return '';
+    }
+  }(),
+  style: const TextStyle(
+    fontWeight: FontWeight.w600,
+    color: tAccentColor,
+  ),
+)
+
+                        ],
+                      ),
                                     ],
                                   )
                                 ],

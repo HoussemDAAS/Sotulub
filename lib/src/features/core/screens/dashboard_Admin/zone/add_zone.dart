@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
 import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
-import 'package:sotulub/src/constants/colors.dart';
 
+import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 
-import 'package:sotulub/src/features/core/controllers/gouvernorat_controller.dart';
 import 'package:sotulub/src/features/core/controllers/zone_controller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
 import 'package:sotulub/src/repository/admin_repos.dart';
@@ -63,7 +61,6 @@ class _AddZonePageState extends State<AddZonePage> {
                 hintText: '',
                 prefixIcon: Icons.map_outlined,
                 controller: controller.designation,
-                // controller: controller.responsable,
                 validator: (value) {
                   if (value!.isEmpty) {
                     Get.snackbar(
@@ -80,7 +77,7 @@ class _AddZonePageState extends State<AddZonePage> {
                   return null;
                 },
               ),
-                    const SizedBox(height: tFormHeight - 10.0),
+              const SizedBox(height: tFormHeight - 10.0),
               Obx(() {
                 return CustomDropdown(
                   labelText: 'Région',
@@ -93,22 +90,18 @@ class _AddZonePageState extends State<AddZonePage> {
                   }).toList(),
                   value: null,
                   onChanged: (newValue) async {
-                    // Update the selected zone
                     controller.region.value = newValue ?? "";
 
                     if (newValue != null) {
-                      // Get the codeZone for the selected zone
                       String codeRegion =
                           await AdminRepository.instance.getCodeRegion(newValue);
-
-                      // Do something with the codeZone, such as updating controller.CodeZone
                       controller.CodeRegion.text = codeRegion;
                     }
                   },
                 );
               }),
               const SizedBox(height: tFormHeight - 10.0),
-               Obx(() {
+              Obx(() {
                 return CustomDropdown(
                   labelText: 'Sous_Traitant',
                   prefixIcon: Icons.person_pin_circle_rounded,
@@ -120,21 +113,16 @@ class _AddZonePageState extends State<AddZonePage> {
                   }).toList(),
                   value: null,
                   onChanged: (newValue) async {
-                    // Update the selected zone
                     controller.sousTraiatnt.value = newValue ?? "";
 
                     if (newValue != null) {
-                      // Get the codeZone for the selected zone
-                      String emailSousTraitant=
+                      String emailSousTraitant =
                           await AdminRepository.instance.getEmailSoutraitant(newValue);
-
-                      // Do something with the codeZone, such as updating controller.CodeZone
                       controller.emailSousTraitant.text = emailSousTraitant;
                     }
                   },
                 );
               }),
-
               const SizedBox(height: tFormHeight - 10.0),
               Expanded(
                 child: ListView.builder(
@@ -189,7 +177,6 @@ class _AddZonePageState extends State<AddZonePage> {
                     String designation =
                         controller.designation.text.toUpperCase().trim();
 
-                    // Check if the designation already exists
                     bool exists = await AdminRepository.instance
                         .checkDesignationZoneExists(designation);
 
@@ -204,10 +191,18 @@ class _AddZonePageState extends State<AddZonePage> {
                       await AdminRepository.instance.addZone(
                         sousTraiatnt: controller.emailSousTraitant.text,
                         designation: designation,
-                        selectedGouvernorats: selectedGouvernorats, CodeRegion: controller.CodeRegion.text,
-                          
+                        selectedGouvernorats: selectedGouvernorats,
+                        CodeRegion: controller.CodeRegion.text,
                       );
-                      Get.to(()=>AdminDashboard());
+
+                      // Clear all controllers and data
+                      controller.designation.clear();
+                      controller.CodeRegion.clear();
+                      controller.emailSousTraitant.clear();
+                      selectedGouvernorats.clear();
+
+                      // Navigate to the admin dashboard
+                      Get.to(() => AdminDashboard());
                     }
                   },
                   child: Text('Enregistrer'.toUpperCase()),

@@ -23,7 +23,6 @@ import 'package:sotulub/src/features/core/screens/dashboard_Admin/sous_secteur/s
 
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/zone/zone.dart';
 
-import 'package:sotulub/src/features/core/screens/dashboard_Admin/consult_users/detenteur_page.dart';
 import 'package:sotulub/src/repository/admin_dashboard_reps.dart';
 
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';

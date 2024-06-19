@@ -510,9 +510,11 @@ class AuthRepository extends GetxController {
     }
   }
 
+
   Future<void> updateChefRegion(
       String userUID, String nom, String telephone, String region) async {
     try {
+
       // Access Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -527,7 +529,7 @@ class AuthRepository extends GetxController {
       if (telephone != null) userData['telephone'] = telephone;
 
       if (nom != null) userData['nom'] = nom;
-      if (region != null) userData['region'] = region;
+  
 
       // Update the user document
       await userRef.update(userData);

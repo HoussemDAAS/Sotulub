@@ -90,24 +90,7 @@ class _AddChefRegionState extends State<AddChefRegion> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: tFormHeight - 10.0),
-                    Obx(() {
-                      return CustomDropdown(
-                        labelText: 'Region',
-                        prefixIcon: Icons.map_outlined,
-                        items: dropdownController.regionItems.map((zone) {
-                          return DropdownMenuItem(
-                            value: zone,
-                            child: Text(zone),
-                          );
-                        }).toList(),
-                        value: null,
-                        onChanged: (newValue) {
-                          // Update the selected delegation in the controller
-                          controller.zone.value = newValue ?? "";
-                        },
-                      );
-                    }),
+                  
                     const SizedBox(height: tFormHeight - 10.0),
                     CustomTextField(
                       labelText: 'Telephone',
@@ -131,8 +114,7 @@ class _AddChefRegionState extends State<AddChefRegion> {
                               controller.nom.text.trim(),
                               controller.email.text.trim(),
                               controller.password.text.trim(),
-                              controller.telephone.text.trim(),
-                              controller.zone.value,
+                              controller.telephone.text.trim()
                             );
                             Get.offAll(() => const AdminDashboard());
                           }
