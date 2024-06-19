@@ -63,16 +63,19 @@ Future<void> _fetchSousTraitantData() async {
     });
     try {
        String? email = await _sousTraitantRepository.getCurrentSousTraitantEmail();
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection("DemandeCollect")
-          .where('delivred', isEqualTo: false)
-          .get();
-      if (mounted) {
+      if (email != null) {
+        String? codeZone= await _sousTraitantRepository.getSoutraintZoneByEmail(email);
+        List<QueryDocumentSnapshot> users = await _sousTraitantRepository.getUsersForSousTraitant(codeZone!);
+        List<QueryDocumentSnapshot> DataDocuments = await _sousTraitantRepository.getDemandeCollectForUsers(users);
         setState(() {
-          demandeCollectData = querySnapshot.docs;
-          isLoading = false;
-          print(demandeCollectData.first.data());
-        });
+        demandeCollectData.clear();
+        demandeCollectData.addAll(DataDocuments);
+        print("length ${demandeCollectData.length}");
+        isLoading = false;
+      });
+      }
+      else  {
+        print("error");
       }
     } catch (e) {
       print("Error fetching data: $e");
@@ -87,15 +90,20 @@ Future<void> _fetchSousTraitantData() async {
       isLoading = true;
     });
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection("DemandeCuve")
-          .where('delivred', isEqualTo: false)
-          .get();
-      if (mounted) {
+       String? email = await _sousTraitantRepository.getCurrentSousTraitantEmail();
+      if (email != null) {
+        String? codeZone= await _sousTraitantRepository.getSoutraintZoneByEmail(email);
+        List<QueryDocumentSnapshot> users = await _sousTraitantRepository.getUsersForSousTraitant(codeZone!);
+        List<QueryDocumentSnapshot> Data = await _sousTraitantRepository.getDemandeCuveorUsers(users);
         setState(() {
-          demandeCuveData = querySnapshot.docs;
-          isLoading = false;
-        });
+        demandeCuveData.clear();
+        demandeCuveData.addAll(Data);
+        print("length ${demandeCuveData.length}");
+        isLoading = false;
+      });
+      }
+      else  {
+        print("error");
       }
     } catch (e) {
       print("Error fetching data: $e");
