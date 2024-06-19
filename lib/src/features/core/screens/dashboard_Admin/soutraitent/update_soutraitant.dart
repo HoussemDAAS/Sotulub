@@ -3,24 +3,29 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/common_widgets/custom_Text_filed.dart';
+import 'package:sotulub/src/common_widgets/custom_dropdown.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/features/core/controllers/admin_controller.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
+import 'package:sotulub/src/repository/auth_repository/dropdowns_repo.dart';
 
-class UpdateDirecteur extends StatefulWidget {
+class UpdateSousTraitant extends StatefulWidget {
   final dynamic data;
   final String userUID;
-  const UpdateDirecteur({Key? key, required this.data, required this.userUID})
+  const UpdateSousTraitant({Key? key, required this.data, required this.userUID})
       : super(key: key);
 
   @override
-  State<UpdateDirecteur> createState() => _UpdateDirecteurState();
+  State<UpdateSousTraitant> createState() => _UpdateSousTraitantState();
 }
 
-class _UpdateDirecteurState extends State<UpdateDirecteur> {
+class _UpdateSousTraitantState extends State<UpdateSousTraitant> {
   late TextEditingController emailController;
   late TextEditingController phoneController;
   late TextEditingController nomController;
+  late TextEditingController zoneController;
+
+  final DropdownFetch dropdownController = Get.put(DropdownFetch());
 
   @override
   void initState() {
@@ -30,6 +35,8 @@ class _UpdateDirecteurState extends State<UpdateDirecteur> {
     emailController = TextEditingController(text: widget.data['email'] ?? '');
     phoneController =
         TextEditingController(text: widget.data['telephone'] ?? '');
+
+    zoneController = TextEditingController(text: widget.data['zone'] ?? '');
     super.initState();
   }
 
@@ -38,7 +45,7 @@ class _UpdateDirecteurState extends State<UpdateDirecteur> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'modifier directeur'.toUpperCase(),
+          'modifier soustraitant'.toUpperCase(),
           style: GoogleFonts.montserrat(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -110,15 +117,32 @@ class _UpdateDirecteurState extends State<UpdateDirecteur> {
                   },
                 ),
                 const SizedBox(height: tFormHeight - 10.0),
+                Obx(() {
+                  return CustomDropdown(
+                      labelText: 'Zone',
+                      prefixIcon: Icons.map_rounded,
+                      items: dropdownController.zoneItems.map((zone) {
+                        return DropdownMenuItem(
+                          value: zone,
+                          child: Text(zone),
+                        );
+                      }).toList(),
+                      value: zoneController.text,
+                      onChanged: (newValue) {
+                        zoneController.text = newValue ?? "";
+                      });
+                }),
+                const SizedBox(height: tFormHeight - 10.0),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      AdminController.instance.tUpdateDirecteur(
+                      AdminController.instance.tUpdateSousTraitant(
                         widget.userUID,
                         // emailController.text.trim(),
                         nomController.text.trim(),
                         phoneController.text.trim(),
+                        zoneController.text.trim(),
                       );
                       Get.to(() => AdminDashboard());
                     },

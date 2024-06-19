@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sotulub/src/execptions/signup_email_password_exception.dart';
 import 'package:sotulub/src/features/authentication/screens/splash_screen/splash_screen.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/admin_dashboard.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/soutraitent/update_soutraitant.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Detenteur/widgets/detenteur_dashboard.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_chef_region/chef_region.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_directeur/dashboard_directeur.dart';
@@ -177,39 +178,41 @@ class AuthRepository extends GetxController {
       throw ex;
     }
   }
-Future<int> getNextNumeroChef() async {
-  try {
-    // Get the current value of numeroDemande from Firestore
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('idChefRegion')
-        .doc('counter')
-        .get();
 
-    if (snapshot.exists) {
-      int currentNumeroDemande = snapshot.get('numero') as int? ?? 0;
-
-      // Increment the value by 1
-      await FirebaseFirestore.instance
+  Future<int> getNextNumeroChef() async {
+    try {
+      // Get the current value of numeroDemande from Firestore
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
           .collection('idChefRegion')
           .doc('counter')
-          .update({'numero': currentNumeroDemande + 1});
+          .get();
 
-      return currentNumeroDemande + 1; // Return the incremented value
-    } else {
-      // If the document doesn't exist, create it with initial value 1
-      await FirebaseFirestore.instance
-          .collection('idChefRegion')
-          .doc('counter')
-          .set({'numero': 1});
+      if (snapshot.exists) {
+        int currentNumeroDemande = snapshot.get('numero') as int? ?? 0;
 
-      return 1; // Return the initial value
+        // Increment the value by 1
+        await FirebaseFirestore.instance
+            .collection('idChefRegion')
+            .doc('counter')
+            .update({'numero': currentNumeroDemande + 1});
+
+        return currentNumeroDemande + 1; // Return the incremented value
+      } else {
+        // If the document doesn't exist, create it with initial value 1
+        await FirebaseFirestore.instance
+            .collection('idChefRegion')
+            .doc('counter')
+            .set({'numero': 1});
+
+        return 1; // Return the initial value
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error getting next numeroDemande: $e');
+      throw e; // Rethrow the exception to propagate it
     }
-  } catch (e) {
-    // Handle errors
-    print('Error getting next numeroDemande: $e');
-    throw e; // Rethrow the exception to propagate it
   }
-}
+
   Future<void> createSousTraitantWithEmailAndPassword(
     String nom,
     String email,
@@ -253,7 +256,6 @@ Future<int> getNextNumeroChef() async {
   }
 
   Future<void> createChefRegionWithEmailAndPassword(
-    
     String nom,
     String email,
     String password,
@@ -268,14 +270,14 @@ Future<int> getNextNumeroChef() async {
       );
 
       User? user = _auth.currentUser;
-     
+
       if (user != null) {
-      int   id= await getNextNumeroChef();
+        int id = await getNextNumeroChef();
         await FirebaseFirestore.instance
             .collection('chefRegion')
             .doc(user.uid)
             .set({
-           'id':id.toString(),
+          'id': id.toString(),
           'nom': nom,
           'email': email,
           'telephone': telephone,
@@ -416,49 +418,46 @@ Future<int> getNextNumeroChef() async {
     }
   }
 
+  Future<Map<String, dynamic>> getDataByEmail(String email) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
 
+      if (querySnapshot.docs.isNotEmpty) {
+        // Extract data from the first document
+        var userData = querySnapshot.docs.first.data() as Map<String, dynamic>;
+        ;
 
-
-Future<Map<String, dynamic>> getDataByEmail(String email) async {
-  try {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: email)
-        .get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      // Extract data from the first document
-      var userData = querySnapshot.docs.first.data() as Map<String, dynamic>;;
-      
-      // Check if userData is not null before accessing its fields
-      if (userData != null) {
-        return {
-          'telephone': userData['telephone'],
-          'longitude': userData['longitude'],
-          'latitude': userData['latitude'],
-          'delegation': userData['delegation'],
-          'gouvernorat': userData['gouvernorat'],
-        };
+        // Check if userData is not null before accessing its fields
+        if (userData != null) {
+          return {
+            'telephone': userData['telephone'],
+            'longitude': userData['longitude'],
+            'latitude': userData['latitude'],
+            'delegation': userData['delegation'],
+            'gouvernorat': userData['gouvernorat'],
+          };
+        } else {
+          // userData is null, handle accordingly
+          return {}; // Return an empty map
+        }
       } else {
-        // userData is null, handle accordingly
+        // No document found with the given email
         return {}; // Return an empty map
       }
-    } else {
-      // No document found with the given email
-      return {}; // Return an empty map
+    } catch (e) {
+      Get.snackbar(
+        'Erreur',
+        'Erreur lors de la récupération des données: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      print('Error fetching user data: $e');
+      rethrow; // Re-throw the error to handle it in the calling code
     }
-  } catch (e) {
-    Get.snackbar(
-      'Erreur',
-      'Erreur lors de la récupération des données: $e',
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
-    );
-    print('Error fetching user data: $e');
-    rethrow; // Re-throw the error to handle it in the calling code
   }
-}
-
 
   Future<bool> checkConvention() async {
     try {
@@ -479,23 +478,26 @@ Future<Map<String, dynamic>> getDataByEmail(String email) async {
     }
   }
 
-  Future<void> updateDirecteur(String userUID,
-      String email,
-      String nom,
-      String telephone,)async {
-        try {
+  Future<void> updateDirecteur(
+    String userUID,
+    // String email,
+    String nom,
+    String telephone,
+  ) async {
+    try {
       // Access Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       // Reference to the user document in Firestore
-      DocumentReference userRef = firestore.collection('directeur').doc(userUID);
+      DocumentReference userRef =
+          firestore.collection('directeur').doc(userUID);
 
       // Data to update
       Map<String, dynamic> userData = {};
-      if (email != null) userData['email'] = email;
-      
+      // if (email != null) userData['email'] = email;
+
       if (telephone != null) userData['telephone'] = telephone;
-      
+
       if (nom != null) userData['nom'] = nom;
 
       // Update the user document
@@ -508,24 +510,22 @@ Future<Map<String, dynamic>> getDataByEmail(String email) async {
     }
   }
 
-  Future<void> updateChefRegion(String userUID,
-      String email,
-      String nom,
-      String telephone,
-      String region)async {
-        try {
+  Future<void> updateChefRegion(
+      String userUID, String nom, String telephone, String region) async {
+    try {
       // Access Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       // Reference to the user document in Firestore
-      DocumentReference userRef = firestore.collection('directeur').doc(userUID);
+      DocumentReference userRef =
+          firestore.collection('directeur').doc(userUID);
 
       // Data to update
       Map<String, dynamic> userData = {};
-      if (email != null) userData['email'] = email;
-      
+      // if (email != null) userData['email'] = email;
+
       if (telephone != null) userData['telephone'] = telephone;
-      
+
       if (nom != null) userData['nom'] = nom;
       if (region != null) userData['region'] = region;
 
@@ -538,11 +538,35 @@ Future<Map<String, dynamic>> getDataByEmail(String email) async {
       // Handle error
     }
   }
-      
+
+  Future<void> UpdateSousTraitant(
+      String userUID, String nom, String telephone, String zone) async {
+    try {
+      // Access Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      DocumentReference userRef =
+          firestore.collection('sousTraitants').doc(userUID);
+
+      // Data to update
+      Map<String, dynamic> userData = {};
+
+      if (telephone != null) userData['telephone'] = telephone;
+
+      if (nom != null) userData['nom'] = nom;
+      if (zone != null) userData['zone'] = zone;
+
+      await userRef.update(userData);
+
+      print('User data updated successfully!');
+    } catch (error) {
+      print('Error updating user data: $error');
+    }
+  }
 
   Future<void> updateUser(
       String userUID,
-      String email,
+      // String email,
       String raisonSociale,
       String responsable,
       String telephone,
@@ -558,7 +582,7 @@ Future<Map<String, dynamic>> getDataByEmail(String email) async {
 
       // Data to update
       Map<String, dynamic> userData = {};
-      if (email != null) userData['email'] = email;
+      // if (email != null) userData['email'] = email;
       if (raisonSociale != null) userData['raisonSocial'] = raisonSociale;
       if (responsable != null) userData['responsable'] = responsable;
       if (telephone != null) userData['telephone'] = telephone;

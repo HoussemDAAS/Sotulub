@@ -45,7 +45,7 @@ class _UpdateChefRegionState extends State<UpdateChefRegion> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Update detenteur'.toUpperCase(),
+          'modifier chef region'.toUpperCase(),
           style: GoogleFonts.montserrat(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -62,22 +62,22 @@ class _UpdateChefRegionState extends State<UpdateChefRegion> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomTextField(
-                  labelText: 'E-mail',
-                  hintText: '',
-                  prefixIcon: Icons.mail_outline_outlined,
-                  controller: emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required';
-                    }
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                        .hasMatch(value)) {
-                      return 'Enter a valid email address';
-                    }
-                    return null;
-                  },
-                ),
+                // CustomTextField(
+                //   labelText: 'E-mail',
+                //   hintText: '',
+                //   prefixIcon: Icons.mail_outline_outlined,
+                //   controller: emailController,
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Email is required';
+                //     }
+                //     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                //         .hasMatch(value)) {
+                //       return 'Enter a valid email address';
+                //     }
+                //     return null;
+                //   },
+                // ),
                 const SizedBox(height: tFormHeight - 10.0),
                 const Divider(
                   color: Colors.grey, // Choose a color for the divider
@@ -139,7 +139,7 @@ class _UpdateChefRegionState extends State<UpdateChefRegion> {
                     onPressed: () {
                       AdminController.instance.tUpdateChefRegion(
                         widget.userUID,
-                        emailController.text.trim(),
+                        // emailController.text.trim(),
                         nomController.text.trim(),
                         phoneController.text.trim(),
                         regionController.text.trim(),

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sotulub/src/constants/colors.dart';
 import 'package:sotulub/src/constants/sizes.dart';
 import 'package:sotulub/src/features/core/screens/dashboard_Admin/select_role.dart';
+import 'package:sotulub/src/features/core/screens/dashboard_Admin/soutraitent/update_soutraitant.dart';
 
 class SousTraitantPage extends StatefulWidget {
   const SousTraitantPage({Key? key}) : super(key: key);
@@ -26,6 +27,20 @@ class _SousTraitantPageState extends State<SousTraitantPage> {
         data.addAll(querySnapshot.docs);
       });
     }
+  }
+
+  String documentId = "";
+
+  void _navigateToUpdatePage(
+      BuildContext context, dynamic itemData, String userUID) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => UpdateSousTraitant(
+                data: itemData,
+                userUID: documentId,
+              )),
+    );
   }
 
   @override
@@ -101,7 +116,13 @@ class _SousTraitantPageState extends State<SousTraitantPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          setState(() {
+                            documentId = data[i].id;
+                          });
+
+                          _navigateToUpdatePage(context, data[i], data[i].id);
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                               borderRadius:
