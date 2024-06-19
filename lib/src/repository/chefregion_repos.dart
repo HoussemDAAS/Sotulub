@@ -215,6 +215,26 @@ Future<void> createChefRegionWithEmailAndPassword(
 
     return demandeCollectDocuments;
   }
+  Future<List<QueryDocumentSnapshot>> getReclamattionForUsers(List<QueryDocumentSnapshot> users) async {
+    List<QueryDocumentSnapshot> RecclamationDocuments = [];
+
+    try {
+      // Extract emails from the users
+     List<String> emails = users.map((user) => user['email'] as String).toList();
+
+      // Query DemandeCollect documents where the email field matches any of the emails extracted from users
+      QuerySnapshot demandeReclamationSnapchots = await _firestore
+          .collection('DemandeReclamation')
+          .where('email', whereIn: emails)
+          .get();
+
+      RecclamationDocuments = demandeReclamationSnapchots.docs;
+    } catch (e) {
+      print('Error fetching DemandeCollect documents: $e');
+    }
+
+    return RecclamationDocuments;
+  }
    Future<List<QueryDocumentSnapshot>> getDemandeCuveForUsers(List<QueryDocumentSnapshot> users) async {
     List<QueryDocumentSnapshot> demandeCuve = [];
 

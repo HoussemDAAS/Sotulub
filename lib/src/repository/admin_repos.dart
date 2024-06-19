@@ -583,26 +583,38 @@ Future<void> addRegion({
   }
 
  Future<String> getNextCodeRegion() async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('region')
-          .orderBy('codeRegion', descending: true)
-          .limit(1)
-          .get();
+  try {
+    // Query all documents in the 'zone' collection
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('region')
+        .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        String lastCode = querySnapshot.docs.first['codeRegion'];
-        int lastNumber = int.parse(lastCode);
-        int nextNumber = lastNumber + 1;
-        return nextNumber.toString();
-      } else {
-        return '500';
-      }
-    } catch (e) {
-      print('Error getting next Code Gouvernorat: $e');
-      return '';
+    if (querySnapshot.docs.isNotEmpty) {
+      // Extract all codeZone values and parse them to integers
+      List<int> codeZoneValues = querySnapshot.docs.map((doc) {
+        String codeZoneStr = doc['codeRegion'];
+        int? codeZone = int.tryParse(codeZoneStr);
+        return codeZone ?? 0;
+      }).toList();
+
+      // Find the maximum value in the list
+      int maxCodeZone = codeZoneValues.isNotEmpty ? codeZoneValues.reduce((a, b) => a > b ? a : b) : 0;
+
+      // Increment the maximum value to get the next codeZone
+      int nextCodeZone = maxCodeZone + 1;
+
+      // Return the next codeZone as a string
+      return nextCodeZone.toString();
+    } else {
+      // If there are no existing documents, start from 1
+      return '1';
     }
+  } catch (e) {
+    // Handle the error as needed
+    print('Error getting next codeZone: $e');
+    return ''; // Return an empty string as fallback
   }
+}
   Future<void> fetchRegionItems() async {
     try {
       QuerySnapshot querySnapshot =

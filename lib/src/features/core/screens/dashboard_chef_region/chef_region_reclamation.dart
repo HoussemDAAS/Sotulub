@@ -19,7 +19,7 @@ class ChefRegionReclamationPage extends StatefulWidget {
 }
 
 class _ChefRegionReclamationPageState extends State<ChefRegionReclamationPage> {
-  final ChefRegionRepository _chefRegionRepository = ChefRegionRepository();
+  final ChefRegionRepository _repository = ChefRegionRepository();
   List<QueryDocumentSnapshot> data = [];
 
   bool isLoading = false;
@@ -43,16 +43,15 @@ class _ChefRegionReclamationPageState extends State<ChefRegionReclamationPage> {
       isLoading = true;
     });
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection("DemandeReclamation")
-          .get();
-      if (mounted) {
-        setState(() {
-          data.clear();
-          data.addAll(querySnapshot.docs);
-          isLoading = false;
-        });
-      }
+        List<QueryDocumentSnapshot> users = await _repository.getUsersForChefRegion(widget.chefRegionId);
+      List<QueryDocumentSnapshot> demandeReclamationDocuments = await _repository.getReclamattionForUsers(users);
+    setState(() {
+        data.clear();
+        data.addAll(demandeReclamationDocuments);
+        print(data);
+        isLoading = false;
+      });
+
     } catch (e) {
       if (mounted) {
         setState(() {

@@ -62,6 +62,7 @@ Future<void> _fetchSousTraitantData() async {
       isLoading = true;
     });
     try {
+       String? email = await _sousTraitantRepository.getCurrentSousTraitantEmail();
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection("DemandeCollect")
           .where('delivred', isEqualTo: false)
