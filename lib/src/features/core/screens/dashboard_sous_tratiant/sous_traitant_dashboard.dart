@@ -14,6 +14,7 @@ import 'package:sotulub/src/features/authentication/screens/splash_screen/splash
 import 'package:sotulub/src/repository/auth_repository/auth_repos.dart';
 import 'package:http/http.dart' as http;
 import 'package:sotulub/src/repository/sousTraitant_reps.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SousTraitantDashboardPage extends StatefulWidget {
   const SousTraitantDashboardPage({Key? key}) : super(key: key);
@@ -84,7 +85,13 @@ Future<void> _fetchSousTraitantData() async {
       });
     }
   }
-
+void _launchPhone(String phoneNumber) async {
+    if (await canLaunch('tel:$phoneNumber')) {
+      await launch('tel:$phoneNumber');
+    } else {
+      throw 'Impossible de lancer le numéro $phoneNumber';
+    }
+  }
   Future<void> getDataCuve() async {
     setState(() {
       isLoading = true;
@@ -440,19 +447,35 @@ Future<void> _fetchSousTraitantData() async {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          const Icon(Icons.phone, color: tDarkBackground),
-                          const SizedBox(width: 5),
-                          Text(
-                            "${doc['telephone']}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: tAccentColor,
-                            ),
-                          ),
-                        ],
-                      ),
+                    Row(
+                                      children: [
+                                        GestureDetector(
+                                      onTap: () {
+                                        _launchPhone(doc['telephone']);
+                                      },
+                                      child: Row(
+                                        children: [
+                                         const  Icon(
+                                            Icons.phone,
+                                            color: tDarkBackground,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            "${doc['telephone']}",
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: tAccentColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      
+                                    ),
+                                          
+                                      ],
+                                    ),
                       const SizedBox(height: 5),
                       Row(
                         children: [
@@ -650,19 +673,35 @@ Future<void> _fetchSousTraitantData() async {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          const Icon(Icons.phone, color: tDarkBackground),
-                          const SizedBox(width: 5),
-                          Text(
-                            "${doc['telephone']}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: tAccentColor,
-                            ),
-                          ),
-                        ],
-                      ),
+                     Row(
+                                      children: [
+                                        GestureDetector(
+                                      onTap: () {
+                                        _launchPhone(doc['telephone']);
+                                      },
+                                      child: Row(
+                                        children: [
+                                         const  Icon(
+                                            Icons.phone,
+                                            color: tDarkBackground,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            "${doc['telephone']}",
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: tAccentColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      
+                                    ),
+                                          
+                                      ],
+                                    ),
                       const SizedBox(height: 5),
                       Row(
                         children: [
